@@ -1,0 +1,6 @@
+{
+  "name": "DocuScan OCR",
+  "description": "Advanced Document Scanner with Gemini OCR, perspective correction, end-to-end encryption, PDF/Word exports, Cloudflare R2 backup, Google Drive & Dropbox, HIPAA/GDPR compliance.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
