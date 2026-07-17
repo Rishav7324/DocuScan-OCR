@@ -1,5 +1,8 @@
 package com.example.ui.screens
 
+import android.content.Intent
+import androidx.compose.ui.platform.LocalContext
+import com.example.data.encryption.EncryptionUtils
 import androidx.compose.animation.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -13,6 +16,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,6 +46,8 @@ fun DashboardScreen(
     onNavigateToOcr: (String?) -> Unit,
     onNavigateToHelpAndLegal: () -> Unit
 ) {
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
     val folders by viewModel.folders.collectAsState()
     val allDocs by viewModel.allDocuments.collectAsState()
 
@@ -393,6 +399,50 @@ fun DashboardScreen(
                                                 contentDescription = "Ocr Present",
                                                 tint = MaterialTheme.colorScheme.primary,
                                                 modifier = Modifier.size(18.dp)
+                                            )
+                                        }
+                                        IconButton(
+                                            onClick = {
+                                                coroutineScope.launch {
+                                                    val pages = viewModel.getPagesForDocumentSync(doc.id)
+                                                    val folderPin = folderOfDoc?.passwordHash
+                                                    val decryptedText = pages.map { page ->
+                                                        val rawText = page.extractedText ?: ""
+                                                        if (doc.isEncrypted && folderPin != null && folderPin.isNotEmpty()) {
+                                                            try {
+                                                                EncryptionUtils.decrypt(rawText, folderPin)
+                                                            } catch (e: Exception) {
+                                                                "(Locked PHI Data)"
+                                                            }
+                                                        } else {
+                                                            rawText
+                                                        }
+                                                    }.filter { it.isNotBlank() }.joinToString("\n\n")
+
+                                                    val shareMsg = """
+                                                        📄 DOCUMENT: ${doc.name}
+                                                        📅 CREATED: ${sdf.format(Date(doc.createdAt))}
+                                                        🔒 SECURITY: ${if (doc.isEncrypted) "AES Protected PHI" else "Offline local"}
+                                                        ------------------------------------------------------------
+                                                        ${if (decryptedText.isNotBlank()) decryptedText else "No text extracted yet."}
+                                                    """.trimIndent()
+
+                                                    val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                                                        type = "text/plain"
+                                                        putExtra(Intent.EXTRA_SUBJECT, doc.name)
+                                                        putExtra(Intent.EXTRA_TEXT, shareMsg)
+                                                    }
+                                                    context.startActivity(Intent.createChooser(shareIntent, "Quick Share Document"))
+                                                    viewModel.addAuditLog("READ", "DOCUMENT", "Quick shared document '${doc.name}' OCR text from dashboard")
+                                                }
+                                            },
+                                            modifier = Modifier.size(24.dp).testTag("quick_share_doc_${doc.id}")
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Default.Share,
+                                                contentDescription = "Quick Share",
+                                                tint = MaterialTheme.colorScheme.primary,
+                                                modifier = Modifier.size(16.dp)
                                             )
                                         }
                                         IconButton(onClick = { viewModel.deleteDocument(doc) }) {

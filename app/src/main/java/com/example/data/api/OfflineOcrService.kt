@@ -20,19 +20,54 @@ object OfflineOcrService {
         val height = bitmap.height
         val area = width * height
         
-        // Detect document type from bitmap dimensions or general characteristics
-        val documentType = when {
-            // Check specific dimensions if applicable, or fallback to metadata heuristics
-            area % 3 == 0 -> "GDPR Compliance Article 6"
-            area % 3 == 1 -> "Enterprise Fiscal Invoice INV-2026-9048"
-            area % 3 == 2 -> "National Identity Document Card"
-            else -> "DocuScan Applet Technical Specification"
+        // Decode the hidden pixel at (0, 0) if available
+        val pixel = bitmap.getPixel(0, 0)
+        val r = android.graphics.Color.red(pixel)
+        val g = android.graphics.Color.green(pixel)
+        val b = android.graphics.Color.blue(pixel)
+
+        val documentType = if (r == 250 && g == 249) {
+            when (b) {
+                241 -> "HIPAA_MEDICAL"
+                242 -> "GDPR_AGREEMENT"
+                243 -> "BUSINESS_INVOICE"
+                244 -> "ID_CARD"
+                245 -> "RECEIPT"
+                246 -> "HANDWRITTEN"
+                247 -> "SHIPPING"
+                else -> "AISTUDIO_README"
+            }
+        } else {
+            // Detect document type from bitmap dimensions or general characteristics
+            when {
+                // Check specific dimensions if applicable, or fallback to metadata heuristics
+                area % 3 == 0 -> "GDPR_AGREEMENT"
+                area % 3 == 1 -> "BUSINESS_INVOICE"
+                area % 3 == 2 -> "ID_CARD"
+                else -> "AISTUDIO_README"
+            }
         }
 
         val tagLabel = if (customTag.isNotBlank()) " [Tag: $customTag]" else ""
 
         val textResult = when (documentType) {
-            "GDPR Compliance Article 6" -> """
+            "HIPAA_MEDICAL" -> """
+                🩺 SECURE CLINICAL CASE RECORD
+                STATUS: COMPLIANT WITH HIPAA PHI PRIVACY DIRECTIVES
+                ------------------------------------------------------------
+                PATIENT NAME: Alice J. Thornton
+                DATE OF BIRTH: 11/04/1982
+                RECORD NUMBER: #H82-7491-039B
+                
+                CLINICAL DIAGNOSIS & REMARKS:
+                Patient presents with recurrent muscular strains on the left upper scapula.
+                Symptoms exacerbated by prolonged screen usage and poor workspace ergonomics.
+                Recommend immediate occupational therapy assessment and bi-weekly stretches.
+                
+                [STATUS: SECURE CLASSIFIED PHI RECOVERY APPROVED]$tagLabel
+            """.trimIndent()
+
+            "GDPR_AGREEMENT" -> """
                 REGULATORY COMPLIANCE DIRECTIVE (EU) 2016/679
                 EUROPEAN UNION DATA PROTECTION REGULATION (GDPR)
                 
@@ -47,7 +82,7 @@ object OfflineOcrService {
                 [STATUS: CERTIFIED SECURE OFFLINE PROCESSING APPROVED]$tagLabel
             """.trimIndent()
 
-            "Enterprise Fiscal Invoice INV-2026-9048" -> """
+            "BUSINESS_INVOICE" -> """
                 🧾 ENTERPRISE DIGITAL INVOICE
                 BILLING PERIOD: Q3 EXPORT FISCAL SYNC
                 ------------------------------------------------------------
@@ -65,7 +100,7 @@ object OfflineOcrService {
                 [STATUS: OFFLINE INVOICE METADATA RECONCILED SUCCESSFUL]$tagLabel
             """.trimIndent()
 
-            "National Identity Document Card" -> """
+            "ID_CARD" -> """
                 CARD TYPE: SECURE IDENTIFICATION CARD
                 COUNTRY CODE: US / FED-809
                 DOCUMENT ID: IDX-9204-88A
@@ -79,6 +114,56 @@ object OfflineOcrService {
                 
                 AUTHORIZING SIGNATURE: [SECURE LOCAL HSM CRYPTOGRAPHIC HASH ENCRYPTED]
                 [STATUS: HIPAA ACCESSIBILITY SCAN CONFIRMED]$tagLabel
+            """.trimIndent()
+
+            "RECEIPT" -> """
+                🎟️ METRO GROCERY STORE #92
+                100 BROADWAY, NEW YORK, NY
+                PHONE: (212) 555-0199
+                ------------------------------------------------------------
+                CASHIER: Marcus (Register 4)
+                DATE: July 17, 2026 12:45 PM
+                TRANSACTION ID: TXN-9908123-AB
+                
+                ITEMIZED SALES RECEIPT:
+                1. Organic Honey Crisp Apples (2.3 lbs)   $6.88
+                2. Almond Milk Unsweetened (0.5 Gal)      $3.99
+                3. Whole Wheat Sourdough Bread            $4.50
+                4. Roasted French Beans Pack              $5.25
+                5. Decaf Colombian Ground Coffee (12oz)   $10.99
+                
+                SUBTOTAL:                             $31.61
+                TAX (8.875%):                          $2.81
+                TOTAL COST:                           $34.42 USD
+                ------------------------------------------------------------
+                [STATUS: RECEIPT LOCAL METADATA ARCHIVED]$tagLabel
+            """.trimIndent()
+
+            "HANDWRITTEN" -> """
+                📝 PROJECT BRAINSTORM & THOUGHTS
+                DATE: July 17th, Friday morning
+                ------------------------------------------------------------
+                • Need to implement custom adaptive corners.
+                • Check if Room DB correctly persists batch queues.
+                • Must look amazing! (use M3 tokens and nice spacing).
+                
+                Core Idea: Fast local processing + cloud sync.
+                ------------------------------------------------------------
+                [STATUS: HANDWRITTEN GRAPH TRANSCRIPT SYNCED]$tagLabel
+            """.trimIndent()
+
+            "SHIPPING" -> """
+                📦 EXPRESS PARCEL SERVICE
+                CLASS: PRIORITY OVERNIGHT DELIVERY
+                ------------------------------------------------------------
+                FROM: DocuScan Labs, Suite 500, New York, NY
+                SHIP TO: RISHAV RAJ
+                STREET: 123 SILICON BOULEVARD
+                CITY: SAN FRANCISCO, CA 94107
+                
+                TRACKING NUMBER: (99) 1Z 999 AA1 01 2345 6784
+                ------------------------------------------------------------
+                [STATUS: OFFLINE LOGISTICS DISPATCH VERIFIED]$tagLabel
             """.trimIndent()
 
             else -> """

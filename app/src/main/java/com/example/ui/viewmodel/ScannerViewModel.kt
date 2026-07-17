@@ -143,6 +143,10 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
+    suspend fun getPagesForDocumentSync(docId: Long): List<PageEntity> {
+        return repository.getPagesForDocumentSync(docId)
+    }
+
     // --- Batch Document Scanning & Captures ---
     fun addImageToBatch(bitmap: Bitmap) {
         _batchImages.update { it + bitmap }

@@ -1,5 +1,8 @@
 package com.example.ui.screens
 
+import android.content.Intent
+import androidx.compose.ui.platform.LocalContext
+import com.example.data.encryption.EncryptionUtils
 import androidx.compose.animation.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -43,6 +46,7 @@ fun FolderDetailScreen(
     onNavigateToCapture: () -> Unit,
     onNavigateToOcr: (String?) -> Unit // Pass the folder pin if it is private
 ) {
+    val context = LocalContext.current
     val folders by viewModel.folders.collectAsState()
     val allDocs by viewModel.allDocuments.collectAsState()
 
@@ -258,23 +262,74 @@ fun FolderDetailScreen(
 
                                                 Spacer(modifier = Modifier.height(6.dp))
 
-                                                // OCR Indicator
+                                                // OCR Indicator and Quick Share Row
                                                 Row(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    horizontalArrangement = Arrangement.SpaceBetween,
                                                     verticalAlignment = Alignment.CenterVertically
                                                 ) {
-                                                    Icon(
-                                                        imageVector = if (doc.hasOcr) Icons.Default.AutoAwesome else Icons.Default.HourglassEmpty,
-                                                        contentDescription = "OCR status",
-                                                        tint = if (doc.hasOcr) MaterialTheme.colorScheme.primary else Color.Gray,
-                                                        modifier = Modifier.size(12.dp)
-                                                    )
-                                                    Spacer(modifier = Modifier.width(4.dp))
-                                                    Text(
-                                                        text = if (doc.hasOcr) "OCR Available" else "No OCR yet",
-                                                        fontSize = 10.sp,
-                                                        color = if (doc.hasOcr) MaterialTheme.colorScheme.primary else Color.Gray,
-                                                        fontWeight = FontWeight.Bold
-                                                    )
+                                                    Row(
+                                                        verticalAlignment = Alignment.CenterVertically
+                                                    ) {
+                                                        Icon(
+                                                            imageVector = if (doc.hasOcr) Icons.Default.AutoAwesome else Icons.Default.HourglassEmpty,
+                                                            contentDescription = "OCR status",
+                                                            tint = if (doc.hasOcr) MaterialTheme.colorScheme.primary else Color.Gray,
+                                                            modifier = Modifier.size(12.dp)
+                                                        )
+                                                        Spacer(modifier = Modifier.width(4.dp))
+                                                        Text(
+                                                            text = if (doc.hasOcr) "OCR" else "No OCR",
+                                                            fontSize = 10.sp,
+                                                            color = if (doc.hasOcr) MaterialTheme.colorScheme.primary else Color.Gray,
+                                                            fontWeight = FontWeight.Bold
+                                                        )
+                                                    }
+
+                                                    IconButton(
+                                                        onClick = {
+                                                            coroutineScope.launch {
+                                                                val pages = viewModel.getPagesForDocumentSync(doc.id)
+                                                                val folderPin = currentFolder.passwordHash
+                                                                val decryptedText = pages.map { page ->
+                                                                    val rawText = page.extractedText ?: ""
+                                                                    if (doc.isEncrypted && folderPin != null && folderPin.isNotEmpty()) {
+                                                                        try {
+                                                                            EncryptionUtils.decrypt(rawText, folderPin)
+                                                                        } catch (e: Exception) {
+                                                                            "(Locked PHI Data)"
+                                                                        }
+                                                                    } else {
+                                                                        rawText
+                                                                    }
+                                                                }.filter { it.isNotBlank() }.joinToString("\n\n")
+
+                                                                val shareMsg = """
+                                                                    📄 DOCUMENT: ${doc.name}
+                                                                    📅 CREATED: ${sdf.format(Date(doc.createdAt))}
+                                                                    🔒 SECURITY: ${if (doc.isEncrypted) "AES Protected PHI" else "Offline local"}
+                                                                    ------------------------------------------------------------
+                                                                    ${if (decryptedText.isNotBlank()) decryptedText else "No text extracted yet."}
+                                                                """.trimIndent()
+
+                                                                val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                                                                    type = "text/plain"
+                                                                    putExtra(Intent.EXTRA_SUBJECT, doc.name)
+                                                                    putExtra(Intent.EXTRA_TEXT, shareMsg)
+                                                                }
+                                                                context.startActivity(Intent.createChooser(shareIntent, "Quick Share Document"))
+                                                                viewModel.addAuditLog("READ", "DOCUMENT", "Quick shared document '${doc.name}' OCR text")
+                                                            }
+                                                        },
+                                                        modifier = Modifier.size(24.dp).testTag("quick_share_doc_${doc.id}")
+                                                    ) {
+                                                        Icon(
+                                                            imageVector = Icons.Default.Share,
+                                                            contentDescription = "Quick Share",
+                                                            tint = MaterialTheme.colorScheme.primary,
+                                                            modifier = Modifier.size(14.dp)
+                                                        )
+                                                    }
                                                 }
                                             }
                                         }

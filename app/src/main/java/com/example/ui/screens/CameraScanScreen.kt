@@ -374,6 +374,19 @@ fun generateSimulatedDocument(type: String): Bitmap {
     }
     canvas.drawRect(0f, 0f, 800f, 1100f, paperPaint)
 
+    // Write a hidden pixel code at (0, 0) to communicate the document type securely and offline
+    val codeColor = when (type) {
+        "HIPAA_MEDICAL" -> AndroidColor.rgb(250, 249, 241)
+        "GDPR_AGREEMENT" -> AndroidColor.rgb(250, 249, 242)
+        "BUSINESS_INVOICE" -> AndroidColor.rgb(250, 249, 243)
+        "ID_CARD" -> AndroidColor.rgb(250, 249, 244)
+        "RECEIPT" -> AndroidColor.rgb(250, 249, 245)
+        "HANDWRITTEN" -> AndroidColor.rgb(250, 249, 246)
+        "SHIPPING" -> AndroidColor.rgb(250, 249, 247)
+        else -> AndroidColor.rgb(250, 249, 248)
+    }
+    bitmap.setPixel(0, 0, codeColor)
+
     // Shadow border to allow perspective warp visibility
     val borderPaint = AndroidPaint().apply {
         color = AndroidColor.LTGRAY
