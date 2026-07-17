@@ -228,7 +228,7 @@ fun OcrExportScreen(
                                         modifier = Modifier.fillMaxWidth(),
                                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                                     ) {
-                                        // Cropped/Warped Image Preview
+                                        // Cropped/Warped Image Preview with live Filter Correction
                                         Box(
                                             modifier = Modifier
                                                 .size(110.dp)
@@ -236,18 +236,22 @@ fun OcrExportScreen(
                                                 .border(1.dp, Color(0xFFE2E8F0), RoundedCornerShape(16.dp))
                                                 .background(Color(0xFFF1F5F9))
                                         ) {
-                                            val bitmap = page.processedImagePath?.let { viewModel.loadBitmapFromFile(it) } 
+                                            val rawBitmap = page.processedImagePath?.let { viewModel.loadBitmapFromFile(it) } 
                                                 ?: viewModel.loadBitmapFromFile(page.originalImagePath)
+
+                                            val bitmap = remember(rawBitmap, page.filterType) {
+                                                rawBitmap?.let { com.example.ui.components.DocumentFilterProcessor.applyFilter(it, page.filterType) }
+                                            }
 
                                             if (bitmap != null) {
                                                 Image(
                                                     bitmap = bitmap.asImageBitmap(),
-                                                    contentDescription = "Page Warp",
+                                                    contentDescription = "Page Warp (with ${page.filterType} correction)",
                                                     modifier = Modifier.fillMaxSize()
                                                 )
                                             } else {
                                                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                                                    Icon(Icons.Default.BrokenImage, contentDescription = "Load Error", tint = Color.Gray)
+                                                    Icon(imageVector = Icons.Default.BrokenImage, contentDescription = "Load Error", tint = Color.Gray)
                                                 }
                                             }
                                         }
@@ -316,6 +320,45 @@ fun OcrExportScreen(
                                                     modifier = Modifier.fillMaxWidth()
                                                 )
                                             }
+                                        }
+                                    }
+
+                                    Spacer(modifier = Modifier.height(12.dp))
+                                    Text(
+                                        text = "Document Scan Enhancement (Correct Over-Dark / Over-Light)",
+                                        fontSize = 11.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color.Gray
+                                    )
+                                    Spacer(modifier = Modifier.height(6.dp))
+                                    androidx.compose.foundation.lazy.LazyRow(
+                                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                        modifier = Modifier.fillMaxWidth()
+                                    ) {
+                                        val filterOptions = listOf(
+                                            "ORIGINAL" to "Original",
+                                            "LIGHTEN" to "💡 Lighten (Over-Dark)",
+                                            "DARKEN" to "🕶️ Darken (Over-Light)",
+                                            "HIGH_CONTRAST" to "⚡ Contrast Boost",
+                                            "B_W" to "📰 Crisp B&W",
+                                            "GREYSCALE" to "Grey"
+                                        )
+                                        items(filterOptions) { (filter, label) ->
+                                            val isSelected = page.filterType.uppercase() == filter
+                                            FilterChip(
+                                                selected = isSelected,
+                                                onClick = {
+                                                    viewModel.updatePageFilter(page, filter)
+                                                },
+                                                label = { Text(label, fontSize = 11.sp, fontWeight = FontWeight.Bold) },
+                                                colors = FilterChipDefaults.filterChipColors(
+                                                    selectedContainerColor = MaterialTheme.colorScheme.primary,
+                                                    selectedLabelColor = Color.White,
+                                                    containerColor = Color(0xFFF1F5F9),
+                                                    labelColor = Color.DarkGray
+                                                ),
+                                                modifier = Modifier.testTag("filter_chip_${page.id}_$filter")
+                                            )
                                         }
                                     }
                                 }

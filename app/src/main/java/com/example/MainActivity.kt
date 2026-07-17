@@ -18,15 +18,18 @@ import androidx.navigation.navArgument
 import com.example.ui.screens.*
 import com.example.ui.theme.MyApplicationTheme
 import com.example.ui.viewmodel.ScannerViewModel
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            val viewModel: ScannerViewModel = viewModel()
+
             MyApplicationTheme {
                 val navController = rememberNavController()
-                val viewModel: ScannerViewModel = viewModel()
 
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     NavHost(

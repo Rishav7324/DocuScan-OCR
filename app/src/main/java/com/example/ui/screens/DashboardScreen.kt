@@ -66,10 +66,10 @@ fun DashboardScreen(
             containerColor = Color.Transparent,
             topBar = {
                 TopAppBar(
-                    title = { Text("DocuScan OCR Sandbox", fontWeight = FontWeight.ExtraBold, color = Color.Black) },
+                    title = { Text("DocuScan OCR Sandbox", fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface) },
                     colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = Color.White,
-                        titleContentColor = Color.Black
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        titleContentColor = MaterialTheme.colorScheme.onSurface
                     ),
                     actions = {
                         IconButton(onClick = onNavigateToCompliance, modifier = Modifier.testTag("compliance_nav_button")) {
@@ -86,7 +86,7 @@ fun DashboardScreen(
                     onClick = { onNavigateToCapture(0L) }, // 0L is Root Folder
                     modifier = Modifier.testTag("dashboard_scan_fab"),
                     containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = Color.White,
+                    contentColor = MaterialTheme.colorScheme.onPrimary,
                     shape = RoundedCornerShape(16.dp)
                 ) {
                     Icon(imageVector = Icons.Default.DocumentScanner, contentDescription = "Scan Document")
@@ -119,14 +119,14 @@ fun DashboardScreen(
                             ) {
                                 Text(
                                     "Advanced Mobile OCR Engine",
-                                    color = Color.Black,
+                                    color = MaterialTheme.colorScheme.onPrimary,
                                     fontSize = 20.sp,
                                     fontWeight = FontWeight.Black
                                 )
                                 Spacer(modifier = Modifier.height(6.dp))
                                 Text(
                                     "Capture physical files, extract structured text using Gemini, and secure documents offline under HIPAA standards.",
-                                    color = Color.Black.copy(alpha = 0.85f),
+                                    color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.85f),
                                     fontSize = 12.sp,
                                     lineHeight = 18.sp,
                                     fontWeight = FontWeight.Medium
@@ -144,12 +144,12 @@ fun DashboardScreen(
                         leadingIcon = { Icon(Icons.Default.Search, contentDescription = "Search icon", tint = MaterialTheme.colorScheme.primary) },
                         singleLine = true,
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedContainerColor = Color.White,
-                            unfocusedContainerColor = Color(0xFFF8FAFC),
+                            focusedContainerColor = MaterialTheme.colorScheme.surface,
+                            unfocusedContainerColor = MaterialTheme.colorScheme.surfaceVariant,
                             focusedBorderColor = MaterialTheme.colorScheme.primary,
-                            unfocusedBorderColor = Color(0xFFE2E8F0),
-                            focusedTextColor = Color.Black,
-                            unfocusedTextColor = Color.Black
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                            focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                            unfocusedTextColor = MaterialTheme.colorScheme.onSurface
                         ),
                         shape = RoundedCornerShape(16.dp),
                         modifier = Modifier

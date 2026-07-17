@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Crop
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.RotateRight
@@ -105,7 +106,7 @@ fun CropCorrectionScreen(
                             horizontalArrangement = Arrangement.SpaceEvenly,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            // Rotate 90 Degrees button
+                             // Rotate 90 Degrees button
                             Button(
                                 onClick = {
                                     val matrix = Matrix().apply { postRotate(90f) }
@@ -125,6 +126,19 @@ fun CropCorrectionScreen(
                                 Icon(imageVector = Icons.Default.RotateRight, contentDescription = "Rotate", tint = Color.Black)
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text("Rotate 90°", color = Color.Black, fontWeight = FontWeight.Bold)
+                            }
+
+                            // Auto-detect corners button
+                            Button(
+                                onClick = {
+                                    viewModel.runAutoCornerDetection()
+                                },
+                                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE2E8F0)),
+                                modifier = Modifier.testTag("auto_detect_corners_button")
+                            ) {
+                                Icon(imageVector = Icons.Default.AutoAwesome, contentDescription = "Auto Detect", tint = Color.Black)
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text("Auto Detect", color = Color.Black, fontWeight = FontWeight.Bold)
                             }
 
                             // Correct Perspective Action Button

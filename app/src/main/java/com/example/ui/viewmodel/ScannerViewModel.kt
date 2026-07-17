@@ -165,7 +165,21 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
     fun selectCropIndex(index: Int) {
         if (index in _batchImages.value.indices) {
             _currentCropIndex.value = index
-            _currentCropPoints.value = CropPoints() // Reset to default প্রস্তাবিত points
+            val bitmap = _batchImages.value[index]
+            _currentCropPoints.value = com.example.ui.components.AutoCornerDetector.detectDocumentCorners(bitmap)
+        }
+    }
+
+    fun runAutoCornerDetection() {
+        val index = _currentCropIndex.value
+        if (index in _batchImages.value.indices) {
+            val bitmap = _batchImages.value[index]
+            _currentCropPoints.value = com.example.ui.components.AutoCornerDetector.detectDocumentCorners(bitmap)
+            addAuditLog(
+                action = "UPDATE",
+                resourceType = "PAGE",
+                details = "Executed advanced heuristic auto corner detection for batch index $index"
+            )
         }
     }
 
@@ -258,11 +272,15 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
     // --- OCR & Text Processing ---
     fun performOcrOnPage(page: PageEntity, prompt: String, folderPin: String? = null) {
         viewModelScope.launch {
-            val bitmap = loadBitmapFromFile(page.processedImagePath ?: page.originalImagePath) ?: return@launch
+            val rawBitmap = loadBitmapFromFile(page.processedImagePath ?: page.originalImagePath) ?: return@launch
+            
+            // Apply the document correction filter to the bitmap before running OCR for optimal results!
+            val bitmap = com.example.ui.components.DocumentFilterProcessor.applyFilter(rawBitmap, page.filterType)
+
             addAuditLog(
                 action = "READ",
                 resourceType = "PAGE",
-                details = "Triggering OCR content query for page ID: ${page.id}"
+                details = "Triggering OCR content query for page ID: ${page.id} (applied filter: ${page.filterType})"
             )
             
             val ocrText = GeminiOcrService.performOcr(bitmap, prompt)
@@ -289,6 +307,19 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
                 action = "UPDATE",
                 resourceType = "PAGE",
                 details = "OCR Text successfully extracted and updated ${if (folderPin != null) "with AES-GCM encryption" else "as clear text"}"
+            )
+            loadPagesForActiveDocument()
+        }
+    }
+
+    fun updatePageFilter(page: PageEntity, filterType: String) {
+        viewModelScope.launch {
+            val updatedPage = page.copy(filterType = filterType)
+            repository.updatePage(updatedPage)
+            addAuditLog(
+                action = "UPDATE",
+                resourceType = "PAGE",
+                details = "Changed document correction filter on page ${page.pageNumber} to $filterType"
             )
             loadPagesForActiveDocument()
         }

@@ -202,7 +202,11 @@ fun CameraScanScreen(
                             "HIPAA_MEDICAL" to "🩺 Medical Case File",
                             "GDPR_AGREEMENT" to "⚖️ GDPR Privacy Pack",
                             "BUSINESS_INVOICE" to "🧾 Business Invoice",
-                            "AISTUDIO_README" to "📂 Workspace Readme"
+                            "AISTUDIO_README" to "📂 Workspace Readme",
+                            "ID_CARD" to "💳 ID Card / License",
+                            "RECEIPT" to "🎟️ Sales Receipt",
+                            "HANDWRITTEN" to "📝 Creative Note",
+                            "SHIPPING" to "📦 Shipping Label"
                         ).forEach { (type, label) ->
                             val selected = selectedSimType == type
                             FilterChip(
@@ -446,6 +450,121 @@ fun generateSimulatedDocument(type: String): Bitmap {
             canvas.drawText("3. End-to-End Local Cryptographic HSM Setup (HIPAA Kit) - $120.00", 50f, 420f, bodyPaint)
 
             canvas.drawText("TOTAL AMOUNT DUE: $180.00 USD", 50f, 520f, titlePaint.apply { textSize = 24f })
+        }
+        "ID_CARD" -> {
+            val cardPaint = AndroidPaint().apply {
+                color = AndroidColor.rgb(230, 242, 255)
+                style = AndroidPaint.Style.FILL
+            }
+            canvas.drawRoundRect(80f, 150f, 720f, 550f, 20f, 20f, cardPaint)
+            
+            val cardBorder = AndroidPaint().apply {
+                color = AndroidColor.rgb(51, 102, 204)
+                style = AndroidPaint.Style.STROKE
+                strokeWidth = 4f
+            }
+            canvas.drawRoundRect(80f, 150f, 720f, 550f, 20f, 20f, cardBorder)
+
+            val headerPaint = AndroidPaint().apply {
+                color = AndroidColor.rgb(0, 51, 153)
+                textSize = 24f
+                isFakeBoldText = true
+                isAntiAlias = true
+            }
+            canvas.drawText("💳 DRIVER LICENSE & STATE CARD", 110f, 200f, headerPaint)
+            canvas.drawLine(100f, 220f, 700f, 220f, cardBorder)
+
+            val photoPaint = AndroidPaint().apply {
+                color = AndroidColor.GRAY
+                style = AndroidPaint.Style.FILL
+            }
+            canvas.drawRect(120f, 250f, 260f, 420f, photoPaint)
+            canvas.drawText("PHOTO", 155f, 340f, captionPaint.apply { color = AndroidColor.WHITE })
+
+            canvas.drawText("LAST NAME: SMITH", 300f, 275f, bodyPaint)
+            canvas.drawText("FIRST NAME: JOHN ADAMS", 300f, 310f, bodyPaint)
+            canvas.drawText("LIC NO: DL-2918374-B3", 300f, 345f, bodyPaint)
+            canvas.drawText("CLASS: C STANDARD", 300f, 380f, bodyPaint)
+            canvas.drawText("EXPIRES: 09/24/2030", 300f, 415f, bodyPaint)
+            
+            canvas.drawText("FEDERAL ID AND HIPAA COMPLIANT PROOF", 100f, 500f, captionPaint)
+        }
+        "RECEIPT" -> {
+            val receiptTitlePaint = AndroidPaint().apply {
+                color = AndroidColor.BLACK
+                textSize = 28f
+                isFakeBoldText = true
+                isAntiAlias = true
+            }
+            canvas.drawText("🎟️ METRO GROCERY STORE #92", 200f, 80f, receiptTitlePaint)
+            canvas.drawText("100 BROADWAY, NEW YORK, NY", 250f, 110f, captionPaint)
+            canvas.drawText("PHONE: (212) 555-0199", 290f, 130f, captionPaint)
+            canvas.drawLine(80f, 160f, 720f, 160f, titlePaint)
+
+            canvas.drawText("CASHIER: Marcus (Register 4)", 80f, 200f, bodyPaint)
+            canvas.drawText("DATE: July 17, 2026 12:45 PM", 80f, 230f, bodyPaint)
+            canvas.drawText("TRANSACTION ID: TXN-9908123-AB", 80f, 260f, bodyPaint)
+            canvas.drawLine(80f, 280f, 720f, 280f, captionPaint)
+
+            canvas.drawText("1. Organic Honey Crisp Apples (2.3 lbs)   $6.88", 80f, 320f, bodyPaint)
+            canvas.drawText("2. Almond Milk Unsweetened (0.5 Gal)      $3.99", 80f, 350f, bodyPaint)
+            canvas.drawText("3. Whole Wheat Sourdough Bread            $4.50", 80f, 380f, bodyPaint)
+            canvas.drawText("4. Roasted French Beans Pack              $5.25", 80f, 410f, bodyPaint)
+            canvas.drawText("5. Decaf Colombian Ground Coffee (12oz)   $10.99", 80f, 440f, bodyPaint)
+
+            canvas.drawLine(80f, 480f, 720f, 480f, captionPaint)
+            canvas.drawText("SUBTOTAL:                             $31.61", 80f, 520f, bodyPaint)
+            canvas.drawText("TAX (8.875%):                          $2.81", 80f, 550f, bodyPaint)
+            canvas.drawText("TOTAL COST:                           $34.42", 80f, 590f, titlePaint.apply { textSize = 22f })
+
+            canvas.drawText("THANK YOU FOR SHOPPING WITH METRO!", 200f, 1000f, captionPaint)
+        }
+        "HANDWRITTEN" -> {
+            val penPaint = AndroidPaint().apply {
+                color = AndroidColor.rgb(0, 51, 204)
+                textSize = 24f
+                isAntiAlias = true
+            }
+            val scribblesPaint = AndroidPaint().apply {
+                color = AndroidColor.rgb(0, 77, 255)
+                strokeWidth = 3f
+                style = AndroidPaint.Style.STROKE
+            }
+            canvas.drawText("📝 PROJECT BRAINSTORM & THOUGHTS", 50f, 80f, penPaint.apply { isFakeBoldText = true })
+            canvas.drawText("Date: July 17th, Friday morning", 50f, 115f, penPaint.apply { isFakeBoldText = false })
+            canvas.drawLine(40f, 130f, 720f, 135f, scribblesPaint)
+
+            canvas.drawText("- Need to implement custom adaptive corners", 60f, 200f, penPaint)
+            canvas.drawText("- Check if Room DB correctly persists batch queues", 60f, 240f, penPaint)
+            canvas.drawText("- Must look amazing! (use M3 tokens and nice spacing)", 60f, 280f, penPaint)
+            
+            canvas.drawCircle(400f, 500f, 80f, scribblesPaint)
+            canvas.drawLine(360f, 540f, 440f, 540f, scribblesPaint)
+            canvas.drawLine(370f, 560f, 430f, 560f, scribblesPaint)
+            canvas.drawText("💡 Core Idea: Fast local processing + cloud sync", 180f, 650f, penPaint)
+        }
+        "SHIPPING" -> {
+            canvas.drawText("📦 EXPRESS PARCEL SERVICE", 50f, 80f, titlePaint)
+            canvas.drawText("CLASS: PRIORITY OVERNIGHT DELIVERY", 50f, 110f, captionPaint)
+            canvas.drawLine(50f, 130f, 750f, 130f, titlePaint)
+
+            canvas.drawText("FROM: DocuScan Labs, Suite 500, New York, NY", 50f, 180f, bodyPaint)
+            canvas.drawText("SHIP TO: RISHAV RAJ", 50f, 230f, titlePaint.apply { textSize = 22f })
+            canvas.drawText("STREET: 123 SILICON BOULEVARD", 50f, 265f, bodyPaint)
+            canvas.drawText("CITY: SAN FRANCISCO, CA 94107", 50f, 300f, bodyPaint)
+            canvas.drawLine(50f, 350f, 750f, 350f, titlePaint)
+
+            val barcodePaint = AndroidPaint().apply {
+                color = AndroidColor.BLACK
+                style = AndroidPaint.Style.FILL
+            }
+            var barX = 100f
+            while (barX < 700f) {
+                val barWidth = if (Math.random() > 0.5) 8f else 18f
+                canvas.drawRect(barX, 400f, barX + barWidth, 520f, barcodePaint)
+                barX += barWidth + (if (Math.random() > 0.4) 6f else 12f)
+            }
+            canvas.drawText("TRACKING NUMBER: (99) 1Z 999 AA1 01 2345 6784", 180f, 550f, captionPaint)
         }
         else -> {
             canvas.drawText("📂 GOOGLE AI STUDIO APPLET SPECIFICATION", 50f, 80f, titlePaint)
