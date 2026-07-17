@@ -56,6 +56,9 @@ class MainActivity : ComponentActivity() {
                                 onNavigateToOcr = { pin ->
                                     val arg = pin ?: "none"
                                     navController.navigate("ocr_export/$arg")
+                                },
+                                onNavigateToHelpAndLegal = {
+                                    navController.navigate("help_legal")
                                 }
                             )
                         }
@@ -142,6 +145,13 @@ class MainActivity : ComponentActivity() {
                         composable("compliance") {
                             ComplianceScreen(
                                 viewModel = viewModel,
+                                onNavigateBack = { navController.popBackStack() }
+                            )
+                        }
+
+                        // 8. Integration Help and Legal Center
+                        composable("help_legal") {
+                            HelpAndLegalScreen(
                                 onNavigateBack = { navController.popBackStack() }
                             )
                         }

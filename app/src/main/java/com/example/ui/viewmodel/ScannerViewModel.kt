@@ -8,7 +8,7 @@ import android.net.Uri
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.data.api.GeminiOcrService
+import com.example.data.api.OfflineOcrService
 import com.example.data.database.*
 import com.example.data.encryption.EncryptionUtils
 import com.example.data.model.CloudSyncConfig
@@ -280,10 +280,10 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
             addAuditLog(
                 action = "READ",
                 resourceType = "PAGE",
-                details = "Triggering OCR content query for page ID: ${page.id} (applied filter: ${page.filterType})"
+                details = "Triggering local offline OCR content query for page ID: ${page.id} (applied filter: ${page.filterType})"
             )
             
-            val ocrText = GeminiOcrService.performOcr(bitmap, prompt)
+            val ocrText = OfflineOcrService.performOfflineOcr(bitmap, prompt)
             
             // Encrypt if folder is private
             val finalizedText = if (folderPin != null && folderPin.isNotEmpty()) {
@@ -382,8 +382,10 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
             r2SecretKey = sharedPrefs.getString("r2_secret_key", "") ?: "",
             googleDriveEnabled = sharedPrefs.getBoolean("drive_enabled", false),
             googleDriveAccount = sharedPrefs.getString("drive_account", "") ?: "",
+            googleDriveToken = sharedPrefs.getString("drive_token", "") ?: "",
             dropboxEnabled = sharedPrefs.getBoolean("dropbox_enabled", false),
             dropboxAccount = sharedPrefs.getString("dropbox_account", "") ?: "",
+            dropboxToken = sharedPrefs.getString("dropbox_token", "") ?: "",
             autoBackup = sharedPrefs.getBoolean("auto_backup", true),
             wifiOnly = sharedPrefs.getBoolean("wifi_only", false),
             lastSyncTime = sharedPrefs.getLong("last_sync_time", 0L)
@@ -401,8 +403,10 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
             .putString("r2_secret_key", config.r2SecretKey)
             .putBoolean("drive_enabled", config.googleDriveEnabled)
             .putString("drive_account", config.googleDriveAccount)
+            .putString("drive_token", config.googleDriveToken)
             .putBoolean("dropbox_enabled", config.dropboxEnabled)
             .putString("dropbox_account", config.dropboxAccount)
+            .putString("dropbox_token", config.dropboxToken)
             .putBoolean("auto_backup", config.autoBackup)
             .putBoolean("wifi_only", config.wifiOnly)
             .putLong("last_sync_time", config.lastSyncTime)
@@ -411,7 +415,10 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
         addAuditLog(
             action = "UPDATE",
             resourceType = "APP",
-            details = "Updated cloud backup properties. Cloudflare R2 backup is ${if (config.r2Enabled) "ENABLED" else "DISABLED"}"
+            details = "Updated cloud backup properties. Integrations configured for: " +
+                    "${if (config.r2Enabled) "Cloudflare R2, " else ""}" +
+                    "${if (config.googleDriveEnabled) "Google Drive, " else ""}" +
+                    "${if (config.dropboxEnabled) "Dropbox" else ""}"
         )
     }
 
@@ -423,26 +430,98 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
                 resourceType = "APP",
                 details = "Initiating full cryptographic cloud synchronization process..."
             )
-            
-            // Simulating real cloud connection delays
-            withContext(Dispatchers.IO) {
-                Thread.sleep(1500)
-            }
 
-            // Sync all unsynced documents
             val unsynced = repository.getUnsyncedDocuments()
-            unsynced.forEach { doc ->
-                repository.updateDocument(doc.copy(isSynced = true))
+            val config = _syncConfig.value
+            var uploadCount = 0
+            var errorCount = 0
+            val sbDetails = StringBuilder()
+
+            withContext(Dispatchers.IO) {
+                unsynced.forEach { doc ->
+                    val pages = repository.getPagesForDocumentSync(doc.id)
+                    pages.forEach { page ->
+                        val imagePath = page.processedImagePath ?: page.originalImagePath
+                        if (imagePath.isNotEmpty()) {
+                            val file = File(imagePath)
+                            if (file.exists()) {
+                                val fileBytes = file.readBytes()
+                                val fileName = "docuscan_${doc.id}_page_${page.pageNumber}.jpg"
+
+                                // 1. Google Drive Integration
+                                if (config.googleDriveEnabled) {
+                                    val result = com.example.data.api.CloudSyncIntegrator.uploadToGoogleDrive(
+                                        fileBytes = fileBytes,
+                                        fileName = fileName,
+                                        mimeType = "image/jpeg",
+                                        accessToken = config.googleDriveToken
+                                    )
+                                    if (result.isSuccess) {
+                                        uploadCount++
+                                        sbDetails.append("Google Drive: Uploaded $fileName successfully\n")
+                                    } else {
+                                        errorCount++
+                                        sbDetails.append("Google Drive Error on $fileName: ${result.exceptionOrNull()?.message}\n")
+                                    }
+                                }
+
+                                // 2. Dropbox Integration
+                                if (config.dropboxEnabled) {
+                                    val result = com.example.data.api.CloudSyncIntegrator.uploadToDropbox(
+                                        fileBytes = fileBytes,
+                                        fileName = fileName,
+                                        accessToken = config.dropboxToken
+                                    )
+                                    if (result.isSuccess) {
+                                        uploadCount++
+                                        sbDetails.append("Dropbox: Uploaded $fileName successfully\n")
+                                    } else {
+                                        errorCount++
+                                        sbDetails.append("Dropbox Error on $fileName: ${result.exceptionOrNull()?.message}\n")
+                                    }
+                                }
+
+                                // 3. Cloudflare R2 Integration
+                                if (config.r2Enabled) {
+                                    val result = com.example.data.api.CloudSyncIntegrator.uploadToCloudflareR2(
+                                        fileBytes = fileBytes,
+                                        fileName = fileName,
+                                        bucket = config.r2Bucket,
+                                        endpointUrl = config.r2Endpoint,
+                                        accessKey = config.r2AccessKey,
+                                        secretKey = config.r2SecretKey
+                                    )
+                                    if (result.isSuccess) {
+                                        uploadCount++
+                                        sbDetails.append("Cloudflare R2: Uploaded $fileName successfully\n")
+                                    } else {
+                                        errorCount++
+                                        sbDetails.append("Cloudflare R2 Error on $fileName: ${result.exceptionOrNull()?.message}\n")
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    // Mark document as synced locally
+                    repository.updateDocument(doc.copy(isSynced = true))
+                }
             }
 
             val updatedConfig = _syncConfig.value.copy(lastSyncTime = System.currentTimeMillis())
             updateSyncConfig(updatedConfig)
 
             _isSyncing.value = false
+            
+            val logMessage = if (uploadCount > 0 || errorCount > 0) {
+                "Sync completed with $uploadCount uploads and $errorCount failures.\nDetails:\n$sbDetails"
+            } else {
+                "Sync completed. No pending documents found to upload."
+            }
+
             addAuditLog(
                 action = "SYNC",
                 resourceType = "APP",
-                details = "Completed sync. Cloudflare R2 bucket synchronized successfully. ${unsynced.size} documents uploaded securely."
+                details = logMessage
             )
         }
     }

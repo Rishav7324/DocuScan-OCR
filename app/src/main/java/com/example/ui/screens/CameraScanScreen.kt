@@ -446,7 +446,7 @@ fun generateSimulatedDocument(type: String): Bitmap {
 
             canvas.drawText("ITEM DESCRIPTION", 50f, 320f, titlePaint.apply { textSize = 18f })
             canvas.drawText("1. Cloudflare R2 High-Speed Storage (2TB Standard Allocation) - $15.00", 50f, 360f, bodyPaint)
-            canvas.drawText("2. Gemini OCR High-Throughput Processing Engine Tier - $45.00", 50f, 390f, bodyPaint)
+            canvas.drawText("2. Local OCR Layout Processing Engine Tier - $45.00", 50f, 390f, bodyPaint)
             canvas.drawText("3. End-to-End Local Cryptographic HSM Setup (HIPAA Kit) - $120.00", 50f, 420f, bodyPaint)
 
             canvas.drawText("TOTAL AMOUNT DUE: $180.00 USD", 50f, 520f, titlePaint.apply { textSize = 24f })
@@ -573,7 +573,7 @@ fun generateSimulatedDocument(type: String): Bitmap {
 
             canvas.drawText("This DocuScan OCR scanner applet is developed to run natively in", 50f, 180f, bodyPaint)
             canvas.drawText("a secure sandboxed browser virtual space. It leverages Kotlin, Jetpack", 50f, 210f, bodyPaint)
-            canvas.drawText("Compose, Room DB, and direct Gemini API REST interfaces for optimal stability.", 50f, 240f, bodyPaint)
+            canvas.drawText("Compose, Room DB, and offline local layout interfaces for optimal stability.", 50f, 240f, bodyPaint)
 
             canvas.drawText("The local Room persistence model manages files and directories seamlessly.", 50f, 280f, bodyPaint)
             canvas.drawText("Cloudflare R2 provides unified low-cost object cloud synchronization.", 50f, 310f, bodyPaint)

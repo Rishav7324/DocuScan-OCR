@@ -39,7 +39,8 @@ fun DashboardScreen(
     onNavigateToCapture: (Long) -> Unit,
     onNavigateToSync: () -> Unit,
     onNavigateToCompliance: () -> Unit,
-    onNavigateToOcr: (String?) -> Unit
+    onNavigateToOcr: (String?) -> Unit,
+    onNavigateToHelpAndLegal: () -> Unit
 ) {
     val folders by viewModel.folders.collectAsState()
     val allDocs by viewModel.allDocuments.collectAsState()
@@ -72,6 +73,9 @@ fun DashboardScreen(
                         titleContentColor = MaterialTheme.colorScheme.onSurface
                     ),
                     actions = {
+                        IconButton(onClick = onNavigateToHelpAndLegal, modifier = Modifier.testTag("help_legal_nav_button")) {
+                            Icon(imageVector = Icons.Default.Info, contentDescription = "Help & Legal", tint = MaterialTheme.colorScheme.primary)
+                        }
                         IconButton(onClick = onNavigateToCompliance, modifier = Modifier.testTag("compliance_nav_button")) {
                             Icon(imageVector = Icons.Default.HealthAndSafety, contentDescription = "Compliance", tint = MaterialTheme.colorScheme.primary)
                         }
@@ -125,7 +129,7 @@ fun DashboardScreen(
                                 )
                                 Spacer(modifier = Modifier.height(6.dp))
                                 Text(
-                                    "Capture physical files, extract structured text using Gemini, and secure documents offline under HIPAA standards.",
+                                    "Capture physical files, extract structured text offline, and secure documents under HIPAA standards.",
                                     color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.85f),
                                     fontSize = 12.sp,
                                     lineHeight = 18.sp,
@@ -385,7 +389,7 @@ fun DashboardScreen(
                                         }
                                         if (doc.hasOcr) {
                                             Icon(
-                                                imageVector = Icons.Default.AutoAwesome,
+                                                imageVector = Icons.Default.TextSnippet,
                                                 contentDescription = "Ocr Present",
                                                 tint = MaterialTheme.colorScheme.primary,
                                                 modifier = Modifier.size(18.dp)

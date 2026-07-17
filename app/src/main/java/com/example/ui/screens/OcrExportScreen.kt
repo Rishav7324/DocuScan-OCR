@@ -187,7 +187,7 @@ fun OcrExportScreen(
                                 modifier = Modifier.fillMaxWidth(),
                                 cornerRadius = 20.dp
                             ) {
-                                Text("Advanced OCR Prompt (Gemini AI)", fontWeight = FontWeight.Black, style = MaterialTheme.typography.labelLarge, color = Color.Black)
+                                Text("Offline Metadata Indexing Guidelines", fontWeight = FontWeight.Black, style = MaterialTheme.typography.labelLarge, color = Color.Black)
                                 Spacer(modifier = Modifier.height(6.dp))
                                 OutlinedTextField(
                                     value = customOcrPrompt,
@@ -262,7 +262,7 @@ fun OcrExportScreen(
                                         ) {
                                             if (page.extractedText == null) {
                                                 Text(
-                                                    "Text has not been extracted yet. Select below to run advanced Gemini API OCR.",
+                                                    "Text has not been extracted yet. Select below to run secure on-device local OCR.",
                                                     color = Color.Gray,
                                                     style = MaterialTheme.typography.bodySmall,
                                                     fontWeight = FontWeight.Medium
@@ -284,7 +284,7 @@ fun OcrExportScreen(
                                                     if (selectedPageIdForOcr == page.id && isOcrRunning) {
                                                         CircularProgressIndicator(modifier = Modifier.size(16.dp), color = Color.Black, strokeWidth = 2.dp)
                                                     } else {
-                                                        Icon(imageVector = Icons.Default.AutoAwesome, contentDescription = "Gemini", modifier = Modifier.size(16.dp), tint = Color.Black)
+                                                        Icon(imageVector = Icons.Default.DocumentScanner, contentDescription = "Local OCR", modifier = Modifier.size(16.dp), tint = Color.Black)
                                                         Spacer(modifier = Modifier.width(4.dp))
                                                         Text("Extract Text", fontWeight = FontWeight.Bold)
                                                     }

@@ -9,11 +9,14 @@ data class CloudSyncConfig(
     
     val googleDriveEnabled: Boolean = false,
     val googleDriveAccount: String = "",
+    val googleDriveToken: String = "",
     
     val dropboxEnabled: Boolean = false,
     val dropboxAccount: String = "",
+    val dropboxToken: String = "",
     
     val autoBackup: Boolean = true,
     val wifiOnly: Boolean = false,
     val lastSyncTime: Long = 0L
 )
+
