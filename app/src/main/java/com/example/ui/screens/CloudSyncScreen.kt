@@ -53,8 +53,6 @@ fun CloudSyncScreen(
             result.onSuccess { res ->
                 when (res.provider) {
                     OAuthManager.Provider.GOOGLE.key -> {
-                        driveToken = res.accessToken
-                        driveAccount = res.account ?: "Connected"
                         viewModel.updateSyncConfig(syncConfig.copy(
                             googleDriveEnabled = true,
                             googleDriveAccount = res.account ?: "Connected",
@@ -63,8 +61,6 @@ fun CloudSyncScreen(
                         ))
                     }
                     OAuthManager.Provider.DROPBOX.key -> {
-                        dropboxToken = res.accessToken
-                        dropboxAccount = res.account ?: "Connected"
                         viewModel.updateSyncConfig(syncConfig.copy(
                             dropboxEnabled = true,
                             dropboxAccount = res.account ?: "Connected",

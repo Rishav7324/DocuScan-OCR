@@ -2,6 +2,7 @@ package com.example.data.api
 
 import android.net.Uri
 import android.util.Base64
+import com.example.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
