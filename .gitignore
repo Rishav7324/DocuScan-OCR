@@ -20,3 +20,6 @@ debug.keystore
 *.p12
 *.jks
 *.keystore
+# Local keystore base64 dumps (secret)
+keystore_b64.txt
+*.b64

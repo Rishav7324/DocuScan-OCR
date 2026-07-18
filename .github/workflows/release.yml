@@ -49,6 +49,28 @@ jobs:
           echo "$KEYSTORE_BASE64" | tr -d '[:space:]' | base64 -d > "$RUNNER_TEMP/release-keystore.p12"
           echo "KEYSTORE_PATH=$RUNNER_TEMP/release-keystore.p12" >> "$GITHUB_ENV"
 
+      - name: Verify keystore credentials (non-fatal diagnostic)
+        continue-on-error: true
+        env:
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          KS="$RUNNER_TEMP/release-keystore.p12"
+          ALIAS="${KEY_ALIAS:-upload}"
+          echo "Checking store password..."
+          if keytool -list -keystore "$KS" -storepass "$STORE_PASSWORD" -noprompt >/dev/null 2>&1; then
+            echo "  STORE_PASSWORD: ok"
+          else
+            echo "  STORE_PASSWORD: MISMATCH"
+          fi
+          echo "Checking key alias + key password..."
+          if keytool -list -keystore "$KS" -storepass "$STORE_PASSWORD" -alias "$ALIAS" -keypass "$KEY_PASSWORD" -noprompt >/dev/null 2>&1; then
+            echo "  KEY_ALIAS ($ALIAS) + KEY_PASSWORD: ok"
+          else
+            echo "  KEY_ALIAS ($ALIAS) or KEY_PASSWORD: MISMATCH"
+          fi
+
       - name: Build signed APK
         env:
           STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
