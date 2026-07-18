@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Accessibility Statement — DocuScan OCR legal documentation.">
+<meta name="theme-color" content="#0b1220">
+<title>Accessibility Statement | DocuScan OCR</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="container nav-inner">
+    <a href="../index.html" class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M3 12h18"/><path d="M12 3v18"/></svg>
+      </span>
+      DocuScan<span class="brand-accent"> OCR</span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="../index.html#features">Features</a>
+      <a href="../index.html#how">How it works</a>
+      <a href="../index.html#privacy">Privacy</a>
+      <a class="btn btn-primary" href="../index.html#download">Get the app</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<main class="legal-wrap">
+  <div class="container">
+    <div class="legal-hero">
+      <h1>Legal &amp; Compliance Hub</h1>
+      <p>DocuScan OCR · Version 2.0.0 · July 18, 2026</p>
+    </div>
+    <div class="legal-layout">
+      <aside class="legal-nav">
+        <h4>Legal pages</h4>
+      <a href="../legal.html#privacy-policy">Privacy Policy</a>
+      <a href="../legal.html#terms-of-service">Terms of Service</a>
+      <a href="../legal.html#security-policy">Security Policy & Responsible Disclosure</a>
+      <a href="../legal.html#acceptable-use-policy">Acceptable Use Policy</a>
+      <a href="../legal.html#grievance-redressal">Grievance Redressal Policy</a>
+      <a href="../legal.html#cookie-policy">Cookie Policy</a>
+      <a href="../legal.html#disclaimer">Disclaimer</a>
+      <a href="../legal.html#refund-policy">Refund Policy</a>
+      <a href="../legal.html#cancellation-policy">Cancellation Policy</a>
+      <a href="../legal.html#accessibility-statement">Accessibility Statement</a>
+      <a href="../legal.html#about-us">About Us</a>
+        <a href="mailto:support@prontly.in" style="margin-top:10px;">✉ support@prontly.in</a>
+      </aside>
+      <div class="legal-content">
+        <section class="reveal" id="accessibility-statement">
+          <h2>Accessibility Statement<span class="badge badge-rec">DocuScan OCR</span></h2>
+          <p class="last-updated"><strong>Last updated:</strong> July 18, 2026</p>
+
+<div class="toc">
+  <strong>Table of Contents</strong>
+  <ul>
+    <li><a href="#commitment">1. Our Commitment to Accessibility</a></li>
+    <li><a href="#conformance">2. Conformance Status</a></li>
+    <li><a href="#features">3. Accessibility Features</a></li>
+    <li><a href="#limitations">4. Known Limitations</a></li>
+    <li><a href="#testing">5. Testing Approach</a></li>
+    <li><a href="#feedback">6. Feedback &amp; Contact</a></li>
+  </ul>
+</div>
+
+<h2 id="commitment">1. Our Commitment to Accessibility</h2>
+<p>DocuScan OCR is committed to making its application accessible to all users, including those with disabilities. We recognize that document scanning and OCR are essential tools that should be usable by everyone, regardless of ability.</p>
+<p>Because DocuScan OCR is maintained by an individual developer, accessibility efforts are ongoing and iterative. We welcome feedback from the community to help us improve.</p>
+
+<h2 id="conformance">2. Conformance Status</h2>
+<p>The <strong>Web Content Accessibility Guidelines (WCAG) 2.2</strong> define requirements for designers and developers to improve accessibility for people with disabilities. However, WCAG is primarily designed for web content, not native Android applications. For Android apps, Google's <strong>Accessibility Scanner</strong> recommendations and the <strong>Android Accessibility Suite</strong> guidelines provide the relevant framework.</p>
+<p>DocuScan OCR targets <strong>partial conformance</strong> with recognized Android accessibility best practices. We have not conducted a formal WCAG audit as the application is a native Android app rather than a web application. Instead, we follow Android's built-in accessibility APIs and conventions.</p>
+
+<h2 id="features">3. Accessibility Features</h2>
+<table>
+  <tr><th>Feature</th><th>Status</th><th>Notes</th></tr>
+  <tr><td>Content descriptions on interactive elements</td><td><span class="status status-good">Present</span></td><td>Buttons and key UI elements include contentDescription attributes for TalkBack.</td></tr>
+  <tr><td>Sufficient color contrast</td><td><span class="status status-good">Present</span></td><td>Material Design 3 default color palette meets WCAG AA contrast ratios (4.5:1 for normal text, 3:1 for large text). Dark theme available.</td></tr>
+  <tr><td>Touch target size (48dp minimum)</td><td><span class="status status-partial">Partial</span></td><td>Most controls meet 48dp; some icon-only buttons in the toolbar may be below this threshold. We are working to address these.</td></tr>
+  <tr><td>Text scaling support</td><td><span class="status status-good">Present</span></td><td>Uses sp units for text, respects system font size settings.</td></tr>
+  <tr><td>Navigation without color vision</td><td><span class="status status-good">Present</span></td><td>Icons and labels convey meaning alongside color indicators; not color-reliant.</td></tr>
+  <tr><td>Keyboard navigation</td><td><span class="status status-na">N/A</span></td><td>Android app — keyboard input is only available for text fields. Full keyboard navigation is not a platform requirement for mobile apps.</td></tr>
+  <tr><td>Screen reader (TalkBack) compatibility</td><td><span class="status status-partial">Partial</span></td><td>Core navigation and actions are announced by TalkBack. Complex custom composables (custom Canvas views, camera PreviewView) may have reduced accessibility.</td></tr>
+  <tr><td>Closed captions on media</td><td><span class="status status-na">N/A</span></td><td>The app does not contain video or audio media content.</td></tr>
+  <tr><td>Motion sensitivity</td><td><span class="status status-partial">Partial</span></td><td>Camera preview and document capture use default CameraX behavior. Users with motion sensitivity should use gallery import as an alternative to live capture.</td></tr>
+  <tr><td>Alternative text for document images</td><td><span class="status status-partial">Partial</span></td><td>Document pages are displayed as images; OCR text is available separately. We are exploring accessibility improvements for scanned document presentation.</td></tr>
+</table>
+
+<h2 id="limitations">4. Known Limitations</h2>
+<p>We acknowledge the following accessibility limitations in the current version (2.0.0):</p>
+<ol>
+  <li><strong>Camera viewfinder.</strong> The camera PreviewView is a live camera feed without accessibility labels. Users who rely on TalkBack may need assistance aiming the camera at documents. We recommend using the Gallery import feature as an alternative to camera capture.</li>
+  <li><strong>Custom swipe gestures.</strong> Swipe-to-delete in the document list may not be accessible via TalkBack. We provide a long-press context menu as an alternative action for delete operations, but this may not be discoverable.</li>
+  <li><strong>PDF/DOCX/TXT export.</strong> The exported files inherit the accessibility properties of the source document images, which are raster images without embedded text layers in PDF export (text is overlaid as an invisible layer, but the underlying image may not be accessible).</li>
+  <li><strong>OCR text selection.</strong> The OCR results are displayed as plain text, which is accessible. However, the text selection and copy interaction may not be as refined as with a native text view in all custom composable layouts.</li>
+  <li><strong>No voice control integration.</strong> The app does not implement custom Android Voice Access actions or shortcuts, so users relying entirely on voice control may find some interactions difficult.</li>
+  <li><strong>No reduced motion option.</strong> The app's animations (transitions, FAB, dialogs) follow Material Design 3 defaults and do not provide a dedicated reduced-motion toggle. The app respects the system-level "Remove animations" setting.</li>
+</ol>
+<p>These limitations are documented here transparently. As the app is developed by an individual maintainer, we prioritize accessibility improvements based on user feedback and available resources. Feedback on accessibility barriers is warmly welcomed.</p>
+
+<h2 id="testing">5. Testing Approach</h2>
+<p>Accessibility testing is performed using:</p>
+<ul>
+  <li><strong>Android Accessibility Scanner</strong> — a static analysis tool that checks for common accessibility issues at runtime.</li>
+  <li><strong>TalkBack</strong> — manual end-to-end navigation testing with TalkBack enabled on reference devices (Pixel 6a, API 33; Moto G Power, API 30).</li>
+  <li><strong>Contrast analysis</strong> — manual verification against WCAG AA ratios using the Material Design 3 color palette as a baseline.</li>
+</ul>
+<p>We do not currently have the resources to conduct usability testing with users with disabilities, but we welcome feedback from users who rely on accessibility technologies.</p>
+
+<h2 id="feedback">6. Feedback &amp; Contact</h2>
+<p>We are committed to improving the accessibility of DocuScan OCR. If you encounter accessibility barriers or have suggestions for improvement, please contact us:</p>
+<p>
+  <strong>Email:</strong> <a href="mailto:support@prontly.in">support@prontly.in</a><br>
+  <strong>Email:</strong> support@prontly.in
+</p>
+<p>We aim to respond to accessibility-related feedback within <strong>7 business days</strong>. Specific resolution timelines cannot be guaranteed, but we will acknowledge and track all actionable feedback.</p>
+<p>This statement was last reviewed on July 18, 2026. It will be reviewed and updated as the app evolves.</p>
+        </section>
+        <a class="legal-back" href="../legal.html">← All legal pages</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container footer-bottom" style="margin-top:0;border-top:0;">
+    <span>© 2024–2026 Rishav Raj. DocuScan OCR is proprietary software. All rights reserved.</span>
+    <a href="../index.html">Home ↑</a>
+  </div>
+</footer>
+
+<script src="../assets/main.js"></script>
+</body>
+</html>

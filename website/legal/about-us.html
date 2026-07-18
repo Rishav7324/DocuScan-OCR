@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="About Us — DocuScan OCR legal documentation.">
+<meta name="theme-color" content="#0b1220">
+<title>About Us | DocuScan OCR</title>
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+
+<header class="nav" id="nav">
+  <div class="container nav-inner">
+    <a href="../index.html" class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M3 12h18"/><path d="M12 3v18"/></svg>
+      </span>
+      DocuScan<span class="brand-accent"> OCR</span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="../index.html#features">Features</a>
+      <a href="../index.html#how">How it works</a>
+      <a href="../index.html#privacy">Privacy</a>
+      <a class="btn btn-primary" href="../index.html#download">Get the app</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<main class="legal-wrap">
+  <div class="container">
+    <div class="legal-hero">
+      <h1>Legal &amp; Compliance Hub</h1>
+      <p>DocuScan OCR · Version 2.0.0 · July 18, 2026</p>
+    </div>
+    <div class="legal-layout">
+      <aside class="legal-nav">
+        <h4>Legal pages</h4>
+      <a href="../legal.html#privacy-policy">Privacy Policy</a>
+      <a href="../legal.html#terms-of-service">Terms of Service</a>
+      <a href="../legal.html#security-policy">Security Policy & Responsible Disclosure</a>
+      <a href="../legal.html#acceptable-use-policy">Acceptable Use Policy</a>
+      <a href="../legal.html#grievance-redressal">Grievance Redressal Policy</a>
+      <a href="../legal.html#cookie-policy">Cookie Policy</a>
+      <a href="../legal.html#disclaimer">Disclaimer</a>
+      <a href="../legal.html#refund-policy">Refund Policy</a>
+      <a href="../legal.html#cancellation-policy">Cancellation Policy</a>
+      <a href="../legal.html#accessibility-statement">Accessibility Statement</a>
+      <a href="../legal.html#about-us">About Us</a>
+        <a href="mailto:support@prontly.in" style="margin-top:10px;">✉ support@prontly.in</a>
+      </aside>
+      <div class="legal-content">
+        <section class="reveal" id="about-us">
+          <h2>About Us<span class="badge badge-i">DocuScan OCR</span></h2>
+          <h2>Our Mission</h2>
+<p>Most document scanner apps either upload your documents to the cloud for processing (a privacy risk), lock essential features behind subscriptions, or store your data in proprietary formats that are hard to escape. DocuScan OCR was created to offer a different path.</p>
+<p>DocuScan OCR is an <strong>offline-first, privacy-respecting document scanning application</strong> for Android. We believe that:</p>
+<ul>
+  <li><strong>Your documents belong to you.</strong> They should not be uploaded to a third-party server for processing unless you explicitly choose to sync them to a cloud you control.</li>
+  <li><strong>OCR should be free.</strong> Text recognition is a basic utility, not a premium feature. ML Kit makes on-device OCR accessible to any Android app, and we built on that foundation.</li>
+  <li><strong>Encryption should be the default, not the upsell.</strong> Private folders with AES-256-GCM encryption are built-in, not a paid upgrade.</li>
+  <li><strong>Your data should be portable.</strong> Every document can be exported to PDF, DOCX, or TXT — widely supported open formats that you can open with any tool, not just this app.</li>
+  <li><strong>Cloud sync should go to your accounts.</strong> We don't operate a backend server and we don't want your subscription money. If you want backups, configure your own Google Drive, Dropbox, or Cloudflare R2.</li>
+</ul>
+
+<h2>What Makes DocuScan OCR Different</h2>
+<ul>
+  <li><strong>7 runtime dependencies.</strong> No Firebase, no Retrofit, no Moshi, no Coil, no Hilt — just the minimum needed to do the job. A smaller dependency footprint means a smaller attack surface and faster builds.</li>
+  <li><strong>Real on-device OCR.</strong> The same ML Kit model that powers Google's own apps runs on your device. No network requests, no API costs, no data leaving your phone.</li>
+  <li><strong>Real encryption.</strong> Android Keystore master key + PBKDF2 + AES-256-GCM. Verified by source code inspection, not by marketing claims.</li>
+  <li><strong>Real cloud sync.</strong> Connect your own Google Drive, Dropbox, or R2 bucket. The app doesn't proxy through any server — uploads go directly from your device to the provider.</li>
+  <li><strong>Zero data collection.</strong> No analytics, no crash reporting, no telemetry, no advertising ID. There is no backend server to receive your data.</li>
+  <li><strong>Free to use.</strong> No paid tiers, no in-app purchases, no ads. The full feature set — OCR, encryption, export, cloud sync — is available to all users at no cost.</li>
+</ul>
+
+<h2>Technical Overview</h2>
+<p>DocuScan OCR is written in <strong>100% Kotlin</strong> using <strong>Jetpack Compose</strong> with <strong>Material Design 3</strong>. It follows the MVVM architecture pattern with a single ViewModel serving all screens. The app uses <strong>Room</strong> (SQLite) for persistent storage, <strong>CameraX</strong> for live camera capture, <strong>ML Kit</strong> for on-device OCR, <strong>OkHttp</strong> for cloud API calls, and the <strong>Android Keystore</strong> for encryption key management.</p>
+<p>The app targets Android 7.0 (API 24) as its minimum supported version and Android 16 (API 36) as its target. The codebase is built with Gradle 9.1.0 and Android Gradle Plugin 9.1.1.</p>
+
+<h2>Version History</h2>
+<ul>
+  <li><strong>2.0.0 (July 2026)</strong> — Major rewrite: replaced simulated document generation with real CameraX capture, added real OAuth PKCE flows for Google Drive and Dropbox, implemented AES-256-GCM file encryption with PBKDF2 key derivation, removed all Firebase/Gemini/Retrofit/Moshi dependencies, added enterprise CI/CD pipeline (5 workflows), generated full multi-platform icon set, added comprehensive legal documentation.</li>
+  <li><strong>1.0.0 (Pre-release)</strong> — Initial sandbox release with simulated documents, gallery import, ML Kit OCR (partial integration), Room database, and placeholder cloud sync.</li>
+</ul>
+
+<h2>Who Built It</h2>
+<p>DocuScan OCR is developed by <strong>Rishav Raj</strong>, an individual developer. The project is maintained in a personal capacity and is not backed by any company or organization.</p>
+<p>The developer can be reached at <a href="mailto:support@prontly.in">support@prontly.in</a> for bug reports and feature requests.</p>
+
+<h2>Get In Touch</h2>
+<ul>
+  
+  <li><strong>Issues &amp; Feature Requests:</strong> our support channels</li>
+  <li><strong>Support:</strong> <a href="mailto:support@prontly.in">support@prontly.in</a></li>
+</ul>
+        </section>
+        <a class="legal-back" href="../legal.html">← All legal pages</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container footer-bottom" style="margin-top:0;border-top:0;">
+    <span>© 2024–2026 Rishav Raj. DocuScan OCR is proprietary software. All rights reserved.</span>
+    <a href="../index.html">Home ↑</a>
+  </div>
+</footer>
+
+<script src="../assets/main.js"></script>
+</body>
+</html>
