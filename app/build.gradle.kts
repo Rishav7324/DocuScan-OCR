@@ -6,6 +6,8 @@ plugins {
   alias(libs.plugins.secrets)
 }
 
+import java.util.Properties
+
 android {
   namespace = "com.example"
   compileSdk { version = release(37) { minorApiLevel = 1 } }
@@ -30,8 +32,8 @@ android {
 
       // 2) Committed keystore + app/keystore.properties (no GitHub secrets needed)
       val propsFile = file("${projectDir}/keystore.properties")
-      val props = if (propsFile.exists()) {
-        java.util.Properties().apply { load(propsFile.inputStream()) }
+      val props: Properties? = if (propsFile.exists()) {
+        Properties().apply { load(propsFile.inputStream()) }
       } else null
       val bundledKeystore = file("${projectDir}/upload-keystore.p12")
 
