@@ -87,7 +87,7 @@ class MainActivity : ComponentActivity() {
 
                         // 3. Simulated/Live batch scanning camera screen
                         composable(
-                            route = "camera_scan/{folderId}",
+                            "camera_scan/{folderId}",
                             arguments = listOf(navArgument("folderId") { type = NavType.LongType })
                         ) { backStackEntry ->
                             val folderId = backStackEntry.arguments?.getLong("folderId") ?: 0L
@@ -95,9 +95,9 @@ class MainActivity : ComponentActivity() {
                                 viewModel = viewModel,
                                 folderId = folderId,
                                 onNavigateBack = { navController.popBackStack() },
-                                onNavigateToCrop = {
-                                    navController.navigate("crop_correction")
-                                }
+                                onScanComplete = { navController.navigate("crop_correction") }
+                            )
+                        }
                             )
                         }
 
@@ -107,9 +107,10 @@ class MainActivity : ComponentActivity() {
                                 viewModel = viewModel,
                                 onNavigateBack = { navController.popBackStack() },
                                 onNavigateToOcr = {
-                                    // By default when finalizing crops, we navigate directly to our active document's OCR terminal
-                                    navController.navigate("ocr_export/none") {
-                                        popUpTo("dashboard") { saveState = true }
+                                    // Finalize: auto-create a folder when scanning into root, then save everything.
+                                    viewModel.finalizeBatch(0L)
+                                    navController.navigate("dashboard") {
+                                        popUpTo("dashboard") { inclusive = true }
                                     }
                                 }
                             )

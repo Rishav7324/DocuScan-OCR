@@ -1,7 +1,9 @@
 package com.example.ui.screens
 
 import android.content.Intent
+import android.graphics.Bitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.graphics.asImageBitmap
 import com.example.data.encryption.EncryptionUtils
 import androidx.compose.animation.*
 import androidx.compose.foundation.BorderStroke
@@ -217,7 +219,14 @@ fun FolderDetailScreen(
                                             }
                                         ) {
                                             Column(modifier = Modifier.fillMaxWidth()) {
-                                                // Doc thumbnail icon
+                                                // Real first-page thumbnail
+                                                val folderPin = remember(currentFolder) {
+                                                    if (currentFolder?.isPrivate == true) viewModel.activeFolderPin.value else null
+                                                }
+                                                var thumb by remember { mutableStateOf<Bitmap?>(null) }
+                                                LaunchedEffect(doc.id) {
+                                                    thumb = viewModel.getFirstPageBitmap(doc.id, folderPin)
+                                                }
                                                 Box(
                                                     modifier = Modifier
                                                         .fillMaxWidth()
@@ -226,12 +235,21 @@ fun FolderDetailScreen(
                                                         .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)),
                                                     contentAlignment = Alignment.Center
                                                 ) {
+                                                    if (thumb != null) {
+                                                        androidx.compose.foundation.Image(
+                                                            bitmap = thumb!!.asImageBitmap(),
+                                                            contentDescription = "Doc Preview",
+                                                            modifier = Modifier.fillMaxSize(),
+                                                            contentScale = androidx.compose.ui.layout.ContentScale.Crop
+                                                        )
+                                                    } else {
                                                     Icon(
                                                         imageVector = if (doc.fileFormat == "PDF") Icons.Default.PictureAsPdf else Icons.Default.Article,
                                                         contentDescription = "Doc Preview",
                                                         tint = MaterialTheme.colorScheme.primary,
                                                         modifier = Modifier.size(48.dp)
                                                     )
+                                                    }
                                                     if (doc.isSynced) {
                                                         Box(
                                                             modifier = Modifier

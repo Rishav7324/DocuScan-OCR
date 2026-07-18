@@ -1,6 +1,7 @@
 package com.example.ui.screens
 
 import android.content.Intent
+import android.graphics.Bitmap
 import androidx.compose.ui.platform.LocalContext
 import com.example.data.encryption.EncryptionUtils
 import androidx.compose.animation.*
@@ -16,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.asImageBitmap
 import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -323,7 +325,14 @@ fun DashboardScreen(
                                     modifier = Modifier.fillMaxWidth(),
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    // Thumbnail representation icon
+                                    // Real thumbnail of the first scanned page
+                                    val folderPin = remember(folderOfDoc) {
+                                        if (folderOfDoc?.isPrivate == true) viewModel.activeFolderPin.value else null
+                                    }
+                                    var thumb by remember { mutableStateOf<Bitmap?>(null) }
+                                    LaunchedEffect(doc.id) {
+                                        thumb = viewModel.getFirstPageBitmap(doc.id, folderPin)
+                                    }
                                     Box(
                                         modifier = Modifier
                                             .size(52.dp)
@@ -331,12 +340,21 @@ fun DashboardScreen(
                                             .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.15f)),
                                         contentAlignment = Alignment.Center
                                     ) {
-                                        Icon(
-                                            imageVector = if (doc.fileFormat == "PDF") Icons.Default.PictureAsPdf else Icons.Default.Article,
-                                            contentDescription = "Doc",
-                                            tint = MaterialTheme.colorScheme.primary,
-                                            modifier = Modifier.size(26.dp)
-                                        )
+                                        if (thumb != null) {
+                                            androidx.compose.foundation.Image(
+                                                bitmap = thumb!!.asImageBitmap(),
+                                                contentDescription = "Preview",
+                                                modifier = Modifier.fillMaxSize(),
+                                                contentScale = androidx.compose.ui.layout.ContentScale.Crop
+                                            )
+                                        } else {
+                                            Icon(
+                                                imageVector = if (doc.fileFormat == "PDF") Icons.Default.PictureAsPdf else Icons.Default.Article,
+                                                contentDescription = "Doc",
+                                                tint = MaterialTheme.colorScheme.primary,
+                                                modifier = Modifier.size(26.dp)
+                                            )
+                                        }
                                     }
 
                                     Spacer(modifier = Modifier.width(14.dp))

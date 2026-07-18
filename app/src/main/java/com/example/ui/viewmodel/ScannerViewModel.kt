@@ -214,26 +214,28 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
         viewModelScope.launch(Dispatchers.IO) {
             if (_batchImages.value.isEmpty()) return@launch
 
+            // ponytail: scanning into root auto-creates a "Scan" folder so docs land somewhere browsable
+            val resolvedFolderId = if (folderId == 0L) {
+                val ts = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).format(Date())
+                repository.insertFolder(FolderEntity(name = "Scan $ts", isPrivate = false))
+            } else folderId
+
             val pin = folderPin ?: _activeFolderPin.value
-            val targetFolder = repository.getFolderById(folderId)
+            val targetFolder = repository.getFolderById(resolvedFolderId)
             val usePin = if (targetFolder?.isPrivate == true) (pin ?: _activeFolderPin.value) else null
 
             // Create Document
             val document = DocumentEntity(
-                folderId = folderId,
+                folderId = resolvedFolderId,
                 name = documentName,
                 fileFormat = "PDF"
             )
             val docId = repository.insertDocument(document)
 
-            // Save individual pages
+            // Save individual pages (already perspective-corrected at capture / crop step)
             _batchImages.value.forEachIndexed { index, bitmap ->
-                // Apply perspective correction using the current selected points or default points
-                val corrected = performPerspectiveCorrection(bitmap, _currentCropPoints.value)
-                
-                // Save original and corrected images to local files
                 val origPath = saveBitmapToFile("orig_${docId}_${index}.jpg", bitmap)
-                val procPath = saveBitmapToFile("proc_${docId}_${index}.jpg", corrected)
+                val procPath = saveBitmapToFile("proc_${docId}_${index}.jpg", bitmap)
 
                 // Encrypt images at rest when the target folder is private
                 if (usePin != null) {
@@ -399,6 +401,14 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
             file.readBytes()
         }
         return BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+    }
+
+    // ponytail: loads the first page image for thumbnail preview; pin null for non-private docs
+    suspend fun getFirstPageBitmap(docId: Long, pin: String? = null): Bitmap? = withContext(Dispatchers.IO) {
+        val pages = repository.getPagesForDocumentSync(docId)
+        val page = pages.minByOrNull { it.pageNumber } ?: return@withContext null
+        val path = (page.processedImagePath ?: page.originalImagePath)
+        loadBitmapFromFile(path, pin)
     }
 
     // --- Export to real files ---

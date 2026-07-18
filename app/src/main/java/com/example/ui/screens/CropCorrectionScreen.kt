@@ -152,9 +152,9 @@ fun CropCorrectionScreen(
                                 ),
                                 modifier = Modifier.testTag("apply_crop_button")
                             ) {
-                                Icon(imageVector = Icons.Default.Crop, contentDescription = "Warp", tint = Color.Black)
+                                Icon(imageVector = Icons.Default.Check, contentDescription = "Next", tint = Color.Black)
                                 Spacer(modifier = Modifier.width(4.dp))
-                                Text("Warp & Finalize", fontWeight = FontWeight.ExtraBold)
+                                Text("Next", fontWeight = FontWeight.ExtraBold)
                             }
                         }
                     }

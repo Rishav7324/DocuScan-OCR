@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
-    <files-path name="exports" path="exports/" />
+    <!-- Exported documents live under getExternalFilesDir(DIRECTORY_DOCUMENTS)/DocuScan -->
+    <external-files-path name="exports" path="Documents/DocuScan" />
+    <files-path name="exports_internal" path="exports/" />
 </paths>
