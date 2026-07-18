@@ -170,6 +170,12 @@ a { color: inherit; text-decoration: none; }
 .footer-col a:hover { color: var(--primary); }
 .footer-bottom { display: flex; justify-content: space-between; align-items: center; gap: 14px; margin-top: 40px; padding-top: 22px; border-top: 1px solid var(--border); color: var(--muted); font-size: .85rem; flex-wrap: wrap; }
 
+/* ===== Download ===== */
+.download-card { display: grid; grid-template-columns: 1.1fr .9fr; gap: 40px; align-items: center; background: linear-gradient(135deg, rgba(0,230,118,.1), rgba(91,140,255,.08)); border: 1px solid var(--border); border-radius: 22px; padding: 44px; }
+.dl-actions { display: flex; flex-direction: column; gap: 16px; align-items: flex-start; }
+.dl-note { color: var(--muted); font-size: .9rem; max-width: 320px; }
+.dl-note a { color: var(--primary); }
+
 /* ===== Legal page (legal.html) ===== */
 .legal-wrap { padding: 110px 0 70px; }
 .legal-hero { text-align: center; margin-bottom: 30px; }
@@ -202,6 +208,7 @@ a { color: inherit; text-decoration: none; }
   .cards { grid-template-columns: repeat(2, 1fr); }
   .steps { grid-template-columns: repeat(2, 1fr); }
   .privacy-grid { grid-template-columns: 1fr; }
+  .download-card { grid-template-columns: 1fr; padding: 30px; }
   .legal-layout { grid-template-columns: 1fr; }
   .legal-nav { position: static; }
 }
