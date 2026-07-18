@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="DocuScan OCR — a free, offline-first, privacy-respecting document scanner for Android. Real on-device OCR, AES-256-GCM encryption, and your own cloud sync. No tracking, no subscriptions.">
+<meta name="theme-color" content="#0b1220">
+<title>DocuScan OCR — Scan. Recognize. Stay Private.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+
+<!-- ===== Nav ===== -->
+<header class="nav" id="nav">
+  <div class="container nav-inner">
+    <a href="#top" class="brand">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M3 12h18"/><path d="M12 3v18"/></svg>
+      </span>
+      DocuScan<span class="brand-accent"> OCR</span>
+    </a>
+    <nav class="nav-links" aria-label="Primary">
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#privacy">Privacy</a>
+      <a href="legal.html">Legal</a>
+      <a class="btn btn-ghost" href="https://github.com/Rishav7324/DocuScan-OCR" target="_blank" rel="noopener">GitHub</a>
+      <a class="btn btn-primary" href="https://github.com/Rishav7324/DocuScan-OCR/releases" target="_blank" rel="noopener">Download</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ===== Hero ===== -->
+  <section class="hero">
+    <div class="hero-glow" aria-hidden="true"></div>
+    <div class="container hero-grid">
+      <div class="hero-copy">
+        <span class="pill">v2.0.0 · Free · No account needed</span>
+        <h1>Scan documents.<br><span class="grad">Recognize text.</span><br>Stay private.</h1>
+        <p class="lead">DocuScan OCR is an offline-first Android scanner that turns your camera into a smart document machine — with real on-device OCR, automatic edge detection, and AES-256-GCM encryption. Your files never leave your phone unless you send them to a cloud <em>you</em> control.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary btn-lg" href="https://github.com/Rishav7324/DocuScan-OCR/releases" target="_blank" rel="noopener">Get DocuScan OCR</a>
+          <a class="btn btn-ghost btn-lg" href="#how">See how it works</a>
+        </div>
+        <ul class="hero-stats">
+          <li><strong>0</strong><span>trackers</span></li>
+          <li><strong>100%</strong><span>on-device OCR</span></li>
+          <li><strong>Free</strong><span>no subscriptions</span></li>
+        </ul>
+      </div>
+
+      <!-- Phone mockup -->
+      <div class="hero-visual" aria-hidden="true">
+        <div class="phone">
+          <div class="phone-notch"></div>
+          <div class="phone-screen">
+            <div class="scan-frame">
+              <span class="corner tl"></span><span class="corner tr"></span>
+              <span class="corner br"></span><span class="corner bl"></span>
+              <div class="scan-doc"></div>
+              <div class="scan-line"></div>
+            </div>
+            <div class="phone-bar">
+              <span class="dot"></span> Detected · 4 corners
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Logos / trust strip ===== -->
+  <section class="strip">
+    <div class="container strip-inner">
+      <span>Made with</span>
+      <span class="chip">Kotlin</span>
+      <span class="chip">Jetpack Compose</span>
+      <span class="chip">CameraX</span>
+      <span class="chip">ML Kit</span>
+      <span class="chip">Android Keystore</span>
+      <span class="chip">Room</span>
+    </div>
+  </section>
+
+  <!-- ===== Features ===== -->
+  <section class="section" id="features">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">Why DocuScan OCR</span>
+        <h2>Everything a scanner should be — and nothing it shouldn't</h2>
+        <p class="muted">Powerful capture and recognition without the cloud lock-in, the subscriptions, or the surveillance.</p>
+      </div>
+
+      <div class="cards reveal">
+        <article class="card">
+          <div class="card-ico ico-green">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          </div>
+          <h3>Live edge detection</h3>
+          <p>Real-time corner detection draws a guide over your document and auto-captures once the page is framed — no more crooked scans.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-ico ico-blue">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
+          </div>
+          <h3>Real on-device OCR</h3>
+          <p>The same ML Kit model behind Google's apps runs locally. Recognize text in dozens of languages with zero network requests.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-ico ico-purple">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </div>
+          <h3>Built-in encryption</h3>
+          <p>Private folders use Android Keystore + PBKDF2 + AES-256-GCM. Encryption is the default, not a paid upsell.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-ico ico-cyan">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+          </div>
+          <h3>Your own cloud sync</h3>
+          <p>Back up to Google Drive, Dropbox, or Cloudflare R2 — uploads go straight from your device to providers you choose.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-ico ico-amber">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
+          </div>
+          <h3>Portable exports</h3>
+          <p>Save every document as PDF, DOCX, or TXT — open formats you can use anywhere, not locked inside one app.</p>
+        </article>
+
+        <article class="card">
+          <div class="card-ico ico-rose">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h3>Zero data collection</h3>
+          <p>No analytics, no crash reporting, no ad ID. There's no backend server to receive your data — by design.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== How it works ===== -->
+  <section class="section section-alt" id="how">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow">How it works</span>
+        <h2>From paper to PDF in four taps</h2>
+      </div>
+      <ol class="steps reveal">
+        <li>
+          <span class="step-num">1</span>
+          <h3>Open &amp; aim</h3>
+          <p>Launch the scanner and point your camera at a document. A live outline tracks the page edges in real time.</p>
+        </li>
+        <li>
+          <span class="step-num">2</span>
+          <h3>Auto-capture</h3>
+          <p>DocuScan snaps the moment the page is framed, then perspective-corrects it automatically. Shoot as many pages as you need.</p>
+        </li>
+        <li>
+          <span class="step-num">3</span>
+          <h3>Review &amp; enhance</h3>
+          <p>Fine-tune the crop, apply filters (B&amp;W, sharpen, grayscale), and run OCR to pull out the text.</p>
+        </li>
+        <li>
+          <span class="step-num">4</span>
+          <h3>Save &amp; export</h3>
+          <p>Your scan lands in an auto-created folder and exports to PDF, DOCX, or TXT — or syncs to your own cloud.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ===== Privacy ===== -->
+  <section class="section" id="privacy">
+    <div class="container privacy-grid">
+      <div class="privacy-copy">
+        <span class="eyebrow">Privacy by architecture</span>
+        <h2>Your documents belong to you</h2>
+        <p class="muted">Most scanners upload your files for processing. DocuScan does the opposite: capture, OCR, and encryption all happen on your device. The only time data leaves your phone is when <em>you</em> connect your own cloud account.</p>
+        <ul class="check-list">
+          <li>No backend server, period.</li>
+          <li>No analytics, telemetry, or advertising IDs.</li>
+          <li>AES-256-GCM encryption for private folders.</li>
+          <li>OAuth tokens stored only in the Android Keystore.</li>
+          <li>GDPR, CCPA, and India DPDP Act aligned.</li>
+        </ul>
+        <a class="btn btn-ghost" href="legal.html#privacy-policy">Read the Privacy Policy</a>
+      </div>
+      <div class="privacy-card">
+        <div class="pc-row"><span>Data sent to our servers</span><strong class="ok">None</strong></div>
+        <div class="pc-row"><span>Third-party trackers</span><strong class="ok">0</strong></div>
+        <div class="pc-row"><span>Paid tiers / ads</span><strong class="ok">None</strong></div>
+        <div class="pc-row"><span>On-device OCR</span><strong class="yes">Yes</strong></div>
+        <div class="pc-row"><span>Open export formats</span><strong class="yes">PDF · DOCX · TXT</strong></div>
+        <p class="pc-note">Full details in our <a href="legal.html">Legal &amp; Compliance Hub</a>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CTA ===== -->
+  <section class="cta">
+    <div class="container cta-inner">
+      <h2>Start scanning privately today</h2>
+      <p>Free, open for transparency, and respectful of your data. No sign-up required.</p>
+      <div class="cta-row center">
+        <a class="btn btn-primary btn-lg" href="https://github.com/Rishav7324/DocuScan-OCR/releases" target="_blank" rel="noopener">Download for Android</a>
+        <a class="btn btn-ghost btn-lg" href="https://github.com/Rishav7324/DocuScan-OCR" target="_blank" rel="noopener">View source</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ===== Footer ===== -->
+<footer class="footer">
+  <div class="container footer-grid">
+    <div>
+      <a href="#top" class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M3 12h18"/><path d="M12 3v18"/></svg>
+        </span>
+        DocuScan<span class="brand-accent"> OCR</span>
+      </a>
+      <p class="footer-tag">An offline-first, privacy-respecting document scanner for Android.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Product</h4>
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="https://github.com/Rishav7324/DocuScan-OCR/releases" target="_blank" rel="noopener">Download</a>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <a href="legal.html#privacy-policy">Privacy Policy</a>
+      <a href="legal.html#terms-of-service">Terms of Service</a>
+      <a href="legal.html#security-policy">Security Policy</a>
+      <a href="legal.html">All legal pages</a>
+    </div>
+    <div class="footer-col">
+      <h4>Connect</h4>
+      <a href="https://github.com/Rishav7324/DocuScan-OCR" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://github.com/Rishav7324/DocuScan-OCR/issues" target="_blank" rel="noopener">Issues</a>
+      <a href="mailto:support@prontly.in">support@prontly.in</a>
+    </div>
+  </div>
+  <div class="container footer-bottom">
+    <span>© 2024–2026 Rishav Raj. DocuScan OCR is proprietary software published for transparency.</span>
+    <a href="#top">Back to top ↑</a>
+  </div>
+</footer>
+
+<script src="assets/main.js"></script>
+</body>
+</html>
