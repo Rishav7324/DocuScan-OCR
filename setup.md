@@ -159,49 +159,30 @@ There is **one** workflow: `.github/workflows/release.yml`.
 
 It does **not** build an AAB, run lint, or run tests — it is a pure release pipeline. Do local `gradle test`/`lint` before tagging.
 
-### Step 1 — Generate a release keystore (once, keep it forever)
+> **No GitHub secrets required.** The signing keystore and its passwords are committed to the repo (`app/upload-keystore.p12` + `app/keystore.properties`), so the release builds with zero repository secrets configured. This is convenient for a personal/solo project; anyone with repo read access can sign as you. For a shared or distributed app, move the keystore into GitHub Actions secrets instead (see historical `release.yml` notes).
 
-You sign every release with the **same** keystore. Lose it and you can never update the app under the same signature. Store the file + passwords in a password manager.
+### Step 1 — Configure the keystore passwords (optional)
+
+The keystore is generated automatically on the first CI run from `app/keystore.properties`. To use custom passwords, edit that file before the first release:
+
+```properties
+storePassword=DocuScanRelease123
+keyAlias=upload
+keyPassword=DocuScanRelease123
+```
+
+`app/upload-keystore.p12` is created by CI on the first run (and committed so every later build reuses the same key — required so updates keep the same signature). To commit your own keystore instead, generate one locally:
 
 ```bash
-keytool -genkeypair -v \
-  -storetype PKCS12 \
-  -keystore release-keystore.p12 \
-  -alias upload \
+keytool -genkeypair -v -storetype PKCS12 \
+  -keystore app/upload-keystore.p12 -alias upload \
   -keyalg RSA -keysize 2048 -validity 10000 \
-  -storepass "CHANGE_ME_STORE" \
-  -keypass  "CHANGE_ME_KEY" \
-  -dname "CN=Rishav Raj, O=DocuScan OCR, C=IN"
+  -storepass "DocuScanRelease123" -keypass "DocuScanRelease123" \
+  -dname "CN=DocuScan OCR, O=DocuScan OCR, C=IN"
+git add app/upload-keystore.p12 && git commit -m "chore: add upload keystore"
 ```
 
-- `-alias upload` → this is your `KEY_ALIAS` (the gradle default is also `upload`).
-- `-storepass` → `STORE_PASSWORD`.
-- `-keypass` → `KEY_PASSWORD`.
-- `-validity 10000` → ~27 years; must exceed your intended app lifetime.
-
-### Step 2 — Base64-encode the keystore
-
-```bash
-base64 -w0 release-keystore.p12 > keystore.b64   # Linux
-base64 release-keystore.p12      > keystore.b64   # macOS (no -w0)
-```
-
-Copy the entire contents of `keystore.b64` — that string is the `KEYSTORE_BASE64` secret.
-
-### Step 3 — Add the four repository secrets
-
-**Settings → Secrets and variables → Actions → New repository secret**, add all four:
-
-| Secret | Value |
-|--------|-------|
-| `KEYSTORE_BASE64` | contents of `keystore.b64` from Step 2 |
-| `STORE_PASSWORD` | the `-storepass` you chose |
-| `KEY_ALIAS` | `upload` (or your `-alias`) |
-| `KEY_PASSWORD` | the `-keypass` you chose |
-
-> If any secret is missing the workflow fails fast: the decode step errors with `KEYSTORE_BASE64 secret not set`.
-
-### Step 4 — Commit the Gradle wrapper (recommended, once)
+### Step 2 — Commit the Gradle wrapper (recommended, once)
 
 `gradle-wrapper.jar` is a binary. The workflow regenerates it if missing, but committing it is reproducible and faster:
 
@@ -212,7 +193,7 @@ git commit -m "build: add Gradle wrapper"
 git push
 ```
 
-### Step 5 — Bump the version before each release
+### Step 3 — Bump the version before each release
 
 In `app/build.gradle.kts` → `defaultConfig`:
 
@@ -223,7 +204,7 @@ versionName = "2.1.0"  // human-facing
 
 Commit and push before tagging.
 
-### Step 6 — Cut a release
+### Step 4 — Cut a release
 
 Tag names must start with `v`. A `-rc`/`-beta` suffix marks it a pre-release automatically.
 
@@ -234,7 +215,7 @@ git push origin v2.0.0
 
 Or from the UI: **Actions → Release → Run workflow** → enter the tag (e.g. `v2.0.0`).
 
-### Step 7 — Verify the result
+### Step 5 — Verify the result
 
 1. **Actions** tab → the `Release` run is green.
 2. **Releases** page → new release `DocuScan OCR v2.0.0` with `DocuScan-v2.0.0.apk` + `SHA256SUMS.txt`.
@@ -246,16 +227,12 @@ Or from the UI: **Actions → Release → Run workflow** → enter the tag (e.g.
 
 ### Local dry-run before tagging
 
-Reproduce the CI build on your machine to catch failures early:
+Reproduce the CI build on your machine to catch failures early. The committed `app/upload-keystore.p12` (or CI-generated one) is used automatically:
 
 ```bash
-export KEYSTORE_PATH="$PWD/release-keystore.p12"
-export STORE_PASSWORD="CHANGE_ME_STORE"
-export KEY_ALIAS="upload"
-export KEY_PASSWORD="CHANGE_ME_KEY"
 gradle :app:assembleRelease --stacktrace
 # output: app/build/outputs/apk/release/*.apk
 ```
 
-If `KEYSTORE_PATH` points to a missing file, gradle falls back to the debug signing config so the build still completes (unsigned-for-release) — useful for compile checks, **not** for publishing.
+If `app/upload-keystore.p12` is missing and no `app/keystore.properties` exists, gradle falls back to the debug signing config so the build still completes (unsigned-for-release) — useful for compile checks, **not** for publishing.
 
