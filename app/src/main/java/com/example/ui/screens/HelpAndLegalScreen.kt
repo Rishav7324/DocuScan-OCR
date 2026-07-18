@@ -4,6 +4,7 @@ import androidx.compose.animation.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,10 +29,11 @@ import com.example.ui.components.GlassCard
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HelpAndLegalScreen(
-    onNavigateBack: () -> Unit
+    onNavigateBack: () -> Unit,
+    onNavigateToLegalPage: (String) -> Unit = {}
 ) {
     var selectedTab by remember { mutableStateOf(0) }
-    val tabs = listOf("Guides & Integration", "Privacy Policy", "Legal & Compliance")
+    val tabs = listOf("Guides & Integration", "Privacy Policy", "Legal & Compliance", "About & Legal Pages")
 
     GlassBackground {
         Scaffold(
@@ -179,6 +181,67 @@ fun HelpAndLegalScreen(
                                             "We do not collect analytics, logs, or scanning metrics. The optional integrations (Cloudflare R2, Google Drive, and Dropbox) are completely under your control. When enabled, the app communicates directly and only with your S3 buckets or personal accounts. No middleware or intermediary proxy is ever involved.",
                                             fontSize = 12.sp, color = Color.Gray, fontWeight = FontWeight.Medium, lineHeight = 16.sp
                                         )
+                                        HorizontalDivider(color = Color(0xFFE2E8F0))
+                                        Text(
+                                            text = "View full Privacy Policy \u2192",
+                                            color = Color(0xFF2563EB),
+                                            fontSize = 13.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            modifier = Modifier.clickable { onNavigateToLegalPage("privacy-policy") }
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
+                        3 -> {
+                            // TAB 3: About & Legal Pages
+                            item {
+                                GuideHeader(
+                                    title = "About DocuScan OCR",
+                                    icon = Icons.Default.Info,
+                                    iconColor = Color(0xFF6366F1)
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                GlassCard(modifier = Modifier.fillMaxWidth(), cornerRadius = 20.dp) {
+                                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                        Text("DocuScan OCR v2.0.0", fontWeight = FontWeight.Black, fontSize = 15.sp, color = Color.Black)
+                                        Text("Offline-first document scanner with on-device OCR, AES-256-GCM encryption, and optional cloud sync. \u00A9 2024-2026 Rishav Raj.", fontSize = 12.sp, color = Color.Gray, fontWeight = FontWeight.Medium, lineHeight = 16.sp)
+                                    }
+                                }
+                            }
+                            item {
+                                GuideHeader(
+                                    title = "Legal Documents",
+                                    icon = Icons.Default.Gavel,
+                                    iconColor = Color(0xFF1E3A8A)
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                GlassCard(modifier = Modifier.fillMaxWidth(), cornerRadius = 20.dp) {
+                                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                                        val legalPages = listOf(
+                                            "Privacy Policy" to "privacy-policy",
+                                            "Terms of Service" to "terms-of-service",
+                                            "Security Policy" to "security-policy",
+                                            "Acceptable Use Policy" to "acceptable-use-policy",
+                                            "Grievance Redressal" to "grievance-redressal",
+                                            "Cookie Policy" to "cookie-policy",
+                                            "Disclaimer" to "disclaimer",
+                                            "Refund Policy" to "refund-policy",
+                                            "Cancellation Policy" to "cancellation-policy",
+                                            "Accessibility Statement" to "accessibility-statement",
+                                            "About Us" to "about-us",
+                                            "Legal Hub (All Pages)" to "index"
+                                        )
+                                        legalPages.forEach { (displayName, pageKey) ->
+                                            Text(
+                                                text = displayName,
+                                                color = Color(0xFF2563EB),
+                                                fontSize = 13.sp,
+                                                fontWeight = FontWeight.Bold,
+                                                modifier = Modifier.clickable { onNavigateToLegalPage(pageKey) }
+                                            )
+                                        }
                                     }
                                 }
                             }
@@ -214,6 +277,21 @@ fun HelpAndLegalScreen(
                                             "• Data Minimization (Article 5): We only extract characters from scan targets explicitly approved by the user.\n" +
                                             "• Local Storage Processing: No data transfers outside the Union occur unless explicitly routed to user-configured regional servers.",
                                             fontSize = 12.sp, color = Color.Black, fontWeight = FontWeight.Medium, lineHeight = 17.sp
+                                        )
+                                        HorizontalDivider(color = Color(0xFFE2E8F0))
+                                        Text(
+                                            text = "View full Terms of Service \u2192",
+                                            color = Color(0xFF2563EB),
+                                            fontSize = 13.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            modifier = Modifier.clickable { onNavigateToLegalPage("terms-of-service") }
+                                        )
+                                        Text(
+                                            text = "View Security Policy \u2192",
+                                            color = Color(0xFF2563EB),
+                                            fontSize = 13.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            modifier = Modifier.clickable { onNavigateToLegalPage("security-policy") }
                                         )
                                     }
                                 }

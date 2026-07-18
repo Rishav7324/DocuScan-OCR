@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Disclaimer | DocuScan OCR</title>
+<meta name="description" content="DocuScan OCR is provided 'as is' without warranties. OCR results may contain errors. Not certified for HIPAA, GDPR, or other regulatory compliance.">
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.7; color: #1a1a2e; max-width: 800px; margin: 0 auto; padding: 2rem 1.5rem; }
+  h1 { font-size: 2rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem; }
+  h2 { font-size: 1.4rem; margin-top: 2rem; color: #2d3748; }
+  p, li { font-size: 1rem; }
+  .last-updated { color: #718096; font-size: 0.9rem; margin-bottom: 2rem; }
+  hr { border: none; border-top: 1px solid #e2e8f0; margin: 2rem 0; }
+  .toc { background: #f7fafc; padding: 1.2rem 1.5rem; border-radius: 8px; margin: 1.5rem 0; }
+  .toc ul { margin: 0.5rem 0 0; padding-left: 1.5rem; }
+  .toc li { margin: 0.3rem 0; }
+  .toc a { color: #2b6cb0; text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  blockquote { border-left: 4px solid #e2e8f0; margin: 1rem 0; padding: 0.5rem 1rem; color: #4a5568; }
+</style>
+</head>
+<body>
+
+<h1>Disclaimer</h1>
+<p class="last-updated"><strong>Last updated:</strong> July 18, 2026</p>
+
+<div class="toc">
+  <strong>Table of Contents</strong>
+  <ul>
+    <li><a href="#general">1. General Disclaimer</a></li>
+    <li><a href="#ocr">2. OCR Accuracy Disclaimer</a></li>
+    <li><a href="#encryption">3. Encryption &amp; Security Disclaimer</a></li>
+    <li><a href="#compliance">4. Regulatory Compliance Disclaimer</a></li>
+    <li><a href="#medical">5. No Medical Advice</a></li>
+    <li><a href="#legal">6. No Legal Advice</a></li>
+    <li><a href="#financial">7. No Financial Advice</a></li>
+    <li><a href="#third-party">8. Third-Party Links &amp; Services</a></li>
+    <li><a href="#proprietary">9. Proprietary Software &amp; Third-Party Code</a></li>
+    <li><a href="#contact">10. Contact</a></li>
+  </ul>
+</div>
+
+<h2 id="general">1. General Disclaimer</h2>
+<p>DocuScan OCR is provided "as is" and "as available" without any warranty of any kind, express or implied. The developer makes no representations or warranties regarding the accuracy, reliability, completeness, or timeliness of the App or its output.</p>
+<p>The App is a tool designed to assist with document scanning and text recognition. It is not a substitute for professional judgment, human review, or specialized software for critical applications.</p>
+
+<h2 id="ocr">2. OCR Accuracy Disclaimer</h2>
+<p>The optical character recognition (OCR) functionality in DocuScan OCR is powered by Google ML Kit's on-device text recognition model. While ML Kit is a sophisticated machine learning system, OCR is inherently imperfect. The accuracy of text recognition depends on numerous factors, including:</p>
+<ul>
+  <li>Image quality, resolution, and lighting conditions during capture.</li>
+  <li>Document type, font, handwriting quality, and language.</li>
+  <li>Presence of noise, shadows, glare, or obstructions in the image.</li>
+  <li>Perspective distortion and warping before correction.</li>
+  <li>The specific version of the ML Kit model downloaded on your device.</li>
+</ul>
+<p>You should <strong>always verify OCR output manually</strong> before relying on it for any purpose, including but not limited to:</p>
+<ul>
+  <li>Legal documents, contracts, or agreements.</li>
+  <li>Medical records, prescriptions, or clinical notes.</li>
+  <li>Financial records, invoices, or tax documents.</li>
+  <li>Identification documents, passports, or licenses.</li>
+  <li>Any document where transcription errors could result in legal, financial, or personal harm.</li>
+</ul>
+<p>The developer is not liable for any errors, omissions, or misinterpretations resulting from the OCR functionality.</p>
+
+<h2 id="encryption">3. Encryption &amp; Security Disclaimer</h2>
+<p>The App implements encryption features using Android Keystore, AES-256-GCM, and PBKDF2 key derivation. These are industry-standard cryptographic primitives. However:</p>
+<ul>
+  <li><strong>No encryption is absolute.</strong> Advances in cryptography, vulnerabilities in the Android platform, or physical attacks on your device may compromise encrypted data.</li>
+  <li><strong>Encryption does not protect against all threats.</strong> Keylogging, screen recording, shoulder surfing, or malware on your device can bypass encryption at the point of data capture.</li>
+  <li><strong>The developer is not responsible for data loss due to forgotten PINs.</strong> If you forget the PIN for a private folder, the encrypted data cannot be recovered. There is no backdoor, password reset, or recovery mechanism.</li>
+  <li><strong>The developer is not responsible for data breaches</strong> that result from vulnerabilities in the App, the Android operating system, or your cloud storage providers.</li>
+</ul>
+<p>For a detailed analysis of the security measures and their limitations, see the <a href="security-policy.html">Security &amp; Responsible Disclosure Policy</a> and the Privacy Policy §15 (Security Measures).</p>
+
+<h2 id="compliance">4. Regulatory Compliance Disclaimer</h2>
+<p><strong>DocuScan OCR is not a certified compliance solution.</strong> The App provides technical features — encryption, audit logging, PIN protection — that are components of a compliance program. These features do not, by themselves, make your use of the App compliant with any specific regulatory framework.</p>
+<p>Specifically, the App has not undergone:</p>
+<ul>
+  <li>A <strong>HIPAA</strong> Security Rule assessment or risk analysis. The App does not sign Business Associate Agreements (BAAs) and is not listed as a HIPAA-compliant solution.</li>
+  <li>A <strong>GDPR</strong> data protection audit. While the App's local-first architecture inherently limits data processing, the developer has not appointed a Data Protection Officer (DPO) or established a formal data protection program.</li>
+  <li>A <strong>SOC 2</strong> Type I or Type II audit. The App's internal controls have not been independently audited.</li>
+  <li><strong>PCI-DSS</strong> certification. The App does not process, store, or transmit payment card data, so PCI-DSS is not applicable.</li>
+  <li><strong>ISO 27001</strong> certification of the development process.</li>
+</ul>
+<p>If you are subject to regulatory requirements (HIPAA, GDPR, CCPA, DPDP Act, or others), you should conduct your own risk assessment and consult with a qualified compliance professional before using the App in a regulated context. The audit logging feature is <strong>not</strong> a substitute for a comprehensive compliance program.</p>
+
+<h2 id="medical">5. No Medical Advice</h2>
+<p>DocuScan OCR is not a medical device and has not been cleared or approved by the FDA, EMA, CDSCO, or any other regulatory authority for medical use. The App is not intended to:</p>
+<ul>
+  <li>Diagnose, treat, cure, or prevent any disease or medical condition.</li>
+  <li>Store or transmit Protected Health Information (PHI) in a HIPAA-compliant manner.</li>
+  <li>Provide clinical decision support.</li>
+  <li>Replace professional medical record-keeping systems.</li>
+</ul>
+<p>If you are a healthcare provider using the App to scan or store patient records, you are solely responsible for ensuring compliance with applicable healthcare regulations. The developer recommends using a certified electronic health record (EHR) system for any PHI, not a general-purpose scanning application.</p>
+
+<h2 id="legal">6. No Legal Advice</h2>
+<p>The legal documentation provided with this App (including these disclaimers and the Privacy Policy, Terms of Service, and other legal pages) are for informational purposes only. They do not constitute legal advice. The developer is not a law firm and is not acting as your attorney. You should consult with a licensed attorney in your jurisdiction for advice specific to your situation.</p>
+<p>The legal pages are drafted to describe the App accurately and to set reasonable expectations regarding liability, privacy, and use. They may not be tailored to your specific use case or jurisdiction. Using the App does not create an attorney-client relationship with the developer.</p>
+
+<h2 id="financial">7. No Financial Advice</h2>
+<p>The App is not intended for financial record-keeping, accounting, tax preparation, or audit purposes. OCR output used for financial documents should be verified against original source documents. The developer is not a certified public accountant, tax advisor, or financial professional.</p>
+
+<h2 id="third-party">8. Third-Party Links &amp; Services</h2>
+<p>The App integrates with third-party services (Google ML Kit, Google Drive, Dropbox, Cloudflare R2) as described in the Privacy Policy. These services are operated by their respective providers and are subject to their own terms, policies, and security practices. The developer does not control and is not responsible for:</p>
+<ul>
+  <li>The availability, reliability, or performance of these third-party services.</li>
+  <li>The security or privacy practices of these third-party services.</li>
+  <li>Any data loss or breach that occurs as a result of using these services.</li>
+</ul>
+<p>References to third-party services, products, or websites are provided for convenience only and do not constitute endorsement.</p>
+
+<h2 id="proprietary">9. Proprietary Software &amp; Third-Party Code</h2>
+<p>DocuScan OCR is proprietary software owned by the Developer. The source code is available for public inspection on <a href="https://github.com/Rishav7324/DocuScan-OCR" target="_blank">GitHub</a> but remains the intellectual property of the Developer. While the code is open for review, this does not constitute a security warranty or grant you any license to use, modify, or distribute it beyond what is explicitly stated in the Terms of Service.</p>
+<p>The App incorporates third-party libraries that are governed by their own licenses (including Apache 2.0, MIT, and others). The Developer makes no warranty regarding the quality or security of these third-party components. Attribution for these libraries is provided in the App's documentation.</p>
+<p>The developer is not liable for issues arising from unauthorized modifications, unofficial distributions, or builds from unverified sources claiming to be DocuScan OCR.</p>
+
+<h2 id="contact">10. Contact</h2>
+<p>If you have questions about this Disclaimer, please contact us at <a href="mailto:support@prontly.in">support@prontly.in</a>.</p>
+
+<hr>
+<p style="color: #718096; font-size: 0.85rem; text-align: center;">DocuScan OCR — Disclaimer &bull; Version 2.0.0 &bull; July 18, 2026</p>
+
+</body>
+</html>

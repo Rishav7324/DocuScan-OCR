@@ -154,6 +154,21 @@ class MainActivity : ComponentActivity() {
                         // 8. Integration Help and Legal Center
                         composable("help_legal") {
                             HelpAndLegalScreen(
+                                onNavigateBack = { navController.popBackStack() },
+                                onNavigateToLegalPage = { pageName ->
+                                    navController.navigate("legal_page/$pageName")
+                                }
+                            )
+                        }
+
+                        // 9. Legal page viewer
+                        composable(
+                            route = "legal_page/{pageName}",
+                            arguments = listOf(navArgument("pageName") { type = NavType.StringType })
+                        ) { backStackEntry ->
+                            val pageName = backStackEntry.arguments?.getString("pageName") ?: "index"
+                            LegalPageViewer(
+                                pageName = pageName,
                                 onNavigateBack = { navController.popBackStack() }
                             )
                         }

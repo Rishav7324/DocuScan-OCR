@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Accessibility Statement | DocuScan OCR</title>
+<meta name="description" content="Accessibility statement and compliance information for DocuScan OCR, an Android document scanning application.">
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.7; color: #1a1a2e; max-width: 800px; margin: 0 auto; padding: 2rem 1.5rem; }
+  h1 { font-size: 2rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem; }
+  h2 { font-size: 1.4rem; margin-top: 2rem; color: #2d3748; }
+  h3 { font-size: 1.1rem; margin-top: 1.5rem; }
+  p, li { font-size: 1rem; }
+  .last-updated { color: #718096; font-size: 0.9rem; margin-bottom: 2rem; }
+  hr { border: none; border-top: 1px solid #e2e8f0; margin: 2rem 0; }
+  blockquote { border-left: 4px solid #e2e8f0; margin: 1rem 0; padding: 0.5rem 1rem; color: #4a5568; }
+  .toc { background: #f7fafc; padding: 1.2rem 1.5rem; border-radius: 8px; margin: 1.5rem 0; }
+  .toc ul { margin: 0.5rem 0 0; padding-left: 1.5rem; }
+  .toc li { margin: 0.3rem 0; }
+  .toc a { color: #2b6cb0; text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+  .status { display: inline-block; padding: 0.3rem 0.8rem; border-radius: 20px; font-size: 0.85rem; font-weight: 600; }
+  .status-partial { background: #fefcbf; color: #744210; }
+  .status-good { background: #c6f6d5; color: #22543d; }
+  .status-na { background: #e2e8f0; color: #4a5568; }
+  table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+  th, td { border: 1px solid #e2e8f0; padding: 0.6rem; text-align: left; }
+  th { background: #f7fafc; }
+</style>
+</head>
+<body>
+
+<h1>Accessibility Statement</h1>
+<p class="last-updated"><strong>Last updated:</strong> July 18, 2026</p>
+
+<div class="toc">
+  <strong>Table of Contents</strong>
+  <ul>
+    <li><a href="#commitment">1. Our Commitment to Accessibility</a></li>
+    <li><a href="#conformance">2. Conformance Status</a></li>
+    <li><a href="#features">3. Accessibility Features</a></li>
+    <li><a href="#limitations">4. Known Limitations</a></li>
+    <li><a href="#testing">5. Testing Approach</a></li>
+    <li><a href="#feedback">6. Feedback &amp; Contact</a></li>
+  </ul>
+</div>
+
+<h2 id="commitment">1. Our Commitment to Accessibility</h2>
+<p>DocuScan OCR is committed to making its application accessible to all users, including those with disabilities. We recognize that document scanning and OCR are essential tools that should be usable by everyone, regardless of ability.</p>
+<p>Because DocuScan OCR is maintained by an individual developer, accessibility efforts are ongoing and iterative. We welcome feedback from the community to help us improve.</p>
+
+<h2 id="conformance">2. Conformance Status</h2>
+<p>The <strong>Web Content Accessibility Guidelines (WCAG) 2.2</strong> define requirements for designers and developers to improve accessibility for people with disabilities. However, WCAG is primarily designed for web content, not native Android applications. For Android apps, Google's <strong>Accessibility Scanner</strong> recommendations and the <strong>Android Accessibility Suite</strong> guidelines provide the relevant framework.</p>
+<p>DocuScan OCR targets <strong>partial conformance</strong> with recognized Android accessibility best practices. We have not conducted a formal WCAG audit as the application is a native Android app rather than a web application. Instead, we follow Android's built-in accessibility APIs and conventions.</p>
+
+<h2 id="features">3. Accessibility Features</h2>
+<table>
+  <tr><th>Feature</th><th>Status</th><th>Notes</th></tr>
+  <tr><td>Content descriptions on interactive elements</td><td><span class="status status-good">Present</span></td><td>Buttons and key UI elements include contentDescription attributes for TalkBack.</td></tr>
+  <tr><td>Sufficient color contrast</td><td><span class="status status-good">Present</span></td><td>Material Design 3 default color palette meets WCAG AA contrast ratios (4.5:1 for normal text, 3:1 for large text). Dark theme available.</td></tr>
+  <tr><td>Touch target size (48dp minimum)</td><td><span class="status status-partial">Partial</span></td><td>Most controls meet 48dp; some icon-only buttons in the toolbar may be below this threshold. We are working to address these.</td></tr>
+  <tr><td>Text scaling support</td><td><span class="status status-good">Present</span></td><td>Uses sp units for text, respects system font size settings.</td></tr>
+  <tr><td>Navigation without color vision</td><td><span class="status status-good">Present</span></td><td>Icons and labels convey meaning alongside color indicators; not color-reliant.</td></tr>
+  <tr><td>Keyboard navigation</td><td><span class="status status-na">N/A</span></td><td>Android app — keyboard input is only available for text fields. Full keyboard navigation is not a platform requirement for mobile apps.</td></tr>
+  <tr><td>Screen reader (TalkBack) compatibility</td><td><span class="status status-partial">Partial</span></td><td>Core navigation and actions are announced by TalkBack. Complex custom composables (custom Canvas views, camera PreviewView) may have reduced accessibility.</td></tr>
+  <tr><td>Closed captions on media</td><td><span class="status status-na">N/A</span></td><td>The app does not contain video or audio media content.</td></tr>
+  <tr><td>Motion sensitivity</td><td><span class="status status-partial">Partial</span></td><td>Camera preview and document capture use default CameraX behavior. Users with motion sensitivity should use gallery import as an alternative to live capture.</td></tr>
+  <tr><td>Alternative text for document images</td><td><span class="status status-partial">Partial</span></td><td>Document pages are displayed as images; OCR text is available separately. We are exploring accessibility improvements for scanned document presentation.</td></tr>
+</table>
+
+<h2 id="limitations">4. Known Limitations</h2>
+<p>We acknowledge the following accessibility limitations in the current version (2.0.0):</p>
+<ol>
+  <li><strong>Camera viewfinder.</strong> The camera PreviewView is a live camera feed without accessibility labels. Users who rely on TalkBack may need assistance aiming the camera at documents. We recommend using the Gallery import feature as an alternative to camera capture.</li>
+  <li><strong>Custom swipe gestures.</strong> Swipe-to-delete in the document list may not be accessible via TalkBack. We provide a long-press context menu as an alternative action for delete operations, but this may not be discoverable.</li>
+  <li><strong>PDF/DOCX/TXT export.</strong> The exported files inherit the accessibility properties of the source document images, which are raster images without embedded text layers in PDF export (text is overlaid as an invisible layer, but the underlying image may not be accessible).</li>
+  <li><strong>OCR text selection.</strong> The OCR results are displayed as plain text, which is accessible. However, the text selection and copy interaction may not be as refined as with a native text view in all custom composable layouts.</li>
+  <li><strong>No voice control integration.</strong> The app does not implement custom Android Voice Access actions or shortcuts, so users relying entirely on voice control may find some interactions difficult.</li>
+  <li><strong>No reduced motion option.</strong> The app's animations (transitions, FAB, dialogs) follow Material Design 3 defaults and do not provide a dedicated reduced-motion toggle. The app respects the system-level "Remove animations" setting.</li>
+</ol>
+<p>These limitations are documented here transparently. As the app is developed by an individual maintainer, we prioritize accessibility improvements based on user feedback and available resources. Feedback on accessibility barriers is warmly welcomed.</p>
+
+<h2 id="testing">5. Testing Approach</h2>
+<p>Accessibility testing is performed using:</p>
+<ul>
+  <li><strong>Android Accessibility Scanner</strong> — a static analysis tool that checks for common accessibility issues at runtime.</li>
+  <li><strong>TalkBack</strong> — manual end-to-end navigation testing with TalkBack enabled on reference devices (Pixel 6a, API 33; Moto G Power, API 30).</li>
+  <li><strong>Contrast analysis</strong> — manual verification against WCAG AA ratios using the Material Design 3 color palette as a baseline.</li>
+</ul>
+<p>We do not currently have the resources to conduct usability testing with users with disabilities, but we welcome feedback from users who rely on accessibility technologies.</p>
+
+<h2 id="feedback">6. Feedback &amp; Contact</h2>
+<p>We are committed to improving the accessibility of DocuScan OCR. If you encounter accessibility barriers or have suggestions for improvement, please contact us:</p>
+<p>
+  <strong>Email:</strong> <a href="mailto:support@prontly.in">support@prontly.in</a><br>
+  <strong>GitHub:</strong> <a href="https://github.com/Rishav7324/DocuScan-OCR/issues" target="_blank">Open an accessibility issue</a>
+</p>
+<p>We aim to respond to accessibility-related feedback within <strong>7 business days</strong>. Specific resolution timelines cannot be guaranteed, but we will acknowledge and track all actionable feedback.</p>
+<p>This statement was last reviewed on July 18, 2026. It will be reviewed and updated as the app evolves.</p>
+
+<hr>
+<p style="color: #718096; font-size: 0.85rem; text-align: center;">DocuScan OCR — Accessibility Statement &bull; Version 2.0.0 &bull; July 18, 2026</p>
+
+</body>
+</html>

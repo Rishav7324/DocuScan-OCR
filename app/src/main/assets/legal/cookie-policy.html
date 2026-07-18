@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cookie Policy | DocuScan OCR</title>
+<meta name="description" content="DocuScan OCR is a native Android application that does not use cookies, web tracking, or analytics. This policy explains our absence of tracking technologies.">
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.7; color: #1a1a2e; max-width: 800px; margin: 0 auto; padding: 2rem 1.5rem; }
+  h1 { font-size: 2rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem; }
+  h2 { font-size: 1.4rem; margin-top: 2rem; color: #2d3748; }
+  p { font-size: 1rem; }
+  .last-updated { color: #718096; font-size: 0.9rem; margin-bottom: 2rem; }
+  hr { border: none; border-top: 1px solid #e2e8f0; margin: 2rem 0; }
+  table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+  th, td { border: 1px solid #e2e8f0; padding: 0.6rem; text-align: left; }
+  th { background: #f7fafc; }
+  .toc { background: #f7fafc; padding: 1.2rem 1.5rem; border-radius: 8px; margin: 1.5rem 0; }
+  .toc ul { margin: 0.5rem 0 0; padding-left: 1.5rem; }
+  .toc li { margin: 0.3rem 0; }
+  .toc a { color: #2b6cb0; text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<h1>Cookie Policy</h1>
+<p class="last-updated"><strong>Last updated:</strong> July 18, 2026</p>
+
+<div class="toc">
+  <strong>Table of Contents</strong>
+  <ul>
+    <li><a href="#cookies">1. What Are Cookies?</a></li>
+    <li><a href="#no-cookies">2. The App Does Not Use Cookies</a></li>
+    <li><a href="#local-storage">3. Local Storage Technologies Used</a></li>
+    <li><a href="#web-views">4. Web Views</a></li>
+    <li><a href="#third-party">5. Third-Party Cookies</a></li>
+    <li><a href="#controls">6. Your Controls</a></li>
+    <li><a href="#contact">7. Contact</a></li>
+  </ul>
+</div>
+
+<h2 id="cookies">1. What Are Cookies?</h2>
+<p>Cookies are small text files placed on your device by websites or applications to store information about your browsing activity, preferences, or login state. Cookies are typically associated with web browsers, though native applications can also use cookies through embedded web views.</p>
+<p>Common types of cookies include:</p>
+<ul>
+  <li><strong>Strictly necessary cookies</strong> — required for the service to function (e.g., session management, load balancing).</li>
+  <li><strong>Preference cookies</strong> — remember your settings and preferences.</li>
+  <li><strong>Analytics cookies</strong> — track how you use the service to help the provider improve it.</li>
+  <li><strong>Marketing/advertising cookies</strong> — track your browsing to build a profile for targeted advertising.</li>
+</ul>
+
+<h2 id="no-cookies">2. The App Does Not Use Cookies</h2>
+<p>DocuScan OCR is a <strong>native Android application</strong> (not a web app or hybrid app). It does not use HTTP cookies, HTML5 local storage, or any web-based storage mechanisms. The App does not:</p>
+<ul>
+  <li>Set, read, or transmit cookies.</li>
+  <li>Use web tracking technologies such as web beacons, pixel tags, or fingerprinting scripts.</li>
+  <li>Load advertisements that might place third-party cookies.</li>
+  <li>Include analytics SDKs that use cookie-like identifiers.</li>
+</ul>
+<p>Because the App has no concept of a "session" in the web sense, there is no session cookie to manage.</p>
+
+<h2 id="local-storage">3. Local Storage Technologies Used</h2>
+<p>Instead of cookies, the App uses the following Android-native storage mechanisms, which are <strong>local-only</strong> and are not used for tracking:</p>
+<table>
+  <tr><th>Technology</th><th>Data Stored</th><th>Persistence</th></tr>
+  <tr><td>SharedPreferences</td><td>User preferences (theme, Wi-Fi-only toggle, auto-backup setting, cloud sync credentials)</td><td>Persists across app restarts; cleared when app data is cleared</td></tr>
+  <tr><td>Room SQLite database</td><td>Documents metadata, OCR text, folder structure, audit logs</td><td>Persists across restarts; cleared when app data is cleared or app is uninstalled</td></tr>
+  <tr><td>File system (internal storage)</td><td>Document images (encrypted or plain)</td><td>Persists across restarts; cleared when app data is cleared or app is uninstalled</td></tr>
+</table>
+<p>None of these storage mechanisms are accessible to the developer, to third-party analytics providers, or to advertising networks. They are private to the App.</p>
+
+<h2 id="web-views">4. Web Views</h2>
+<p>The App opens a browser (not an in-app web view) for OAuth consent screens when you connect to Google Drive or Dropbox. This is the standard Android mechanism for OAuth 2.0 — the browser is a separate application with its own cookie storage. The App does not have any visibility into or control over the browser's cookies.</p>
+<p>When the OAuth flow completes, the browser redirects back to the App via a custom URI scheme (<code>docuscan://oauth</code>). The App receives only the authorization code from the redirect URI — it does not receive or process any cookies from the OAuth provider.</p>
+
+<h2 id="third-party">5. Third-Party Cookies</h2>
+<p>Because the App does not use embedded web views, advertisements, or analytics SDKs from third parties, no third-party cookies are placed on your device by the App.</p>
+<p>If you use the OAuth flow to connect to Google Drive or Dropbox, the browser you use to complete the consent screen may place its own cookies from those providers. Those cookies are governed by the respective provider's cookie policies, not by this Cookie Policy. We recommend reviewing Google's and Dropbox's cookie and privacy policies if you are concerned about browser-level tracking during OAuth consent.</p>
+
+<h2 id="controls">6. Your Controls</h2>
+<p>Since the App does not use cookies, there are no cookie consent settings to manage within the App. However, you can control how your browser handles cookies through your browser's settings.</p>
+<p>For the local storage technologies used by the App:</p>
+<ul>
+  <li><strong>Clear app data</strong> — Settings &gt; Apps &gt; DocuScan OCR &gt; Storage &gt; Clear data removes all locally stored information.</li>
+  <li><strong>Uninstall</strong> — removing the App from your device deletes all local data associated with it.</li>
+</ul>
+
+<h2 id="contact">7. Contact</h2>
+<p>If you have questions about this Cookie Policy, please contact us at <a href="mailto:support@prontly.in">support@prontly.in</a>.</p>
+
+<hr>
+<p style="color: #718096; font-size: 0.85rem; text-align: center;">DocuScan OCR — Cookie Policy &bull; Version 2.0.0 &bull; July 18, 2026</p>
+
+</body>
+</html>

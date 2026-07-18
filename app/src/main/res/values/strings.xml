@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">DocuScan OCR</string>
+    <string name="app_version">2.0.0</string>
+    <string name="app_copyright">© 2024-2026 Rishav Raj</string>
 </resources>
