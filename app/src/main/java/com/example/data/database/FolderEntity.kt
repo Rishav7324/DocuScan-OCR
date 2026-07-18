@@ -9,6 +9,6 @@ data class FolderEntity(
     val name: String,
     val createdAt: Long = System.currentTimeMillis(),
     val isPrivate: Boolean = false,
-    val passwordHash: String? = null, // For private folder access
+    val passwordHash: String? = null, // Encrypted verification marker for private folder access (not the raw PIN)
     val isSynced: Boolean = false
 )

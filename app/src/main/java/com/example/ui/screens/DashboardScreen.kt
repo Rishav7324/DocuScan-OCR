@@ -50,6 +50,7 @@ fun DashboardScreen(
     val coroutineScope = rememberCoroutineScope()
     val folders by viewModel.folders.collectAsState()
     val allDocs by viewModel.allDocuments.collectAsState()
+    val activeFolderPin by viewModel.activeFolderPin.collectAsState()
 
     var showCreateFolderDialog by remember { mutableStateOf(false) }
     var newFolderName by remember { mutableStateOf("") }
@@ -315,7 +316,7 @@ fun DashboardScreen(
                                 cornerRadius = 20.dp,
                                 onClick = {
                                     viewModel.loadActiveDocument(doc)
-                                    onNavigateToOcr(folderOfDoc?.passwordHash)
+                                    onNavigateToOcr(folderOfDoc?.let { if (it.isPrivate) viewModel.activeFolderPin.value else null })
                                 }
                             ) {
                                 Row(
@@ -405,7 +406,8 @@ fun DashboardScreen(
                                             onClick = {
                                                 coroutineScope.launch {
                                                     val pages = viewModel.getPagesForDocumentSync(doc.id)
-                                                    val folderPin = folderOfDoc?.passwordHash
+                                                    val folderPin = folderOfDoc?.let { if (it.isPrivate) viewModel.activeFolderPin.value else null }
+
                                                     val decryptedText = pages.map { page ->
                                                         val rawText = page.extractedText ?: ""
                                                         if (doc.isEncrypted && folderPin != null && folderPin.isNotEmpty()) {
@@ -418,7 +420,6 @@ fun DashboardScreen(
                                                             rawText
                                                         }
                                                     }.filter { it.isNotBlank() }.joinToString("\n\n")
-
                                                     val shareMsg = """
                                                         📄 DOCUMENT: ${doc.name}
                                                         📅 CREATED: ${sdf.format(Date(doc.createdAt))}

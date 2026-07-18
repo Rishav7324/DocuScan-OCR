@@ -6,14 +6,15 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [FolderEntity::class, DocumentEntity::class, PageEntity::class],
-    version = 1,
+    entities = [FolderEntity::class, DocumentEntity::class, PageEntity::class, AuditLogEntity::class],
+    version = 2,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun folderDao(): FolderDao
     abstract fun documentDao(): DocumentDao
     abstract fun pageDao(): PageDao
+    abstract fun auditLogDao(): AuditLogDao
 
     companion object {
         @Volatile

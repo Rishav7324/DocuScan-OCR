@@ -18,12 +18,14 @@ import androidx.navigation.navArgument
 import com.example.ui.screens.*
 import com.example.ui.theme.MyApplicationTheme
 import com.example.ui.viewmodel.ScannerViewModel
+import com.example.data.api.OAuthManager
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        OAuthManager.init(this)
         enableEdgeToEdge()
         setContent {
             val viewModel: ScannerViewModel = viewModel()

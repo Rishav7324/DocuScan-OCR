@@ -1,5 +1,7 @@
 package com.example.ui.screens
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.animation.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -16,11 +18,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.data.api.OAuthManager
 import com.example.data.model.CloudSyncConfig
 import com.example.ui.components.GlassBackground
 import com.example.ui.components.GlassCard
@@ -37,6 +41,46 @@ fun CloudSyncScreen(
     val syncConfig by viewModel.syncConfig.collectAsState()
     val isSyncing by viewModel.isSyncing.collectAsState()
     val allDocs by viewModel.allDocuments.collectAsState()
+    val context = LocalContext.current
+
+    var connectingProvider by remember { mutableStateOf<String?>(null) }
+    var authError by remember { mutableStateOf<String?>(null) }
+
+    fun connect(provider: OAuthManager.Provider) {
+        authError = null
+        val req = OAuthManager.startAuth(provider) { result ->
+            connectingProvider = null
+            result.onSuccess { res ->
+                when (res.provider) {
+                    OAuthManager.Provider.GOOGLE.key -> {
+                        driveToken = res.accessToken
+                        driveAccount = res.account ?: "Connected"
+                        viewModel.updateSyncConfig(syncConfig.copy(
+                            googleDriveEnabled = true,
+                            googleDriveAccount = res.account ?: "Connected",
+                            googleDriveToken = res.accessToken,
+                            googleDriveRefreshToken = res.refreshToken ?: syncConfig.googleDriveRefreshToken
+                        ))
+                    }
+                    OAuthManager.Provider.DROPBOX.key -> {
+                        dropboxToken = res.accessToken
+                        dropboxAccount = res.account ?: "Connected"
+                        viewModel.updateSyncConfig(syncConfig.copy(
+                            dropboxEnabled = true,
+                            dropboxAccount = res.account ?: "Connected",
+                            dropboxToken = res.accessToken,
+                            dropboxRefreshToken = res.refreshToken ?: syncConfig.dropboxRefreshToken
+                        ))
+                    }
+                    else -> { /* no other providers */ }
+                }
+            }.onFailure {
+                authError = it.message ?: "Authorization failed"
+            }
+        }
+        connectingProvider = provider.key
+        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(req.url)))
+    }
 
     var r2Bucket by remember { mutableStateOf(syncConfig.r2Bucket) }
     var r2Endpoint by remember { mutableStateOf(syncConfig.r2Endpoint) }
@@ -249,6 +293,15 @@ fun CloudSyncScreen(
 
                     // Google Drive and Dropbox Syncing
                     Text("Third-Party Integrations", fontWeight = FontWeight.Black, style = MaterialTheme.typography.titleMedium, color = Color.Black)
+                    authError?.let {
+                        Text(
+                            text = "⚠️ $it",
+                            fontSize = 12.sp,
+                            color = Color(0xFFDC2626),
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
                     GlassCard(
                         modifier = Modifier.fillMaxWidth(),
                         cornerRadius = 20.dp
@@ -271,73 +324,31 @@ fun CloudSyncScreen(
                                             Text("Google Drive Integration", fontWeight = FontWeight.Black, color = Color.Black)
                                         }
                                         if (syncConfig.googleDriveEnabled && driveAccount.isNotEmpty()) {
-                                            Text("Account: $driveAccount", style = MaterialTheme.typography.bodySmall, color = Color.Gray, fontWeight = FontWeight.Bold)
+                                            Text("Connected: $driveAccount", style = MaterialTheme.typography.bodySmall, color = Color.Gray, fontWeight = FontWeight.Bold)
                                         }
                                     }
-                                    Switch(
-                                        checked = syncConfig.googleDriveEnabled,
-                                        onCheckedChange = { checked ->
-                                            if (checked && driveAccount.isEmpty()) {
-                                                driveAccount = "user_active@gmail.com"
-                                                if (driveToken.isEmpty()) driveToken = "simulated_token"
-                                            }
-                                            viewModel.updateSyncConfig(syncConfig.copy(
-                                                googleDriveEnabled = checked,
-                                                googleDriveAccount = if (checked) driveAccount else "",
-                                                googleDriveToken = if (checked) driveToken else ""
-                                            ))
-                                        }
-                                    )
-                                }
-
-                                AnimatedVisibility(visible = syncConfig.googleDriveEnabled) {
-                                    Column(
-                                        verticalArrangement = Arrangement.spacedBy(10.dp),
-                                        modifier = Modifier.padding(top = 10.dp)
+                                    Button(
+                                        onClick = { connect(OAuthManager.Provider.GOOGLE) },
+                                        enabled = connectingProvider == null,
+                                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF34A853), contentColor = Color.White),
+                                        shape = RoundedCornerShape(12.dp)
                                     ) {
-                                        OutlinedTextField(
-                                            value = driveAccount,
-                                            onValueChange = { driveAccount = it },
-                                            label = { Text("Google Drive Account Email") },
-                                            singleLine = true,
-                                            colors = OutlinedTextFieldDefaults.colors(
-                                                focusedContainerColor = Color.White,
-                                                unfocusedContainerColor = Color(0xFFF8FAFC),
-                                                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                                                unfocusedBorderColor = Color(0xFFE2E8F0),
-                                                focusedTextColor = Color.Black,
-                                                unfocusedTextColor = Color.Black
-                                            ),
-                                            shape = RoundedCornerShape(16.dp),
-                                            modifier = Modifier.fillMaxWidth()
-                                        )
-
-                                        OutlinedTextField(
-                                            value = driveToken,
-                                            onValueChange = { driveToken = it },
-                                            label = { Text("Google OAuth Access Token") },
-                                            placeholder = { Text("Paste Google OAuth Token or 'simulated_token'") },
-                                            singleLine = true,
-                                            colors = OutlinedTextFieldDefaults.colors(
-                                                focusedContainerColor = Color.White,
-                                                unfocusedContainerColor = Color(0xFFF8FAFC),
-                                                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                                                unfocusedBorderColor = Color(0xFFE2E8F0),
-                                                focusedTextColor = Color.Black,
-                                                unfocusedTextColor = Color.Black
-                                            ),
-                                            shape = RoundedCornerShape(16.dp),
-                                            modifier = Modifier.fillMaxWidth()
-                                        )
-                                        Text(
-                                            text = "💡 Type 'simulated_token' for sandbox test upload, or use a genuine access token for live Google Drive uploads.",
-                                            fontSize = 11.sp,
-                                            color = Color.Gray,
-                                            fontWeight = FontWeight.Bold,
-                                            lineHeight = 14.sp
-                                        )
+                                        if (connectingProvider == OAuthManager.Provider.GOOGLE.key) {
+                                            CircularProgressIndicator(modifier = Modifier.size(16.dp), color = Color.White, strokeWidth = 2.dp)
+                                        } else {
+                                            Text(if (syncConfig.googleDriveEnabled) "Reconnect" else "Connect")
+                                        }
                                     }
                                 }
+
+                                Text(
+                                    text = "Tap Connect to authorize DocuScan with your Google account (drive.file scope). Uploads use the live Drive v3 API.",
+                                    fontSize = 11.sp,
+                                    color = Color.Gray,
+                                    fontWeight = FontWeight.Bold,
+                                    lineHeight = 14.sp,
+                                    modifier = Modifier.padding(top = 6.dp)
+                                )
                             }
 
                             HorizontalDivider(color = Color(0xFFE2E8F0))
@@ -356,73 +367,31 @@ fun CloudSyncScreen(
                                             Text("Dropbox Integration", fontWeight = FontWeight.Black, color = Color.Black)
                                         }
                                         if (syncConfig.dropboxEnabled && dropboxAccount.isNotEmpty()) {
-                                            Text("Account: $dropboxAccount", style = MaterialTheme.typography.bodySmall, color = Color.Gray, fontWeight = FontWeight.Bold)
+                                            Text("Connected: $dropboxAccount", style = MaterialTheme.typography.bodySmall, color = Color.Gray, fontWeight = FontWeight.Bold)
                                         }
                                     }
-                                    Switch(
-                                        checked = syncConfig.dropboxEnabled,
-                                        onCheckedChange = { checked ->
-                                            if (checked && dropboxAccount.isEmpty()) {
-                                                dropboxAccount = "user_active_db"
-                                                if (dropboxToken.isEmpty()) dropboxToken = "simulated_token"
-                                            }
-                                            viewModel.updateSyncConfig(syncConfig.copy(
-                                                dropboxEnabled = checked,
-                                                dropboxAccount = if (checked) dropboxAccount else "",
-                                                dropboxToken = if (checked) dropboxToken else ""
-                                            ))
-                                        }
-                                    )
-                                }
-
-                                AnimatedVisibility(visible = syncConfig.dropboxEnabled) {
-                                    Column(
-                                        verticalArrangement = Arrangement.spacedBy(10.dp),
-                                        modifier = Modifier.padding(top = 10.dp)
+                                    Button(
+                                        onClick = { connect(OAuthManager.Provider.DROPBOX) },
+                                        enabled = connectingProvider == null,
+                                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF0061FE), contentColor = Color.White),
+                                        shape = RoundedCornerShape(12.dp)
                                     ) {
-                                        OutlinedTextField(
-                                            value = dropboxAccount,
-                                            onValueChange = { dropboxAccount = it },
-                                            label = { Text("Dropbox Account User") },
-                                            singleLine = true,
-                                            colors = OutlinedTextFieldDefaults.colors(
-                                                focusedContainerColor = Color.White,
-                                                unfocusedContainerColor = Color(0xFFF8FAFC),
-                                                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                                                unfocusedBorderColor = Color(0xFFE2E8F0),
-                                                focusedTextColor = Color.Black,
-                                                unfocusedTextColor = Color.Black
-                                            ),
-                                            shape = RoundedCornerShape(16.dp),
-                                            modifier = Modifier.fillMaxWidth()
-                                        )
-
-                                        OutlinedTextField(
-                                            value = dropboxToken,
-                                            onValueChange = { dropboxToken = it },
-                                            label = { Text("Dropbox API Access Token") },
-                                            placeholder = { Text("Paste Dropbox Token or 'simulated_token'") },
-                                            singleLine = true,
-                                            colors = OutlinedTextFieldDefaults.colors(
-                                                focusedContainerColor = Color.White,
-                                                unfocusedContainerColor = Color(0xFFF8FAFC),
-                                                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                                                unfocusedBorderColor = Color(0xFFE2E8F0),
-                                                focusedTextColor = Color.Black,
-                                                unfocusedTextColor = Color.Black
-                                            ),
-                                            shape = RoundedCornerShape(16.dp),
-                                            modifier = Modifier.fillMaxWidth()
-                                        )
-                                        Text(
-                                            text = "💡 Type 'simulated_token' for sandbox test upload, or use a live Dropbox HTTP bearer token.",
-                                            fontSize = 11.sp,
-                                            color = Color.Gray,
-                                            fontWeight = FontWeight.Bold,
-                                            lineHeight = 14.sp
-                                        )
+                                        if (connectingProvider == OAuthManager.Provider.DROPBOX.key) {
+                                            CircularProgressIndicator(modifier = Modifier.size(16.dp), color = Color.White, strokeWidth = 2.dp)
+                                        } else {
+                                            Text(if (syncConfig.dropboxEnabled) "Reconnect" else "Connect")
+                                        }
                                     }
                                 }
+
+                                Text(
+                                    text = "Tap Connect to authorize DocuScan with Dropbox (PKCE flow). Uploads use the live Dropbox files/upload API.",
+                                    fontSize = 11.sp,
+                                    color = Color.Gray,
+                                    fontWeight = FontWeight.Bold,
+                                    lineHeight = 14.sp,
+                                    modifier = Modifier.padding(top = 6.dp)
+                                )
                             }
                         }
                     }

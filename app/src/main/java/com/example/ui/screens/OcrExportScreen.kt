@@ -1,6 +1,8 @@
 package com.example.ui.screens
 
 import android.content.Intent
+import android.net.Uri
+import androidx.core.content.FileProvider
 import androidx.compose.animation.*
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -15,6 +17,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,8 +45,12 @@ fun OcrExportScreen(
     onNavigateToHome: () -> Unit
 ) {
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
     val activeDoc by viewModel.activeDocument.collectAsState()
     val activePages by viewModel.activePages.collectAsState()
+    val activeFolderPin by viewModel.activeFolderPin.collectAsState()
+    // Prefer the in-memory unlocked PIN over the navigation arg (which may be an encrypted marker)
+    val effectivePin = activeFolderPin ?: folderPin
 
     var customOcrPrompt by remember { mutableStateOf("Perform highly accurate OCR on this document image. Extract all text exactly as written, preserving paragraph breaks.") }
     var selectedPageIdForOcr by remember { mutableStateOf<Long?>(null) }
@@ -155,16 +162,27 @@ fun OcrExportScreen(
                                 ).forEach { (format, icon) ->
                                     Button(
                                         onClick = {
-                                            val exportMsg = viewModel.exportDocument(activeDoc!!, format, folderPin)
-                                            // Trigger share intent
-                                            val shareIntent = Intent(Intent.ACTION_SEND).apply {
-                                                type = "text/plain"
-                                                putExtra(Intent.EXTRA_SUBJECT, activeDoc!!.name)
-                                                putExtra(Intent.EXTRA_TEXT, "$exportMsg\n\nContent:\n" + activePages.map { p -> 
-                                                    editingTextMap[p.id] ?: "(Unextracted Text)"
-                                                }.joinToString("\n\n"))
+                                            coroutineScope.launch {
+                                                val file = viewModel.exportDocument(context, activeDoc!!, format, effectivePin)
+                                                if (file != null) {
+                                                    val uri = FileProvider.getUriForFile(
+                                                        context,
+                                                        context.packageName + ".fileprovider",
+                                                        file
+                                                    )
+                                                    val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                                                        type = when (format) {
+                                                            "PDF" -> "application/pdf"
+                                                            "DOCX" -> "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                                                            else -> "text/plain"
+                                                        }
+                                                        addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                                        putExtra(Intent.EXTRA_STREAM, uri)
+                                                        putExtra(Intent.EXTRA_SUBJECT, activeDoc!!.name)
+                                                    }
+                                                    context.startActivity(Intent.createChooser(shareIntent, "Share Scanned Document"))
+                                                }
                                             }
-                                            context.startActivity(Intent.createChooser(shareIntent, "Share Scanned Document"))
                                         },
                                         modifier = Modifier.weight(1f),
                                         colors = ButtonDefaults.buttonColors(
@@ -236,8 +254,8 @@ fun OcrExportScreen(
                                                 .border(1.dp, Color(0xFFE2E8F0), RoundedCornerShape(16.dp))
                                                 .background(Color(0xFFF1F5F9))
                                         ) {
-                                            val rawBitmap = page.processedImagePath?.let { viewModel.loadBitmapFromFile(it) } 
-                                                ?: viewModel.loadBitmapFromFile(page.originalImagePath)
+                                            val rawBitmap = page.processedImagePath?.let { viewModel.loadBitmapFromFile(it, effectivePin) }
+                                                ?: viewModel.loadBitmapFromFile(page.originalImagePath, effectivePin)
 
                                             val bitmap = remember(rawBitmap, page.filterType) {
                                                 rawBitmap?.let { com.example.ui.components.DocumentFilterProcessor.applyFilter(it, page.filterType) }
@@ -272,7 +290,7 @@ fun OcrExportScreen(
                                                     onClick = {
                                                         selectedPageIdForOcr = page.id
                                                         isOcrRunning = true
-                                                        viewModel.performOcrOnPage(page, customOcrPrompt, folderPin)
+                                                        viewModel.performOcrOnPage(page, customOcrPrompt, effectivePin)
                                                     },
                                                     colors = ButtonDefaults.buttonColors(
                                                         containerColor = MaterialTheme.colorScheme.primary,
@@ -374,16 +392,17 @@ fun OcrExportScreen(
                 // Biometric / PIN Lock Screen modal for secure folders
                 if (showSecureFolderUnlock) {
                     BiometricLockDialog(
-                        correctPin = folderPin ?: "",
-                        onSuccess = {
-                            folderDecryptionPin = folderPin ?: ""
+                        verify = { EncryptionUtils.verifyPassphrase(folderPin ?: "", it) },
+                        onSuccess = { entered ->
+                            viewModel.setActiveFolderPin(entered)
+                            folderDecryptionPin = entered
                             hasDecryptedValue = true
                             showSecureFolderUnlock = false
                             viewModel.addAuditLog("DECRYPT", "KEYS", "Private folder vault authenticated with PIN/Biometrics")
                             // Reload pages to trigger decryption in editingTextMap
                             activePages.forEach { page ->
                                 if (page.extractedText != null) {
-                                    val dec = viewModel.decryptPageText(page.extractedText, folderPin ?: "")
+                                    val dec = viewModel.decryptPageText(page.extractedText, entered)
                                     editingTextMap[page.id] = dec
                                 }
                             }

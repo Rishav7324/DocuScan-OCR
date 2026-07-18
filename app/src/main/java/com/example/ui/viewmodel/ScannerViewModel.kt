@@ -39,7 +39,8 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
     private val repository = DocumentRepository(
         folderDao = db.folderDao(),
         documentDao = db.documentDao(),
-        pageDao = db.pageDao()
+        pageDao = db.pageDao(),
+        auditLogDao = db.auditLogDao()
     )
 
     // Flow lists
@@ -52,6 +53,14 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
     // Active state
     private val _currentFolderId = MutableStateFlow<Long>(0) // 0 means Root/Uncategorized
     val currentFolderId: StateFlow<Long> = _currentFolderId.asStateFlow()
+
+    // Raw PIN for the currently unlocked private folder (in-memory only; never persisted)
+    private val _activeFolderPin = MutableStateFlow<String?>(null)
+    val activeFolderPin: StateFlow<String?> = _activeFolderPin.asStateFlow()
+
+    fun setActiveFolderPin(pin: String?) {
+        _activeFolderPin.value = if (pin.isNullOrEmpty()) null else pin
+    }
 
     private val _activeDocument = MutableStateFlow<DocumentEntity?>(null)
     val activeDocument: StateFlow<DocumentEntity?> = _activeDocument.asStateFlow()
@@ -77,9 +86,10 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
     private val _isSyncing = MutableStateFlow(false)
     val isSyncing: StateFlow<Boolean> = _isSyncing.asStateFlow()
 
-    // Compliance Audit logs (stored in-memory for live auditing)
-    private val _auditLogs = MutableStateFlow<List<AuditLog>>(emptyList())
-    val auditLogs: StateFlow<List<AuditLog>> = _auditLogs.asStateFlow()
+    // Compliance Audit logs persisted in Room (survives process death)
+    val auditLogs: StateFlow<List<AuditLog>> = repository.allAuditLogs
+        .map { logs -> logs.map { AuditLog(id = it.id.toString(), timestamp = it.timestamp, action = it.action, resourceType = it.resourceType, details = it.details, operator = it.operator) } }
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
     init {
         // Initialize audit logs with default HIPAA/GDPR startup notice
@@ -102,14 +112,17 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
 
     // --- Audit Trail Logging ---
     fun addAuditLog(action: String, resourceType: String, details: String) {
-        val log = AuditLog(action = action, resourceType = resourceType, details = details)
-        _auditLogs.update { listOf(log) + it }
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.insertAuditLog(
+                AuditLogEntity(action = action, resourceType = resourceType, details = details)
+            )
+        }
     }
 
     // --- Folder CRUD ---
     fun createFolder(name: String, isPrivate: Boolean = false, passcode: String? = null) {
         viewModelScope.launch {
-            val passwordHash = if (isPrivate && passcode != null) passcode else null
+            val passwordHash = if (isPrivate && passcode != null) EncryptionUtils.encrypt("VERIFIED", passcode) else null
             val folder = FolderEntity(name = name, isPrivate = isPrivate, passwordHash = passwordHash)
             val folderId = repository.insertFolder(folder)
             addAuditLog(
@@ -133,7 +146,7 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
 
     fun updateFolderPasscode(folder: FolderEntity, newPasscode: String) {
         viewModelScope.launch {
-            val updated = folder.copy(isPrivate = true, passwordHash = newPasscode)
+            val updated = folder.copy(isPrivate = true, passwordHash = EncryptionUtils.encrypt("VERIFIED", newPasscode))
             repository.updateFolder(updated)
             addAuditLog(
                 action = "UPDATE",
@@ -141,6 +154,11 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
                 details = "Re-keyed secure folder storage key for ID: ${folder.id}"
             )
         }
+    }
+
+    fun verifyFolderPasscode(folder: FolderEntity, passcode: String): Boolean {
+        val marker = folder.passwordHash ?: return false
+        return EncryptionUtils.verifyPassphrase(marker, passcode)
     }
 
     suspend fun getPagesForDocumentSync(docId: Long): List<PageEntity> {
@@ -192,9 +210,13 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
     }
 
     // Finalize the batch process and save to a new Document
-    fun finalizeBatch(documentName: String, folderId: Long) {
+    fun finalizeBatch(documentName: String, folderId: Long, folderPin: String? = null) {
         viewModelScope.launch(Dispatchers.IO) {
             if (_batchImages.value.isEmpty()) return@launch
+
+            val pin = folderPin ?: _activeFolderPin.value
+            val targetFolder = repository.getFolderById(folderId)
+            val usePin = if (targetFolder?.isPrivate == true) (pin ?: _activeFolderPin.value) else null
 
             // Create Document
             val document = DocumentEntity(
@@ -213,6 +235,12 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
                 val origPath = saveBitmapToFile("orig_${docId}_${index}.jpg", bitmap)
                 val procPath = saveBitmapToFile("proc_${docId}_${index}.jpg", corrected)
 
+                // Encrypt images at rest when the target folder is private
+                if (usePin != null) {
+                    runCatching { EncryptionUtils.encryptFile(File(origPath), usePin) }
+                    runCatching { EncryptionUtils.encryptFile(File(procPath), usePin) }
+                }
+
                 val page = PageEntity(
                     documentId = docId,
                     pageNumber = index + 1,
@@ -224,8 +252,10 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
 
             // Load the finalized document as active
             val finalizedDoc = repository.getDocumentById(docId)
+            val imageEncrypted = usePin != null
+            repository.updateDocument(finalizedDoc!!.copy(isImageEncrypted = imageEncrypted))
             withContext(Dispatchers.Main) {
-                _activeDocument.value = finalizedDoc
+                _activeDocument.value = finalizedDoc.copy(isImageEncrypted = imageEncrypted)
                 clearBatch()
                 loadPagesForActiveDocument()
             }
@@ -233,7 +263,8 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
             addAuditLog(
                 action = "CREATE",
                 resourceType = "DOCUMENT",
-                details = "Finalized batch scan for document: '$documentName' with ${_batchImages.value.size} pages (ID: $docId)"
+                details = "Finalized batch scan for document: '$documentName' with ${_batchImages.value.size} pages (ID: $docId)" +
+                    if (imageEncrypted) " (images encrypted at rest)" else ""
             )
         }
     }
@@ -359,20 +390,40 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
         } else null
     }
 
-    // --- Export Simulation ---
-    fun exportDocument(doc: DocumentEntity, format: String, pin: String? = null): String {
+    fun loadBitmapFromFile(path: String, pin: String?): Bitmap? {
+        val file = File(path)
+        if (!file.exists()) return null
+        val bytes = if (pin != null && pin.isNotEmpty()) {
+            runCatching { EncryptionUtils.decryptFile(file, pin) }.getOrNull() ?: return null
+        } else {
+            file.readBytes()
+        }
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+    }
+
+    // --- Export to real files ---
+    suspend fun exportDocument(context: android.content.Context, doc: DocumentEntity, format: String, pin: String? = null): File? {
+        val pages = repository.getPagesForDocumentSync(doc.id)
+        val text = pages.joinToString("\n\n") { page ->
+            val raw = page.extractedText ?: ""
+            if (doc.isEncrypted && pin != null) {
+                runCatching { EncryptionUtils.decrypt(raw, pin) }.getOrDefault("(Locked)")
+            } else raw
+        }
+        val images = pages.mapNotNull { page ->
+            val path = page.processedImagePath ?: page.originalImagePath
+            loadBitmapFromFile(path, if (doc.isImageEncrypted) pin else null)
+        }
+        val file = runCatching {
+            com.example.data.export.ExportUtils.exportDocument(context, doc.name, format, text, if (format == "PDF") images else emptyList())
+        }.getOrNull()
+
         addAuditLog(
             action = "EXPORT",
             resourceType = "DOCUMENT",
-            details = "Exported document '${doc.name}' as $format format"
+            details = "Exported document '${doc.name}' as $format format" + (file?.let { " -> ${it.absolutePath}" } ?: " (failed)")
         )
-        return if (format == "PDF") {
-            "Simulated PDF with searchable OCR overlay created successfully in downloads: ${doc.name}.pdf"
-        } else if (format == "DOCX") {
-            "Simulated Word document (.docx) with rich paragraph markers: ${doc.name}.docx"
-        } else {
-            "Plain text document (.txt) compiled and shared: ${doc.name}.txt"
-        }
+        return file
     }
 
     // --- Cloud Syncing Management ---
@@ -387,9 +438,11 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
             googleDriveEnabled = sharedPrefs.getBoolean("drive_enabled", false),
             googleDriveAccount = sharedPrefs.getString("drive_account", "") ?: "",
             googleDriveToken = sharedPrefs.getString("drive_token", "") ?: "",
+            googleDriveRefreshToken = sharedPrefs.getString("drive_refresh_token", "") ?: "",
             dropboxEnabled = sharedPrefs.getBoolean("dropbox_enabled", false),
             dropboxAccount = sharedPrefs.getString("dropbox_account", "") ?: "",
             dropboxToken = sharedPrefs.getString("dropbox_token", "") ?: "",
+            dropboxRefreshToken = sharedPrefs.getString("dropbox_refresh_token", "") ?: "",
             autoBackup = sharedPrefs.getBoolean("auto_backup", true),
             wifiOnly = sharedPrefs.getBoolean("wifi_only", false),
             lastSyncTime = sharedPrefs.getLong("last_sync_time", 0L)
@@ -408,9 +461,11 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
             .putBoolean("drive_enabled", config.googleDriveEnabled)
             .putString("drive_account", config.googleDriveAccount)
             .putString("drive_token", config.googleDriveToken)
+            .putString("drive_refresh_token", config.googleDriveRefreshToken)
             .putBoolean("dropbox_enabled", config.dropboxEnabled)
             .putString("dropbox_account", config.dropboxAccount)
             .putString("dropbox_token", config.dropboxToken)
+            .putString("dropbox_refresh_token", config.dropboxRefreshToken)
             .putBoolean("auto_backup", config.autoBackup)
             .putBoolean("wifi_only", config.wifiOnly)
             .putLong("last_sync_time", config.lastSyncTime)
@@ -436,10 +491,32 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
             )
 
             val unsynced = repository.getUnsyncedDocuments()
-            val config = _syncConfig.value
+            var config = _syncConfig.value
             var uploadCount = 0
             var errorCount = 0
             val sbDetails = StringBuilder()
+
+            // Refresh access tokens up front so the run doesn't fail on expired tokens.
+            withContext(Dispatchers.IO) {
+                if (config.googleDriveEnabled && config.googleDriveRefreshToken.isNotBlank()) {
+                    runCatching {
+                        com.example.data.api.OAuthManager.refreshAccessToken(
+                            com.example.data.api.OAuthManager.Provider.GOOGLE, config.googleDriveRefreshToken
+                        )
+                    }.onSuccess { config = config.copy(googleDriveToken = it) }
+                }
+                if (config.dropboxEnabled && config.dropboxRefreshToken.isNotBlank()) {
+                    runCatching {
+                        com.example.data.api.OAuthManager.refreshAccessToken(
+                            com.example.data.api.OAuthManager.Provider.DROPBOX, config.dropboxRefreshToken
+                        )
+                    }.onSuccess { config = config.copy(dropboxToken = it) }
+                }
+            }
+            if (config.googleDriveToken != _syncConfig.value.googleDriveToken ||
+                config.dropboxToken != _syncConfig.value.dropboxToken) {
+                updateSyncConfig(config)
+            }
 
             withContext(Dispatchers.IO) {
                 unsynced.forEach { doc ->

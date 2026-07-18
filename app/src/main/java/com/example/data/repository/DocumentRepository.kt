@@ -6,7 +6,8 @@ import kotlinx.coroutines.flow.Flow
 class DocumentRepository(
     private val folderDao: FolderDao,
     private val documentDao: DocumentDao,
-    private val pageDao: PageDao
+    private val pageDao: PageDao,
+    private val auditLogDao: AuditLogDao
 ) {
     val allFolders: Flow<List<FolderEntity>> = folderDao.getAllFolders()
     val allDocuments: Flow<List<DocumentEntity>> = documentDao.getAllDocuments()
@@ -72,4 +73,10 @@ class DocumentRepository(
     suspend fun getUnsyncedDocuments(): List<DocumentEntity> {
         return documentDao.getUnsyncedDocuments()
     }
+
+    val allAuditLogs: Flow<List<AuditLogEntity>> = auditLogDao.getAllLogs()
+
+    suspend fun insertAuditLog(log: AuditLogEntity): Long = auditLogDao.insertLog(log)
+
+    suspend fun clearAuditLogs() = auditLogDao.clearLogs()
 }

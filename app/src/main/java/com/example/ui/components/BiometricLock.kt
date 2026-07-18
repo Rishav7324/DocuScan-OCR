@@ -24,21 +24,24 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun BiometricLockDialog(
-    correctPin: String,
-    onSuccess: () -> Unit,
+    correctPin: String = "",
+    verify: ((String) -> Boolean)? = null,
+    onSuccess: (String) -> Unit,
     onDismiss: () -> Unit,
     title: String = "Private Folder Locked"
 ) {
     var enteredPin by remember { mutableStateOf("") }
     var errorMessage by remember { mutableStateOf<String?>(null) }
 
+    fun isCorrect(pin: String): Boolean = verify?.invoke(pin) ?: (pin == correctPin)
+
     fun handlePinInput(char: String) {
         if (enteredPin.length < 4) {
             errorMessage = null
             enteredPin += char
             if (enteredPin.length == 4) {
-                if (enteredPin == correctPin) {
-                    onSuccess()
+                if (isCorrect(enteredPin)) {
+                    onSuccess(enteredPin)
                 } else {
                     errorMessage = "Incorrect security PIN. Access denied."
                     enteredPin = ""
@@ -157,7 +160,7 @@ fun BiometricLockDialog(
                                         onClick = {
                                             // Simulate biometric sensor read
                                             errorMessage = "Fingerprint scanned. Secure folder unlocked!"
-                                            onSuccess()
+                                            onSuccess(enteredPin)
                                         },
                                         modifier = Modifier
                                             .size(56.dp)

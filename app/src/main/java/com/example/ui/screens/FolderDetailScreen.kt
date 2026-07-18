@@ -32,6 +32,7 @@ import com.example.data.database.FolderEntity
 import com.example.ui.components.GlassBackground
 import com.example.ui.components.GlassCard
 import com.example.ui.components.SetPasscodeDialog
+import com.example.ui.components.BiometricLockDialog
 import com.example.ui.viewmodel.ScannerViewModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -59,6 +60,11 @@ fun FolderDetailScreen(
     }
 
     var showSetPasscode by remember { mutableStateOf(false) }
+    val activeFolderPin by viewModel.activeFolderPin.collectAsState()
+    // Prompt for the PIN once when opening a private folder, so the key is available for new scans/exports
+    var showUnlock by remember {
+        mutableStateOf(currentFolder?.isPrivate == true && activeFolderPin == null)
+    }
 
     val sdf = remember { SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()) }
     val coroutineScope = rememberCoroutineScope()
@@ -207,7 +213,7 @@ fun FolderDetailScreen(
                                             cornerRadius = 20.dp,
                                             onClick = {
                                                 viewModel.loadActiveDocument(doc)
-                                                onNavigateToOcr(currentFolder.passwordHash)
+                                                onNavigateToOcr(viewModel.activeFolderPin.value)
                                             }
                                         ) {
                                             Column(modifier = Modifier.fillMaxWidth()) {
@@ -288,21 +294,21 @@ fun FolderDetailScreen(
 
                                                     IconButton(
                                                         onClick = {
-                                                            coroutineScope.launch {
-                                                                val pages = viewModel.getPagesForDocumentSync(doc.id)
-                                                                val folderPin = currentFolder.passwordHash
-                                                                val decryptedText = pages.map { page ->
-                                                                    val rawText = page.extractedText ?: ""
-                                                                    if (doc.isEncrypted && folderPin != null && folderPin.isNotEmpty()) {
-                                                                        try {
-                                                                            EncryptionUtils.decrypt(rawText, folderPin)
-                                                                        } catch (e: Exception) {
-                                                                            "(Locked PHI Data)"
-                                                                        }
-                                                                    } else {
-                                                                        rawText
+                                                        coroutineScope.launch {
+                                                            val pages = viewModel.getPagesForDocumentSync(doc.id)
+                                                            val folderPin = viewModel.activeFolderPin.value
+                                                            val decryptedText = pages.map { page ->
+                                                                val rawText = page.extractedText ?: ""
+                                                                if (doc.isEncrypted && folderPin != null && folderPin.isNotEmpty()) {
+                                                                    try {
+                                                                        EncryptionUtils.decrypt(rawText, folderPin)
+                                                                    } catch (e: Exception) {
+                                                                        "(Locked PHI Data)"
                                                                     }
-                                                                }.filter { it.isNotBlank() }.joinToString("\n\n")
+                                                                } else {
+                                                                    rawText
+                                                                }
+                                                            }.filter { it.isNotBlank() }.joinToString("\n\n")
 
                                                                 val shareMsg = """
                                                                     📄 DOCUMENT: ${doc.name}
@@ -349,10 +355,23 @@ fun FolderDetailScreen(
                     SetPasscodeDialog(
                         onConfirm = { code ->
                             viewModel.updateFolderPasscode(currentFolder, code)
+                            viewModel.setActiveFolderPin(code)
                             showSetPasscode = false
                             viewModel.addAuditLog("UPDATE", "FOLDER", "Reconfigured folder '${currentFolder.name}' to Secure Mode (PIN Set)")
                         },
                         onDismiss = { showSetPasscode = false }
+                    )
+                }
+
+                // Unlock private folder on entry
+                if (showUnlock && currentFolder != null) {
+                    BiometricLockDialog(
+                        verify = { viewModel.verifyFolderPasscode(currentFolder, it) },
+                        onSuccess = { entered ->
+                            viewModel.setActiveFolderPin(entered)
+                            showUnlock = false
+                        },
+                        onDismiss = { onNavigateBack() }
                     )
                 }
             }

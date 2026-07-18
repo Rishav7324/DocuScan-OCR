@@ -13,5 +13,6 @@ data class DocumentEntity(
     val fileFormat: String = "PDF", // PDF, DOCX, TXT
     val hasOcr: Boolean = false,
     val isEncrypted: Boolean = false,
+    val isImageEncrypted: Boolean = false,
     val extractedTextSummary: String? = null
 )

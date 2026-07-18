@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Replace these with your own OAuth app credentials from each provider's developer console. -->
+    <!-- Register the redirect URI "docuscan://oauth" in every app. -->
+    <string name="oauth_google_client_id" translatable="false">938161509146-bmjk1skjvumlaajodkqjhlctvjo3roq6.apps.googleusercontent.com</string>
+    <!-- Installed-type OAuth client: no secret is used (PKCE browser flow). -->
+    <string name="oauth_google_client_secret" translatable="false">NOT_USED_INSTALLED_CLIENT</string>
+    <string name="oauth_dropbox_client_id" translatable="false">1ej9wossera8bfp</string>
+    <!-- PKCE flow: app secret is not sent from a public/native client. -->
+    <string name="oauth_dropbox_client_secret" translatable="false">NOT_USED_PKCE_CLIENT</string>
+</resources>

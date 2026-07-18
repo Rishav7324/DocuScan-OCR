@@ -1,99 +1,116 @@
-name: Android Release APK & Version Release CI/CD
+name: Release
 
 on:
   push:
     tags:
-      - 'v*'
-  workflow_dispatch: # Allows manual trigger from Actions tab
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Tag to release (e.g. v1.0.0)"
+        required: true
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+env:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
 
 jobs:
-  build:
-    name: Build Release APK
+  release:
+    name: Build & Publish Signed Release
     runs-on: ubuntu-latest
-    permissions:
-      contents: write # Required to create a GitHub Release
+    timeout-minutes: 45
     steps:
-      - name: Checkout Code
+      - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history for changelog generation
 
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
-          java-version: '17'
+          distribution: temurin
+          java-version: "21"
 
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v3
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
 
-      - name: Build Release APK
-        run: gradle :app:assembleRelease
-
-      - name: Build Debug-Signed APK for Testing
-        run: gradle :app:assembleDebug
-
-      - name: Prepare Release Artifacts
+      - name: Ensure Gradle wrapper
         run: |
-          mkdir -p release-artifacts
-          # Copy the debug-signed APK (renamed beautifully for testing)
-          if [ -f app/build/outputs/apk/debug/app-debug.apk ]; then
-            cp app/build/outputs/apk/debug/app-debug.apk release-artifacts/DocuScan_${{ github.ref_name }}_Debug.apk
+          if [ ! -f gradle/wrapper/gradle-wrapper.jar ]; then
+            gradle wrapper --gradle-version 9.1.0 --distribution-type bin
           fi
-          # Copy the release APK (unsigned)
-          if [ -f app/build/outputs/apk/release/app-release-unsigned.apk ]; then
-            cp app/build/outputs/apk/release/app-release-unsigned.apk release-artifacts/DocuScan_${{ github.ref_name }}_Release_Unsigned.apk
-          elif [ -f app/build/outputs/apk/release/app-release.apk ]; then
-            cp app/build/outputs/apk/release/app-release.apk release-artifacts/DocuScan_${{ github.ref_name }}_Release.apk
+
+      - name: Validate Gradle wrapper
+        uses: gradle/actions/wrapper-validation@v4
+
+      - name: Decode signing keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "::error::KEYSTORE_BASE64 secret is not set. Cannot sign release."
+            exit 1
+          fi
+          echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release-keystore.p12"
+          echo "KEYSTORE_PATH=$RUNNER_TEMP/release-keystore.p12" >> "$GITHUB_ENV"
+
+      - name: Build signed release APK
+        env:
+          KEYSTORE_PATH: ${{ env.KEYSTORE_PATH }}
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: ./gradlew :app:assembleRelease --stacktrace
+
+      - name: Build signed release AAB (Play Store)
+        env:
+          KEYSTORE_PATH: ${{ env.KEYSTORE_PATH }}
+          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: ./gradlew :app:bundleRelease --stacktrace
+
+      - name: Collect artifacts
+        id: artifacts
+        run: |
+          set -e
+          VERSION="${{ github.event.inputs.tag || github.ref_name }}"
+          mkdir -p dist
+          APK=$(find app/build/outputs/apk/release -name "*.apk" | head -n1)
+          AAB=$(find app/build/outputs/bundle/release -name "*.aab" | head -n1)
+          [ -n "$APK" ] && cp "$APK" "dist/DocuScan-${VERSION}.apk"
+          [ -n "$AAB" ] && cp "$AAB" "dist/DocuScan-${VERSION}.aab"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          ( cd dist && sha256sum * > SHA256SUMS.txt )
+          ls -la dist
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          echo "## Changelog" > CHANGELOG_RELEASE.md
+          if [ -n "$PREV_TAG" ]; then
+            git log --pretty=format:'- %s (%h)' "$PREV_TAG"..HEAD >> CHANGELOG_RELEASE.md
+          else
+            git log --pretty=format:'- %s (%h)' >> CHANGELOG_RELEASE.md
           fi
 
       - name: Create GitHub Release
-        id: create_release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ github.ref_name }}
-          name: "DocuScan OCR Sandbox Release ${{ github.ref_name }}"
+          tag_name: ${{ steps.artifacts.outputs.version }}
+          name: "DocuScan OCR ${{ steps.artifacts.outputs.version }}"
           draft: false
-          prerelease: false
+          prerelease: ${{ contains(steps.artifacts.outputs.version, '-rc') || contains(steps.artifacts.outputs.version, '-beta') }}
+          body_path: CHANGELOG_RELEASE.md
           files: |
-            release-artifacts/*.apk
-          body: |
-            # 🚀 DocuScan OCR Sandbox Release - ${{ github.ref_name }}
-            
-            An offline-first, high-performance, and compliant document scanning engine with adaptive boundary scanning and dual-cloud capabilities.
-            
-            ---
-            
-            ## ✨ Implemented Features in This Version
-            
-            ### 🪄 1. Advanced Adaptive Auto Corner Detection
-            *   **Heuristic Boundary Scanner**: Scans high-resolution image diagonals automatically to detect document edges.
-            *   **One-Tap Dynamic Adjustment**: Manual "Auto Detect" override option within the perspective correction screen.
-            *   **Smooth Warp Transformation**: Projects cropped dimensions onto a normalized, flat, and sharp canvas.
-            
-            ### 🎨 2. Multiple Custom Aesthetic Themes
-            *   **💡 Light Slate**: Minimalist, high-contrast crisp theme for well-lit environments.
-            *   **🌙 Obsidian Dark**: Deep slate-gray aesthetic designed for late-night workflows.
-            *   **🍃 Sage Forest**: Nature-inspired organic green-accent theme.
-            *   **🌌 Cosmic Night**: Deep indigo glassmorphic theme.
-            *   **Instant Switcher**: Reactive local storage state changes the layout instantly without reloading.
-            
-            ### 🩺 3. Multi-Document Support & Simulation Spec
-            *   **Medical Case Files (HIPAA)**: Clinical intake logs with protected health information.
-            *   **Privacy Pack (GDPR)**: Contractual processing and auditing agreements.
-            *   **Business Invoices**: Full ledger sheets with billing descriptions.
-            *   **Government ID Cards**: Driver licenses and credential cards.
-            *   **Sales Receipts**: Grocery invoices with subtotal ledgers.
-            *   **Handwritten Notes**: Blue ink cursive layouts for brainstorming.
-            *   **Shipping Labels**: High-contrast layout with scannable barcode structures.
-            
-            ### ⚖️ 4. Local Encryption & Auditing Logs
-            *   **AES-GCM Local Encryption**: Secures confidential text in private folders with a folder passkey pin.
-            *   **Live Compliance Audit Trail**: Live in-memory logging of all actions (CREATE, READ, UPDATE, DELETE, EXPORT, SYNC, DECRYPT) for HIPAA/GDPR validation.
-            *   **Dual Cloud Syncer**: Encrypted Cloudflare R2 object storage backup and sync parameters.
-            
-            ---
-            
-            ## 📦 Release Artifacts Included
-            - **`DocuScan_${{ github.ref_name }}_Debug.apk`**: Pre-signed testing application (ideal for quick local device evaluation).
-            - **`DocuScan_${{ github.ref_name }}_Release_Unsigned.apk`**: Production release package (ready for custom signing keys).
-            
-            *Designed with modern Jetpack Compose, Material Design 3, and Room SQLite persistence.*
+            dist/*.apk
+            dist/*.aab
+            dist/SHA256SUMS.txt
+          fail_on_unmatched_files: true

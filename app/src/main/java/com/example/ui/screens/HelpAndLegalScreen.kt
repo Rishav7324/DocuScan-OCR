@@ -119,7 +119,7 @@ fun HelpAndLegalScreen(
                                         BulletStep("2", "Enable Google Drive API", "Go to the API Library and enable the 'Google Drive API' service for your project.")
                                         BulletStep("3", "Configure OAuth Screen", "Set up your OAuth consent screen. Select 'External' or 'Internal' and input developer contact emails.")
                                         BulletStep("4", "Generate Access Token", "Request the 'https://www.googleapis.com/auth/drive.file' scope to allow this application to manage only files created by it.")
-                                        BulletStep("5", "Copy Token into Settings", "Generate an OAuth access token, paste it under the Google Drive credentials card in settings, or type 'simulated_token' to run sandbox test uploads.")
+                                        BulletStep("5", "Connect in App", "Open Cloud Sync in the app and tap 'Connect' on the Google Drive card. Your browser opens for consent; the token is stored locally and used for live Drive v3 uploads.")
                                     }
                                 }
                             }
@@ -139,7 +139,7 @@ fun HelpAndLegalScreen(
                                         BulletStep("2", "App Type Selection", "Select 'Scoped Access API' and choose 'App folder' access for maximum sandboxed isolation.")
                                         BulletStep("3", "Configure Permissions", "Under the Permissions tab, enable 'files.metadata.write' and 'files.content.write'.")
                                         BulletStep("4", "Generate Bearer Token", "Under settings, scroll to 'Generated Access Token' and select 'Generate'. Copy this string.")
-                                        BulletStep("5", "Enable App Integration", "Input your account name and token in the Cloud Sync page. Type 'simulated_token' to bypass live calls for local verification.")
+                                        BulletStep("5", "Connect in App", "Open Cloud Sync in the app and tap 'Connect' on the Dropbox card. Your browser opens for consent (PKCE); the token is stored locally and used for live Dropbox uploads.")
                                     }
                                 }
                             }
@@ -164,7 +164,7 @@ fun HelpAndLegalScreen(
 
                                         LegalSectionTitle("1. No AI-Processing and Data Sovereign Promise")
                                         Text(
-                                            "Our software operates under a strict 'Zero AI-Server' architectural framework. We do NOT use, submit, or transmit your physical scans, processed text, or local indexes to generative AI platforms, unverified cloud servers, or third-party training pipelines. All OCR character matches are resolved on-device with 100% deterministic local layout heuristics.",
+                                            "Our software operates fully on-device. We do NOT submit or transmit your physical scans, processed text, or local indexes to any remote AI platforms, cloud servers, or third-party training pipelines. OCR is performed locally with ML Kit, and all encryption uses the Android Keystore.",
                                             fontSize = 12.sp, color = Color.Gray, fontWeight = FontWeight.Medium, lineHeight = 16.sp
                                         )
 

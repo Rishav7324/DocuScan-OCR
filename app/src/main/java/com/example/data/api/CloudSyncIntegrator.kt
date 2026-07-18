@@ -35,9 +35,8 @@ object CloudSyncIntegrator {
         accessToken: String
     ): Result<String> = withContext(Dispatchers.IO) {
         try {
-            if (accessToken.isBlank() || accessToken == "simulated_token") {
-                // If it is a simulation/placeholder token, return simulated success to prevent network crashes
-                return@withContext Result.success("Simulated Google Drive Upload: Document '$fileName' uploaded to user's Drive root directory.")
+            if (accessToken.isBlank()) {
+                return@withContext Result.failure(IllegalStateException("Google Drive access token is empty. Provide a valid token to upload."))
             }
 
             val metadataJson = """
@@ -86,8 +85,8 @@ object CloudSyncIntegrator {
         accessToken: String
     ): Result<String> = withContext(Dispatchers.IO) {
         try {
-            if (accessToken.isBlank() || accessToken == "simulated_token") {
-                return@withContext Result.success("Simulated Dropbox Upload: Backup saved in '/DocuScan/$fileName'")
+            if (accessToken.isBlank()) {
+                return@withContext Result.failure(IllegalStateException("Dropbox access token is empty. Provide a valid token to upload."))
             }
 
             // Dropbox-API-Arg details JSON
@@ -135,9 +134,8 @@ object CloudSyncIntegrator {
         secretKey: String
     ): Result<String> = withContext(Dispatchers.IO) {
         try {
-            if (bucket.isBlank() || endpointUrl.isBlank() || accessKey.isBlank() || secretKey.isBlank() ||
-                accessKey == "simulated_key" || secretKey == "simulated_secret") {
-                return@withContext Result.success("Simulated Cloudflare R2 Sync: Successfully pushed to R2 bucket '$bucket'")
+            if (bucket.isBlank() || endpointUrl.isBlank() || accessKey.isBlank() || secretKey.isBlank()) {
+                return@withContext Result.failure(IllegalStateException("Cloudflare R2 credentials incomplete. Provide bucket, endpoint, access key and secret key."))
             }
 
             // Normalizing endpoint (remove trailing slashes, ensure protocol is present)
