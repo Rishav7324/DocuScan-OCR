@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://docuscanocr.tolinks.in/sitemap.xml
