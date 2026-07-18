@@ -17,15 +17,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.FileProvider
 import com.example.ui.components.GlassBackground
 import com.example.ui.components.GlassCard
 import com.example.ui.viewmodel.ScannerViewModel
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -36,6 +39,8 @@ fun ComplianceScreen(
     onNavigateBack: () -> Unit
 ) {
     val auditLogs by viewModel.auditLogs.collectAsState()
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
     var searchQuery by remember { mutableStateOf("") }
     val sdf = remember { SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault()) }
 
@@ -52,6 +57,7 @@ fun ComplianceScreen(
     }
 
     var showSnack by remember { mutableStateOf(false) }
+    var showClearDialog by remember { mutableStateOf(false) }
 
     GlassBackground {
         Scaffold(
@@ -69,10 +75,31 @@ fun ComplianceScreen(
                         titleContentColor = Color.Black
                     ),
                     actions = {
+                        var exporting by remember { mutableStateOf(false) }
                         Button(
                             onClick = {
-                                viewModel.addAuditLog("EXPORT", "AUDIT", "Exported HIPAA Audit trail file 'AUDIT_TRAIL_GDPR.log'")
-                                showSnack = true
+                                if (exporting) return@Button
+                                exporting = true
+                                scope.launch {
+                                    val file = viewModel.exportAuditTrail(context)
+                                    if (file != null) {
+                                        val uri = FileProvider.getUriForFile(
+                                            context,
+                                            context.packageName + ".fileprovider",
+                                            file
+                                        )
+                                        val intent = Intent(Intent.ACTION_SEND).apply {
+                                            type = "text/plain"
+                                            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                                            putExtra(Intent.EXTRA_STREAM, uri)
+                                            putExtra(Intent.EXTRA_SUBJECT, "DocuScan OCR Audit Trail")
+                                        }
+                                        context.startActivity(Intent.createChooser(intent, "Export Audit Trail"))
+                                    }
+                                    viewModel.addAuditLog("EXPORT", "AUDIT", "Exported HIPAA/GDPR audit trail file 'AUDIT_TRAIL_GDPR.log'")
+                                    showSnack = true
+                                    exporting = false
+                                }
                             },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = MaterialTheme.colorScheme.primary,
@@ -84,6 +111,12 @@ fun ComplianceScreen(
                             Icon(Icons.Default.Download, contentDescription = "Export Logs", modifier = Modifier.size(16.dp), tint = Color.Black)
                             Spacer(modifier = Modifier.width(4.dp))
                             Text("Export Trail", fontWeight = FontWeight.Bold)
+                        }
+                        IconButton(
+                            onClick = { showClearDialog = true },
+                            modifier = Modifier.padding(end = 4.dp).testTag("clear_audit_button")
+                        ) {
+                            Icon(Icons.Default.DeleteSweep, contentDescription = "Clear logs", tint = Color(0xFFEF4444))
                         }
                     }
                 )
@@ -299,6 +332,27 @@ fun ComplianceScreen(
                             }
                         }
                     }
+                }
+
+                if (showClearDialog) {
+                    AlertDialog(
+                        onDismissRequest = { showClearDialog = false },
+                        confirmButton = {
+                            TextButton(onClick = {
+                                viewModel.clearAuditLogs()
+                                showClearDialog = false
+                            }) {
+                                Text("Clear all", color = Color(0xFFEF4444), fontWeight = FontWeight.Bold)
+                            }
+                        },
+                        dismissButton = {
+                            TextButton(onClick = { showClearDialog = false }) {
+                                Text("Cancel")
+                            }
+                        },
+                        title = { Text("Erase audit trail?", fontWeight = FontWeight.Bold) },
+                        text = { Text("This permanently deletes all compliance audit logs on this device. This action cannot be undone.") }
+                    )
                 }
             }
         }

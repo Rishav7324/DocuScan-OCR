@@ -3,6 +3,7 @@ package com.example.ui.viewmodel
 import android.app.Application
 import android.content.Context
 import android.graphics.Bitmap
+import android.os.Environment
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.util.Log
@@ -15,6 +16,7 @@ import com.example.data.model.CloudSyncConfig
 import com.example.data.repository.DocumentRepository
 import com.example.ui.components.CropPoints
 import com.example.ui.components.performPerspectiveCorrection
+import androidx.compose.ui.geometry.Offset
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -99,6 +101,7 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
             details = "Secure sandbox initialization. Cryptographic providers registered. Local database initialized."
         )
         loadSyncConfig()
+        com.example.workers.SyncScheduler.apply(getApplication(), _syncConfig.value.autoBackup)
     }
 
     fun selectFolder(folderId: Long) {
@@ -117,6 +120,33 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
                 AuditLogEntity(action = action, resourceType = resourceType, details = details)
             )
         }
+    }
+
+    fun clearAuditLogs() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.clearAuditLogs()
+            addAuditLog("DELETE", "AUDIT", "Cleared all compliance audit trail logs (erasure request)")
+        }
+    }
+
+    // ponytail: writes the trail to a real file the user can keep/export
+    suspend fun exportAuditTrail(context: Context): File? = withContext(Dispatchers.IO) {
+        val logs = auditLogs.value
+        if (logs.isEmpty()) return@withContext null
+        val dir = File(context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS), "DocuScan")
+        dir.mkdirs()
+        val file = File(dir, "AUDIT_TRAIL_GDPR.log")
+        val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.getDefault())
+        file.bufferedWriter().use { out ->
+            out.appendLine("DocuScan OCR — Compliance Audit Trail")
+            out.appendLine("Generated: ${sdf.format(Date())}")
+            out.appendLine("${logs.size} event(s)")
+            out.appendLine("=".repeat(60))
+            logs.forEach { log ->
+                out.appendLine("[${sdf.format(Date(log.timestamp))}] ${log.action} / ${log.resourceType} — ${log.details}")
+            }
+        }
+        file
     }
 
     // --- Folder CRUD ---
@@ -166,12 +196,18 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
     }
 
     // --- Batch Document Scanning & Captures ---
+    // Per-page crop points, kept in lockstep with _batchImages so perspective edits survive finalize.
+    private val _batchCropPoints = MutableStateFlow<List<CropPoints>>(emptyList())
+    val batchCropPoints: StateFlow<List<CropPoints>> = _batchCropPoints.asStateFlow()
+
     fun addImageToBatch(bitmap: Bitmap) {
         _batchImages.update { it + bitmap }
+        _batchCropPoints.update { it + CropPoints() }
     }
 
     fun clearBatch() {
         _batchImages.value = emptyList()
+        _batchCropPoints.value = emptyList()
         _currentCropIndex.value = 0
     }
 
@@ -180,6 +216,9 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
         if (index in currentList.indices) {
             currentList.removeAt(index)
             _batchImages.value = currentList
+            val crops = _batchCropPoints.value.toMutableList()
+            crops.removeAt(index)
+            _batchCropPoints.value = crops
             _currentCropIndex.value = 0
         }
     }
@@ -187,8 +226,9 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
     fun selectCropIndex(index: Int) {
         if (index in _batchImages.value.indices) {
             _currentCropIndex.value = index
-            val bitmap = _batchImages.value[index]
-            _currentCropPoints.value = com.example.ui.components.AutoCornerDetector.detectDocumentCorners(bitmap)
+            _currentCropPoints.value = _batchCropPoints.value.getOrElse(index) {
+                com.example.ui.components.AutoCornerDetector.detectDocumentCorners(_batchImages.value[index])
+            }
         }
     }
 
@@ -196,7 +236,9 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
         val index = _currentCropIndex.value
         if (index in _batchImages.value.indices) {
             val bitmap = _batchImages.value[index]
-            _currentCropPoints.value = com.example.ui.components.AutoCornerDetector.detectDocumentCorners(bitmap)
+            val points = com.example.ui.components.AutoCornerDetector.detectDocumentCorners(bitmap)
+            _currentCropPoints.value = points
+            _batchCropPoints.update { list -> list.toMutableList().also { it[index] = points } }
             addAuditLog(
                 action = "UPDATE",
                 resourceType = "PAGE",
@@ -207,6 +249,33 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
 
     fun updateCropPoints(points: CropPoints) {
         _currentCropPoints.value = points
+        val index = _currentCropIndex.value
+        if (index in _batchCropPoints.value.indices) {
+            _batchCropPoints.update { list -> list.toMutableList().also { it[index] = points } }
+        }
+    }
+
+    // Rotate the current page 90° CW; rotate its normalized crop points to match.
+    fun rotateCurrentBatchImage() {
+        val index = _currentCropIndex.value
+        if (index !in _batchImages.value.indices) return
+        val src = _batchImages.value[index]
+        val matrix = android.graphics.Matrix().apply { postRotate(90f) }
+        val rotated = Bitmap.createBitmap(src, 0, 0, src.width, src.height, matrix, true)
+        _batchImages.update { list -> list.toMutableList().also { it[index] = rotated } }
+        // (x, y) -> (1 - y, x) for 90° CW
+        _batchCropPoints.update { list ->
+            list.toMutableList().also {
+                val p = it.getOrElse(index) { CropPoints() }
+                it[index] = CropPoints(
+                    topLeft = Offset(1f - p.topLeft.y, p.topLeft.x),
+                    topRight = Offset(1f - p.topRight.y, p.topRight.x),
+                    bottomRight = Offset(1f - p.bottomRight.y, p.bottomRight.x),
+                    bottomLeft = Offset(1f - p.bottomLeft.y, p.bottomLeft.x)
+                )
+            }
+        }
+        _currentCropPoints.value = _batchCropPoints.value[index]
     }
 
     // Finalize the batch process and save to a new Document
@@ -232,10 +301,13 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
             )
             val docId = repository.insertDocument(document)
 
-            // Save individual pages (already perspective-corrected at capture / crop step)
+            // Save individual pages, applying the user's perspective crop to each
+            val crops = _batchCropPoints.value
             _batchImages.value.forEachIndexed { index, bitmap ->
+                val points = crops.getOrNull(index) ?: CropPoints()
+                val corrected = performPerspectiveCorrection(bitmap, points)
                 val origPath = saveBitmapToFile("orig_${docId}_${index}.jpg", bitmap)
-                val procPath = saveBitmapToFile("proc_${docId}_${index}.jpg", bitmap)
+                val procPath = saveBitmapToFile("proc_${docId}_${index}.jpg", corrected)
 
                 // Encrypt images at rest when the target folder is private
                 if (usePin != null) {
@@ -481,6 +553,9 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
             .putLong("last_sync_time", config.lastSyncTime)
             .apply()
 
+        // Schedule/cancel periodic auto-backup to match the toggle.
+        com.example.workers.SyncScheduler.apply(getApplication(), config.autoBackup)
+
         addAuditLog(
             action = "UPDATE",
             resourceType = "APP",
@@ -500,111 +575,15 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
                 details = "Initiating full cryptographic cloud synchronization process..."
             )
 
-            val unsynced = repository.getUnsyncedDocuments()
-            var config = _syncConfig.value
-            var uploadCount = 0
-            var errorCount = 0
-            val sbDetails = StringBuilder()
-
-            // Refresh access tokens up front so the run doesn't fail on expired tokens.
-            withContext(Dispatchers.IO) {
-                if (config.googleDriveEnabled && config.googleDriveRefreshToken.isNotBlank()) {
-                    runCatching {
-                        com.example.data.api.OAuthManager.refreshAccessToken(
-                            com.example.data.api.OAuthManager.Provider.GOOGLE, config.googleDriveRefreshToken
-                        )
-                    }.onSuccess { config = config.copy(googleDriveToken = it) }
-                }
-                if (config.dropboxEnabled && config.dropboxRefreshToken.isNotBlank()) {
-                    runCatching {
-                        com.example.data.api.OAuthManager.refreshAccessToken(
-                            com.example.data.api.OAuthManager.Provider.DROPBOX, config.dropboxRefreshToken
-                        )
-                    }.onSuccess { config = config.copy(dropboxToken = it) }
-                }
+            val result = SyncEngine.runSync(repository, _syncConfig.value)
+            if (result.uploads > 0 || result.errors > 0) {
+                updateSyncConfig(_syncConfig.value.copy(lastSyncTime = System.currentTimeMillis()))
             }
-            if (config.googleDriveToken != _syncConfig.value.googleDriveToken ||
-                config.dropboxToken != _syncConfig.value.dropboxToken) {
-                updateSyncConfig(config)
-            }
-
-            withContext(Dispatchers.IO) {
-                unsynced.forEach { doc ->
-                    val pages = repository.getPagesForDocumentSync(doc.id)
-                    pages.forEach { page ->
-                        val imagePath = page.processedImagePath ?: page.originalImagePath
-                        if (imagePath.isNotEmpty()) {
-                            val file = File(imagePath)
-                            if (file.exists()) {
-                                val fileBytes = file.readBytes()
-                                val fileName = "docuscan_${doc.id}_page_${page.pageNumber}.jpg"
-
-                                // 1. Google Drive Integration
-                                if (config.googleDriveEnabled) {
-                                    val result = com.example.data.api.CloudSyncIntegrator.uploadToGoogleDrive(
-                                        fileBytes = fileBytes,
-                                        fileName = fileName,
-                                        mimeType = "image/jpeg",
-                                        accessToken = config.googleDriveToken
-                                    )
-                                    if (result.isSuccess) {
-                                        uploadCount++
-                                        sbDetails.append("Google Drive: Uploaded $fileName successfully\n")
-                                    } else {
-                                        errorCount++
-                                        sbDetails.append("Google Drive Error on $fileName: ${result.exceptionOrNull()?.message}\n")
-                                    }
-                                }
-
-                                // 2. Dropbox Integration
-                                if (config.dropboxEnabled) {
-                                    val result = com.example.data.api.CloudSyncIntegrator.uploadToDropbox(
-                                        fileBytes = fileBytes,
-                                        fileName = fileName,
-                                        accessToken = config.dropboxToken
-                                    )
-                                    if (result.isSuccess) {
-                                        uploadCount++
-                                        sbDetails.append("Dropbox: Uploaded $fileName successfully\n")
-                                    } else {
-                                        errorCount++
-                                        sbDetails.append("Dropbox Error on $fileName: ${result.exceptionOrNull()?.message}\n")
-                                    }
-                                }
-
-                                // 3. Cloudflare R2 Integration
-                                if (config.r2Enabled) {
-                                    val result = com.example.data.api.CloudSyncIntegrator.uploadToCloudflareR2(
-                                        fileBytes = fileBytes,
-                                        fileName = fileName,
-                                        bucket = config.r2Bucket,
-                                        endpointUrl = config.r2Endpoint,
-                                        accessKey = config.r2AccessKey,
-                                        secretKey = config.r2SecretKey
-                                    )
-                                    if (result.isSuccess) {
-                                        uploadCount++
-                                        sbDetails.append("Cloudflare R2: Uploaded $fileName successfully\n")
-                                    } else {
-                                        errorCount++
-                                        sbDetails.append("Cloudflare R2 Error on $fileName: ${result.exceptionOrNull()?.message}\n")
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    // Mark document as synced locally
-                    repository.updateDocument(doc.copy(isSynced = true))
-                }
-            }
-
-            val updatedConfig = _syncConfig.value.copy(lastSyncTime = System.currentTimeMillis())
-            updateSyncConfig(updatedConfig)
 
             _isSyncing.value = false
-            
-            val logMessage = if (uploadCount > 0 || errorCount > 0) {
-                "Sync completed with $uploadCount uploads and $errorCount failures.\nDetails:\n$sbDetails"
+
+            val logMessage = if (result.uploads > 0 || result.errors > 0) {
+                "Sync completed with ${result.uploads} uploads and ${result.errors} failures.\nDetails:\n${result.details}"
             } else {
                 "Sync completed. No pending documents found to upload."
             }

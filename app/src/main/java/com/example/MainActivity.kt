@@ -98,8 +98,6 @@ class MainActivity : ComponentActivity() {
                                 onScanComplete = { navController.navigate("crop_correction") }
                             )
                         }
-                            )
-                        }
 
                         // 4. Interactive crop perspective correction screen
                         composable("crop_correction") {

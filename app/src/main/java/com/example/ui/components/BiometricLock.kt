@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Backspace
-import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -93,7 +92,7 @@ fun BiometricLockDialog(
                     .padding(vertical = 8.dp)
             ) {
                 Text(
-                    text = "Please enter your 4-digit folder passcode or scan fingerprint to access encrypted files.",
+                    text = "Please enter your 4-digit folder passcode to access encrypted files.",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center
@@ -145,7 +144,7 @@ fun BiometricLockDialog(
                         listOf("1", "2", "3"),
                         listOf("4", "5", "6"),
                         listOf("7", "8", "9"),
-                        listOf("FP", "0", "DEL")
+                        listOf("", "0", "DEL")
                     )
 
                     keys.forEach { row ->
@@ -155,24 +154,6 @@ fun BiometricLockDialog(
                             row.forEach { key ->
                                 if (key.isEmpty()) {
                                     Spacer(modifier = Modifier.size(56.dp))
-                                } else if (key == "FP") {
-                                    IconButton(
-                                        onClick = {
-                                            // Simulate biometric sensor read
-                                            errorMessage = "Fingerprint scanned. Secure folder unlocked!"
-                                            onSuccess(enteredPin)
-                                        },
-                                        modifier = Modifier
-                                            .size(56.dp)
-                                            .clip(CircleShape)
-                                            .background(MaterialTheme.colorScheme.secondaryContainer)
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Default.Fingerprint,
-                                            contentDescription = "Scan Fingerprint",
-                                            tint = MaterialTheme.colorScheme.onSecondaryContainer
-                                        )
-                                    }
                                 } else if (key == "DEL") {
                                     IconButton(
                                         onClick = { handleBackspace() },

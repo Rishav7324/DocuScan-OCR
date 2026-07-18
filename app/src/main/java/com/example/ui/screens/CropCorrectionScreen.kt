@@ -1,7 +1,6 @@
 package com.example.ui.screens
 
 import android.graphics.Bitmap
-import android.graphics.Matrix
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -108,19 +107,7 @@ fun CropCorrectionScreen(
                         ) {
                              // Rotate 90 Degrees button
                             Button(
-                                onClick = {
-                                    val matrix = Matrix().apply { postRotate(90f) }
-                                    val rotated = Bitmap.createBitmap(
-                                        currentBitmap, 0, 0,
-                                        currentBitmap.width, currentBitmap.height,
-                                        matrix, true
-                                    )
-                                    // Update batch image directly
-                                    val updatedList = batchImages.toMutableList()
-                                    updatedList[currentCropIndex] = rotated
-                                    viewModel.clearBatch()
-                                    updatedList.forEach { viewModel.addImageToBatch(it) }
-                                },
+                                onClick = { viewModel.rotateCurrentBatchImage() },
                                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE2E8F0))
                             ) {
                                 Icon(imageVector = Icons.Default.RotateRight, contentDescription = "Rotate", tint = Color.Black)
