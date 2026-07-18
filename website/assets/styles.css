@@ -223,9 +223,7 @@ a { color: inherit; text-decoration: none; }
 .legal-card .lc-arrow { color: var(--primary); font-weight: 700; font-size: .9rem; margin-top: 6px; }
 @media (max-width: 640px) { .legal-cards { grid-template-columns: 1fr; } }
 
-/* ===== Reveal animation (only when JS is active, so content is never blank) ===== */
-.js .reveal { opacity: 0; transform: translateY(22px); transition: opacity .6s ease, transform .6s ease; }
-.js .reveal.in { opacity: 1; transform: none; }
+/* ===== Reveal animation removed: content is always visible (no JS dependency) ===== */
 
 /* ===== Download meta ===== */
 .dl-meta { color: var(--primary); font-size: .88rem; font-weight: 700; margin: 0; }
@@ -267,4 +265,4 @@ a { color: inherit; text-decoration: none; }
   .section { padding: 60px 0; }
   .hero { padding: 40px 0 30px; }
 }
-@media (prefers-reduced-motion: reduce) { * { animation: none !important; scroll-behavior: auto; } .reveal { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; scroll-behavior: auto; } }

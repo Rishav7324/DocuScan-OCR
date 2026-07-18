@@ -1,0 +1,73 @@
+DocuScan OCR — Verification Information
+=========================================
+
+App name:        DocuScan OCR
+Application ID:  com.docuscan.ocr
+Package name:    com.docuscan.ocr
+Version:         2.0.6 (versionCode 2)
+Platform:        Android 7.0+ (API 24)
+Distribution:    Direct APK download (no Google Play listing / no login required)
+Website:         https://docuscanocr.tolinks.in
+Legal hub:       https://docuscanocr.tolinks.in/legal.html
+
+1. LOGIN / AUTH REQUIREMENTS
+----------------------------
+The app does NOT require any account, login, or authentication to use.
+There is no backend server, no user database, and no sign-up flow.
+Any visitor to the website can view all app information, legal pages,
+and download the APK without creating an account.
+
+2. WEBSITE ACCESS
+-----------------
+The homepage (https://docuscanocr.tolinks.in/) is a static site.
+It is publicly accessible with no paywall, no login wall, and no
+interstitial. The hero section states the app name "DocuScan OCR"
+and explains the purpose ("a free, offline-first Android document
+scanner ... on-device OCR ... AES-256-GCM encryption").
+
+3. TEST USER CREDENTIALS
+------------------------
+Not applicable. The app has no accounts and no server, so there are
+no test user credentials to provide.
+
+4. OAUTH / CLOUD SYNC
+---------------------
+Cloud sync is an OPT-IN feature the user configures manually inside
+the app. It supports:
+  - Google Drive (OAuth 2.0, drive.file scope)
+  - Dropbox (OAuth 2.0, app folder scope)
+  - Cloudflare R2 (S3-compatible, user-supplied keys)
+
+These connections are created by the END USER from their own device
+using their own provider accounts. The developer does not operate
+any OAuth client on a server and does not hold user tokens.
+
+OAuth client project ID(s) used by the app's cloud-sync feature:
+  - None hosted by the developer. Each provider's OAuth is performed
+    client-side on the device using credentials the user provides.
+  - If a Google Cloud / Firebase project is later associated with the
+    OAuth consent screen, its Project ID / client ID should match the
+    published app name "DocuScan OCR".
+
+5. PRIVACY / DATA
+-----------------
+- No analytics, no crash reporting, no advertising SDKs.
+- No backend server receives app data.
+- Documents, OCR text, and audit logs are stored locally on the device
+  (Android Room database + app-internal storage).
+- Private folders are encrypted with Android Keystore + PBKDF2 +
+  AES-256-GCM.
+- Data leaves the device ONLY when the user explicitly configures and
+  triggers a cloud backup to a provider they choose.
+
+6. CONTACT
+----------
+Support email: support@prontly.in
+Grievance redressal: https://docuscanocr.tolinks.in/legal/grievance-redressal.html
+
+7. NOTES FOR VERIFIERS
+----------------------
+- The APK is downloaded directly; sideloading requires enabling
+  "Install unknown apps" for the user's browser.
+- There is no demo account because the product is fully local-first
+  and free; installing the APK is the only step needed to evaluate it.
