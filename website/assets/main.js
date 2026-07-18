@@ -1,5 +1,13 @@
 // DocuScan OCR landing — interactions
 
+// Mark JS as available so CSS can safely hide reveal elements (no-JS = visible)
+document.documentElement.classList.add('js');
+
+// Reveal-on-load safety: if anything is still hidden after load, show it.
+window.addEventListener('load', () => {
+  document.querySelectorAll('.reveal:not(.in)').forEach(el => el.classList.add('in'));
+});
+
 // Mobile nav toggle
 const toggle = document.getElementById('navToggle');
 const links = document.querySelector('.nav-links');
