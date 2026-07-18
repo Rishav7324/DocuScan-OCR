@@ -45,7 +45,8 @@ jobs:
             echo "::error::KEYSTORE_BASE64 secret not set"
             exit 1
           fi
-          echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/release-keystore.p12"
+          # Strip any whitespace/newlines so a multi-line paste still decodes
+          echo "$KEYSTORE_BASE64" | tr -d '[:space:]' | base64 -d > "$RUNNER_TEMP/release-keystore.p12"
           echo "KEYSTORE_PATH=$RUNNER_TEMP/release-keystore.p12" >> "$GITHUB_ENV"
 
       - name: Build signed APK
