@@ -52,6 +52,17 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
     val allDocuments: StateFlow<List<DocumentEntity>> = repository.allDocuments
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
+    val favoriteDocuments: StateFlow<List<DocumentEntity>> = repository.getFavoriteDocuments()
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
+    /** All distinct tags across documents, sorted alphabetically. */
+    fun getAllTags(): List<String> = allDocuments.value
+        .flatMap { it.tags.split(",") }
+        .map { it.trim() }
+        .filter { it.isNotBlank() }
+        .distinct()
+        .sorted()
+
     // Active state
     private val _currentFolderId = MutableStateFlow<Long>(0) // 0 means Root/Uncategorized
     val currentFolderId: StateFlow<Long> = _currentFolderId.asStateFlow()
@@ -368,6 +379,58 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
             details = "Opened document '${document.name}' (ID: ${document.id})"
         )
     }
+
+    // --- Document Organization Features (Favorites, Tags, Notes) ---
+
+    fun toggleFavorite(document: DocumentEntity) {
+        viewModelScope.launch {
+            val updated = document.copy(isFavorite = !document.isFavorite)
+            repository.updateDocument(updated)
+            if (_activeDocument.value?.id == document.id) _activeDocument.value = updated
+            addAuditLog(
+                action = "UPDATE",
+                resourceType = "DOCUMENT",
+                details = "Marked document '${document.name}' as ${if (updated.isFavorite) "favorite" else "unfavorited"}"
+            )
+        }
+    }
+
+    fun updateDocumentTags(document: DocumentEntity, tags: String) {
+        viewModelScope.launch {
+            val normalized = tags.split(",").map { it.trim() }.filter { it.isNotBlank() }
+                .distinct().joinToString(",")
+            val updated = document.copy(tags = normalized)
+            repository.updateDocument(updated)
+            if (_activeDocument.value?.id == document.id) _activeDocument.value = updated
+            addAuditLog(
+                action = "UPDATE",
+                resourceType = "DOCUMENT",
+                details = "Updated tags for '${document.name}': $normalized"
+            )
+        }
+    }
+
+    fun updateDocumentNotes(document: DocumentEntity, notes: String) {
+        viewModelScope.launch {
+            val updated = document.copy(notes = notes)
+            repository.updateDocument(updated)
+            if (_activeDocument.value?.id == document.id) _activeDocument.value = updated
+            addAuditLog(
+                action = "UPDATE",
+                resourceType = "DOCUMENT",
+                details = "Updated notes for '${document.name}'"
+            )
+        }
+    }
+
+    fun searchDocuments(query: String): List<DocumentEntity> =
+        if (query.isBlank()) allDocuments.value
+        else allDocuments.value.filter {
+            it.name.contains(query, ignoreCase = true) ||
+            it.tags.contains(query, ignoreCase = true) ||
+            it.notes.contains(query, ignoreCase = true) ||
+            (it.extractedTextSummary?.contains(query, ignoreCase = true) == true)
+        }
 
     private fun loadPagesForActiveDocument() {
         val docId = _activeDocument.value?.id ?: return

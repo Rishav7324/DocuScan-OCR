@@ -60,12 +60,20 @@ fun DashboardScreen(
     var newFolderPasscode by remember { mutableStateOf("") }
 
     var searchQuery by remember { mutableStateOf("") }
+    var showFavoritesOnly by remember { mutableStateOf(false) }
+    var selectedTag by remember { mutableStateOf<String?>(null) }
+    val allTags = remember(allDocs) { viewModel.getAllTags() }
 
-    val filteredDocs = remember(allDocs, searchQuery) {
-        if (searchQuery.isEmpty()) {
-            allDocs
-        } else {
-            allDocs.filter { it.name.contains(searchQuery, ignoreCase = true) }
+    val filteredDocs = remember(allDocs, searchQuery, showFavoritesOnly, selectedTag) {
+        allDocs.filter { doc ->
+            val matchesQuery = searchQuery.isBlank() ||
+                doc.name.contains(searchQuery, ignoreCase = true) ||
+                doc.tags.contains(searchQuery, ignoreCase = true) ||
+                doc.notes.contains(searchQuery, ignoreCase = true) ||
+                (doc.extractedTextSummary?.contains(searchQuery, ignoreCase = true) == true)
+            val matchesFav = !showFavoritesOnly || doc.isFavorite
+            val matchesTag = selectedTag == null || doc.tags.split(",").map { it.trim() }.contains(selectedTag)
+            matchesQuery && matchesFav && matchesTag
         }
     }
 
@@ -169,6 +177,50 @@ fun DashboardScreen(
                             .fillMaxWidth()
                             .testTag("search_document_input")
                     )
+                }
+
+                // Filter row: favorites toggle + tag chips
+                item {
+                    Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            FilterChip(
+                                selected = showFavoritesOnly,
+                                onClick = { showFavoritesOnly = !showFavoritesOnly },
+                                label = { Text("★ Favorites") },
+                                leadingIcon = {
+                                    Icon(
+                                        imageVector = if (showFavoritesOnly) Icons.Default.Star else Icons.Default.StarOutline,
+                                        contentDescription = null,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                },
+                                modifier = Modifier.testTag("favorites_filter_toggle")
+                            )
+                            if (selectedTag != null) {
+                                AssistChip(
+                                    onClick = { selectedTag = null },
+                                    label = { Text("Tag: $selectedTag ✕") },
+                                    modifier = Modifier.testTag("clear_tag_filter")
+                                )
+                            }
+                        }
+                        if (allTags.isNotEmpty()) {
+                            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                items(allTags) { tag ->
+                                    FilterChip(
+                                        selected = selectedTag == tag,
+                                        onClick = { selectedTag = if (selectedTag == tag) null else tag },
+                                        label = { Text("#$tag") },
+                                        modifier = Modifier.testTag("tag_filter_$tag")
+                                    )
+                                }
+                            }
+                        }
+                    }
                 }
 
                 // Folders Section Header
@@ -397,6 +449,29 @@ fun DashboardScreen(
                                                 }
                                             }
                                         }
+                                        val docTags = doc.tags.split(",").map { it.trim() }.filter { it.isNotBlank() }
+                                        if (docTags.isNotEmpty()) {
+                                            Row(
+                                                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                docTags.take(3).forEach { tag ->
+                                                    Box(
+                                                        modifier = Modifier
+                                                            .clip(RoundedCornerShape(6.dp))
+                                                            .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.12f))
+                                                            .padding(horizontal = 6.dp, vertical = 2.dp)
+                                                    ) {
+                                                        Text(
+                                                            text = "#$tag",
+                                                            fontSize = 10.sp,
+                                                            color = MaterialTheme.colorScheme.primary,
+                                                            fontWeight = FontWeight.SemiBold
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
 
                                     // Right status badges / actions
@@ -404,6 +479,17 @@ fun DashboardScreen(
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                                     ) {
+                                        IconButton(
+                                            onClick = { viewModel.toggleFavorite(doc) },
+                                            modifier = Modifier.size(24.dp).testTag("favorite_toggle_${doc.id}")
+                                        ) {
+                                            Icon(
+                                                imageVector = if (doc.isFavorite) Icons.Default.Star else Icons.Default.StarOutline,
+                                                contentDescription = if (doc.isFavorite) "Remove from favorites" else "Add to favorites",
+                                                tint = if (doc.isFavorite) Color(0xFFFFB020) else MaterialTheme.colorScheme.primary,
+                                                modifier = Modifier.size(18.dp)
+                                            )
+                                        }
                                         if (doc.isSynced) {
                                             Icon(
                                                 imageVector = Icons.Default.CloudDone,

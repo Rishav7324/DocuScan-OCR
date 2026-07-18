@@ -14,5 +14,8 @@ data class DocumentEntity(
     val hasOcr: Boolean = false,
     val isEncrypted: Boolean = false,
     val isImageEncrypted: Boolean = false,
-    val extractedTextSummary: String? = null
+    val extractedTextSummary: String? = null,
+    val isFavorite: Boolean = false,   // User-starred documents
+    val tags: String = "",            // Comma-separated labels, e.g. "invoice,2026"
+    val notes: String = ""            // Free-form user note attached to the document
 )

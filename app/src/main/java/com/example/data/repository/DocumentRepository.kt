@@ -74,6 +74,12 @@ class DocumentRepository(
         return documentDao.getUnsyncedDocuments()
     }
 
+    fun getFavoriteDocuments(): Flow<List<DocumentEntity>> = documentDao.getFavoriteDocuments()
+
+    fun getDocumentsByTag(tag: String): Flow<List<DocumentEntity>> = documentDao.getDocumentsByTag(tag)
+
+    fun searchDocuments(query: String): Flow<List<DocumentEntity>> = documentDao.searchDocuments(query)
+
     val allAuditLogs: Flow<List<AuditLogEntity>> = auditLogDao.getAllLogs()
 
     suspend fun insertAuditLog(log: AuditLogEntity): Long = auditLogDao.insertLog(log)

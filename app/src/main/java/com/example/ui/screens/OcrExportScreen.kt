@@ -57,6 +57,9 @@ fun OcrExportScreen(
     var selectedPageIdForOcr by remember { mutableStateOf<Long?>(null) }
     var isOcrRunning by remember { mutableStateOf(false) }
 
+    var tagInput by remember(activeDoc) { mutableStateOf(activeDoc?.tags ?: "") }
+    var noteInput by remember(activeDoc) { mutableStateOf(activeDoc?.notes ?: "") }
+
     // Decrypted cache for secure folder viewing
     var folderDecryptionPin by remember { mutableStateOf("") }
     var showSecureFolderUnlock by remember { mutableStateOf(folderPin != null && folderPin.isNotEmpty()) }
@@ -137,6 +140,16 @@ fun OcrExportScreen(
                                             icon = { Icon(Icons.Default.Lock, contentDescription = "Private", modifier = Modifier.size(16.dp)) }
                                         )
                                     }
+                                    IconButton(
+                                        onClick = { activeDoc?.let { viewModel.toggleFavorite(it) } },
+                                        modifier = Modifier.testTag("detail_favorite_toggle")
+                                    ) {
+                                        Icon(
+                                            imageVector = if (activeDoc?.isFavorite == true) Icons.Default.Star else Icons.Default.StarOutline,
+                                            contentDescription = "Toggle favorite",
+                                            tint = if (activeDoc?.isFavorite == true) Color(0xFFFFB020) else MaterialTheme.colorScheme.primary
+                                        )
+                                    }
                                 }
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Text(
@@ -145,6 +158,44 @@ fun OcrExportScreen(
                                     color = Color.Gray,
                                     fontWeight = FontWeight.Bold
                                 )
+                            }
+                        }
+
+                        // Tags & Notes editor
+                        item {
+                            GlassCard(modifier = Modifier.fillMaxWidth(), cornerRadius = 20.dp) {
+                                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                                    Text("Tags & Notes", fontWeight = FontWeight.Black, style = MaterialTheme.typography.titleMedium, color = Color.Black)
+                                    OutlinedTextField(
+                                        value = tagInput,
+                                        onValueChange = { tagInput = it },
+                                        label = { Text("Tags (comma separated)") },
+                                        placeholder = { Text("e.g. invoice, 2026, taxes") },
+                                        singleLine = true,
+                                        modifier = Modifier.fillMaxWidth().testTag("tag_input")
+                                    )
+                                    OutlinedTextField(
+                                        value = noteInput,
+                                        onValueChange = { noteInput = it },
+                                        label = { Text("Notes") },
+                                        placeholder = { Text("Add a note about this document...") },
+                                        modifier = Modifier.fillMaxWidth().testTag("note_input"),
+                                        minLines = 2
+                                    )
+                                    Button(
+                                        onClick = {
+                                            activeDoc?.let {
+                                                viewModel.updateDocumentTags(it, tagInput)
+                                                viewModel.updateDocumentNotes(it, noteInput)
+                                            }
+                                        },
+                                        modifier = Modifier.align(Alignment.End).testTag("save_tags_notes")
+                                    ) {
+                                        Icon(Icons.Default.Save, contentDescription = null, modifier = Modifier.size(18.dp))
+                                        Spacer(modifier = Modifier.width(6.dp))
+                                        Text("Save")
+                                    }
+                                }
                             }
                         }
 
