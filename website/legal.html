@@ -6,8 +6,9 @@
 <meta name="description" content="DocuScan OCR Legal & Compliance Hub — privacy policy, terms of service, security policy, accessibility, and all legal documentation.">
 <meta name="theme-color" content="#0b1220">
 <title>Legal &amp; Compliance Hub | DocuScan OCR</title>
+<link rel="canonical" href="https://docuscanocr.tolinks.in/legal.html">
 <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
-<link rel="icon" href="assets/app-icon.png" type="image/svg+xml">
+<link rel="icon" href="assets/app-icon.png" type="image/png">
 <link rel="apple-touch-icon" href="assets/app-icon.png">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Legal & Compliance Hub | DocuScan OCR">
@@ -18,8 +19,18 @@
 <meta name="twitter:image" content="https://docuscanocr.tolinks.in/assets/app-icon.png">
 <link rel="stylesheet" href="assets/styles.css">
 <noscript><style>.reveal{opacity:1!important;transform:none!important;}</style></noscript>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": "Legal & Compliance Hub — DocuScan OCR",
+  "url": "https://docuscanocr.tolinks.in/legal.html",
+  "description": "All legal and compliance documentation for DocuScan OCR."
+}
+</script>
 </head>
 <body>
+<a class="skip-link" href="#main">Skip to content</a>
 
 <header class="nav" id="nav">
   <div class="container nav-inner">
@@ -31,1322 +42,134 @@
       <a href="index.html#features">Features</a>
       <a href="index.html#how">How it works</a>
       <a href="index.html#privacy">Privacy</a>
-      <a class="btn btn-primary" href="index.html#download">Get the app</a>
+      <a href="index.html#download">Get the app</a>
+      <a class="btn btn-ghost" href="index.html#download">Legal</a>
     </nav>
     <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false"><span></span><span></span><span></span></button>
   </div>
 </header>
 
-<main class="legal-wrap">
+<main class="legal-wrap" id="main">
   <div class="container">
     <div class="legal-hero">
       <img src="assets/app-icon.png" alt="DocuScan OCR">
       <h1>Legal &amp; Compliance Hub</h1>
       <p>DocuScan OCR · Version 2.0.0 · July 18, 2026 — all policies in one place.</p>
     </div>
-    <div class="legal-layout">
-      <aside class="legal-nav">
-        <h4>Legal pages</h4>
-      <a href="#privacy-policy">Privacy Policy</a>
-      <a href="#terms-of-service">Terms of Service</a>
-      <a href="#security-policy">Security Policy & Responsible Disclosure</a>
-      <a href="#acceptable-use-policy">Acceptable Use Policy</a>
-      <a href="#grievance-redressal">Grievance Redressal Policy</a>
-      <a href="#cookie-policy">Cookie Policy</a>
-      <a href="#disclaimer">Disclaimer</a>
-      <a href="#refund-policy">Refund Policy</a>
-      <a href="#cancellation-policy">Cancellation Policy</a>
-      <a href="#accessibility-statement">Accessibility Statement</a>
-      <a href="#about-us">About Us</a>
-        <a href="mailto:support@prontly.in" style="margin-top:10px;">✉ support@prontly.in</a>
-      </aside>
-      <div class="legal-content">
-      <section class="reveal" id="privacy-policy">
-        <h2><a href="legal/privacy-policy.html" style="color:inherit;text-decoration:none;">Privacy Policy</a><span class="badge badge-r">DocuScan OCR</span></h2>
-        <p class="last-updated"><strong>Last updated:</strong> July 18, 2026</p>
-
-<div class="toc">
-  <strong>Table of Contents</strong>
-  <ul>
-    <li><a href="#intro">1. Who We Are &amp; What This App Does</a></li>
-    <li><a href="#data-we-collect">2. What Data We Collect</a></li>
-    <li><a href="#no-server-collection">3. We Do Not Operate a Backend Server</a></li>
-    <li><a href="#camera-permission">4. Camera Permission &amp; Image Data</a></li>
-    <li><a href="#local-storage">5. Local Storage — Documents, OCR Text, Audit Logs</a></li>
-    <li><a href="#encryption">6. Encryption &amp; Private Folders</a></li>
-    <li><a href="#cloud-sync">7. Cloud Sync — What Leaves Your Device</a></li>
-    <li><a href="#oauth">8. OAuth Tokens — Google Drive &amp; Dropbox</a></li>
-    <li><a href="#analytics">9. Analytics &amp; Crash Reporting</a></li>
-    <li><a href="#third-party">10. Third-Party Services</a></li>
-    <li><a href="#children">11. Children's Privacy</a></li>
-    <li><a href="#data-retention">12. Data Retention</a></li>
-    <li><a href="#your-rights">13. Your Privacy Rights (GDPR, CCPA, DPDP, Others)</a></li>
-    <li><a href="#international">14. International Data Transfers</a></li>
-    <li><a href="#security">15. Security Measures</a></li>
-    <li><a href="#changes">16. Changes to This Policy</a></li>
-    <li><a href="#contact">17. Contact Us</a></li>
-  </ul>
-</div>
-
-<h2 id="intro">1. Who We Are &amp; What This App Does</h2>
-<p>DocuScan OCR (the "App") is an offline-first document scanning and optical character recognition application for Android. It allows you to capture documents using your device's camera, extract text using on-device machine learning (ML Kit), organize scans into folders, encrypt private documents, and optionally upload copies to cloud storage providers you control.</p>
-<p>The App is developed and published by an individual developer. The App is distributed as a compiled Android application.</p>
-<p>This Privacy Policy explains what data the App accesses, how that data is processed, where it is stored, and what rights you have over it.</p>
-
-<h2 id="data-we-collect">2. What Data We Collect</h2>
-<p>DocuScan OCR is designed on a principle of <strong>local-first, zero-server architecture</strong>. The App does <strong>not</strong> collect, transmit, or sell your personal data. Here is exactly what the App accesses and why:</p>
-
-<h3>2.1 Data You Actively Provide</h3>
-<ul>
-  <li><strong>Document images</strong> — captured via the camera or imported from your device gallery. These are stored locally on your device.</li>
-  <li><strong>OCR text</strong> — generated by ML Kit from your document images. Stored locally.</li>
-  <li><strong>Folder names and PINs</strong> — folder names you create. PINs are never stored in plaintext (see §6).</li>
-  <li><strong>Cloud sync credentials</strong> — R2 access keys, OAuth tokens for Google Drive and Dropbox, stored locally in app-private SharedPreferences.</li>
-</ul>
-
-<h3>2.2 Data Accessed via Device Permissions</h3>
-<ul>
-  <li><strong>Camera</strong> — required to capture document images. No images are recorded without your explicit action (tapping the shutter button).</li>
-  <li><strong>Storage</strong> — used to save exported PDF, DOCX, and TXT files to your device, and to import images from the gallery.</li>
-  <li><strong>Biometric hardware</strong> — optional. Used only if you choose to unlock private folders with your fingerprint or face unlock instead of entering a PIN.</li>
-</ul>
-
-<h3>2.3 Data Not Collected</h3>
-<ul>
-  <li><strong>No account information</strong> — the App does not have user accounts. No registration, no email, no username.</li>
-  <li><strong>No location data</strong> — the App does not access your device's location.</li>
-  <li><strong>No contact data</strong> — the App does not access your contacts, call log, or messaging.</li>
-  <li><strong>No advertising ID</strong> — the App contains no advertising SDKs and does not access your Google Advertising ID.</li>
-  <li><strong>No payment data</strong> — the App is free. There are no in-app purchases, subscriptions, or transactions.</li>
-  <li><strong>No health or biometric data</strong> — the App does not collect health information. Face or fingerprint data used for biometric unlock is handled entirely by the Android Biometric API and never reaches the App.</li>
-</ul>
-
-<h2 id="no-server-collection">3. We Do Not Operate a Backend Server</h2>
-<p>DocuScan OCR has no backend infrastructure. The developer does not operate any server that receives data from the App. There is no cloud API endpoint called by the App for its core functionality. There is no user database, no analytics database, and no data processing server.</p>
-<p>The only network requests the App makes are:</p>
-<ul>
-  <li><strong>OAuth token exchange</strong> — directly between your device and Google's or Dropbox's OAuth endpoints, initiated when you tap Connect in the Cloud Sync screen.</li>
-  <li><strong>Cloud uploads</strong> — directly from your device to your chosen cloud provider's API endpoint (Cloudflare R2, Google Drive v3, or Dropbox). The developer has no access to these uploads.</li>
-  <li><strong>ML Kit model download</strong> — the first time you use OCR, Google Play Services may download the ML Kit text recognition model. This is a Google service, not controlled by the App.</li>
-</ul>
-
-<h2 id="camera-permission">4. Camera Permission &amp; Image Data</h2>
-<p>The App requests the <code>CAMERA</code> permission to provide a live viewfinder and capture document images. Here is exactly what happens at each step:</p>
-<ol>
-  <li><strong>Viewfinder</strong> — the camera feed is displayed in a live preview. No image data is recorded or stored during preview.</li>
-  <li><strong>Capture</strong> — when you tap the shutter button, a single JPEG image is captured via CameraX. This image is held in memory and displayed in the batch queue.</li>
-  <li><strong>Batch finalization</strong> — when you confirm the batch, the image is saved to your device's app-internal storage. The image is also processed through ML Kit for OCR.</li>
-  <li><strong>Encryption</strong> — if the document is created inside a private folder, the image is encrypted with AES-256-GCM before being written to disk.</li>
-</ol>
-<p>The camera is <strong>never</strong> accessed in the background. The App does not record video. No camera data is ever transmitted to the developer or any third party (except as described in §7 for cloud sync, which you explicitly configure).</p>
-
-<h2 id="local-storage">5. Local Storage — Documents, OCR Text, Audit Logs</h2>
-<p>All document data is stored in the App's private internal storage:</p>
-<ul>
-  <li><strong>SQLite database (Room)</strong> — stores folder metadata, document metadata, page references, OCR text, and the audit log. Located at <code>/data/data/com.docuscan.ocr/databases/</code>.</li>
-  <li><strong>Image files</strong> — stored in app-internal storage under <code>files/</code>. If the document is in a private folder, the file is encrypted and saved with a <code>.enc</code> extension.</li>
-  <li><strong>SharedPreferences</strong> — stores app preferences (theme selection, auto-backup toggle, cloud sync config including OAuth tokens). Located at <code>/data/data/com.docuscan.ocr/shared_prefs/</code>.</li>
-  <li><strong>Export files</strong> — PDF, DOCX, and TXT exports are written to external storage under your device's standard documents directory (<code>DocuScan/exports/</code>), which you can access via any file manager or share via the system share sheet.</li>
-</ul>
-<p>This data persists until you uninstall the App or clear its app data. Uninstalling the App will remove all local data, including encrypted documents (see §12 for retention details).</p>
-
-<h2 id="encryption">6. Encryption &amp; Private Folders</h2>
-<p>Private folders use a layered encryption model:</p>
-<ul>
-  <li><strong>Android Keystore</strong> — a master AES-256-GCM key is generated inside the device's hardware-backed Keystore. This key never leaves secure hardware.</li>
-  <li><strong>PBKDF2 key derivation</strong> — your folder PIN is combined with a random salt and stretched through 100,000 iterations of PBKDF2-HMAC-SHA256 to produce a 256-bit file encryption key.</li>
-  <li><strong>AES-GCM file encryption</strong> — each page image is encrypted with AES-256 in GCM mode (random 12-byte IV, 128-bit authentication tag) before being written to disk.</li>
-  <li><strong>PIN storage</strong> — your PIN is never stored. Only an encrypted verification marker is persisted. If the PIN is forgotten, the encrypted files cannot be recovered.</li>
-</ul>
-<p>This encryption is managed entirely on your device. The developer cannot decrypt your files, cannot reset your PIN, and has no access to your encryption keys.</p>
-
-<h2 id="cloud-sync">7. Cloud Sync — What Leaves Your Device</h2>
-<p>Cloud sync is an <strong>opt-in</strong> feature. You configure it manually in the Cloud Sync screen. When enabled:</p>
-<ul>
-  <li><strong>Cloudflare R2</strong> — document images are uploaded to your R2 bucket using AWS SigV4-signed requests. You supply the endpoint, bucket name, and API credentials.</li>
-  <li><strong>Google Drive</strong> — document images are uploaded to your Google Drive via the Drive v3 multipart API. The app requests the <code>drive.file</code> scope, meaning it can only read and write files it created — it cannot see or modify other files in your Drive. You must authorize this via OAuth consent.</li>
-  <li><strong>Dropbox</strong> — document images are uploaded to your Dropbox app folder via the files/upload API. You must authorize this via OAuth consent.</li>
-</ul>
-<p>The developer <strong>does not have access</strong> to any cloud provider's credentials or to the uploaded data. Uploads are direct from your device to the provider's endpoint. The developer cannot view, modify, or delete data stored in your cloud accounts through this App.</p>
-<p>If you do not configure cloud sync, no data ever leaves your device.</p>
-
-<h2 id="oauth">8. OAuth Tokens — Google Drive &amp; Dropbox</h2>
-<p>When you connect to Google Drive or Dropbox, the App obtains an OAuth 2.0 access token (and a refresh token) from the provider. These tokens are:</p>
-<ul>
-  <li><strong>Stored locally</strong> — in app-private SharedPreferences on your device, not on any server.</li>
-  <li><strong>Scoped</strong> — Google Drive tokens are limited to the <code>drive.file</code> scope. Dropbox tokens are limited to the app folder.</li>
-  <li><strong>Revocable</strong> — you can revoke any token at any time from the provider's security dashboard (Google Account permissions or Dropbox security settings).</li>
-  <li><strong>Not encrypted at rest</strong> — tokens are stored as plaintext in SharedPreferences. This is an accepted risk because tokens are scoped and revocable. Encrypting them would require a key stored on the same device, which does not materially improve protection against a device-level attacker.</li>
-</ul>
-<p>The developer does not receive, store, or process your OAuth tokens. The token exchange happens directly between your device and the provider's OAuth endpoint.</p>
-
-<h2 id="analytics">9. Analytics &amp; Crash Reporting</h2>
-<p>DocuScan OCR <strong>does not include any analytics SDK, crash reporting SDK, or telemetry</strong>. The App does not track user behavior, measure feature usage, or report crashes to the developer.</p>
-<p>There is no Firebase Analytics, no Google Analytics, no Sentry, no Crashlytics, no Mixpanel — none. If the App crashes, the crash information stays on your device in the Android system log and is not transmitted anywhere.</p>
-
-<h2 id="third-party">10. Third-Party Services</h2>
-<p>The App integrates with the following third-party services, each governed by its own privacy policy:</p>
-<table style="width:100%; border-collapse: collapse;">
-  <tr style="border-bottom: 1px solid #e2e8f0;">
-    <th style="text-align: left; padding: 0.5rem 0;">Service</th>
-    <th style="text-align: left; padding: 0.5rem 0;">Purpose</th>
-    <th style="text-align: left; padding: 0.5rem 0;">Data Shared</th>
-  </tr>
-  <tr style="border-bottom: 1px solid #e2e8f0;">
-    <td style="padding: 0.5rem 0;">Google ML Kit</td>
-    <td style="padding: 0.5rem 0;">On-device text recognition</td>
-    <td style="padding: 0.5rem 0;">None (runs on-device). Model downloaded via Google Play Services.</td>
-  </tr>
-  <tr style="border-bottom: 1px solid #e2e8f0;">
-    <td style="padding: 0.5rem 0;">Google Drive API</td>
-    <td style="padding: 0.5rem 0;">Cloud sync (optional, opt-in)</td>
-    <td style="padding: 0.5rem 0;">Document images you choose to upload. OAuth tokens stored locally.</td>
-  </tr>
-  <tr style="border-bottom: 1px solid #e2e8f0;">
-    <td style="padding: 0.5rem 0;">Dropbox API</td>
-    <td style="padding: 0.5rem 0;">Cloud sync (optional, opt-in)</td>
-    <td style="padding: 0.5rem 0;">Document images you choose to upload. OAuth tokens stored locally.</td>
-  </tr>
-  <tr style="border-bottom: 1px solid #e2e8f0;">
-    <td style="padding: 0.5rem 0;">Cloudflare R2</td>
-    <td style="padding: 0.5rem 0;">Cloud sync (optional, opt-in)</td>
-    <td style="padding: 0.5rem 0;">Document images you choose to upload. You supply your own API credentials.</td>
-  </tr>
-  <tr>
-    <td style="padding: 0.5rem 0;">Android Keystore</td>
-    <td style="padding: 0.5rem 0;">Hardware-backed encryption key storage</td>
-    <td style="padding: 0.5rem 0;">None. Key material never leaves the secure processor.</td>
-  </tr>
-</table>
-<p>Google ML Kit's privacy policy is available at <a href="https://policies.google.com/privacy" target="_blank">https://policies.google.com/privacy</a>. Google Drive and Dropbox have their own privacy policies governing how they handle data once it reaches their services.</p>
-<p>As noted above, these services are used only for their stated purposes. The App does not share data with any service for advertising, marketing, or analytics.</p>
-
-<h2 id="children">11. Children's Privacy</h2>
-<p>DocuScan OCR is a general-purpose document scanning application. It is not directed at children under the age of 13 (or under 16 in the European Union, or under 18 in India under the Digital Personal Data Protection Act 2023). The App does not knowingly collect personal information from children.</p>
-<p>Because the App operates without user accounts and does not collect any personal information on a server, there is no registration mechanism that could verify a user's age. If you are a parent or guardian and you believe a child has used the App in a way that concerns you, please contact us at the address in §17. Since the App stores all data locally, the appropriate action is to uninstall the App from the child's device, which removes all local data.</p>
-
-<h2 id="data-retention">12. Data Retention</h2>
-<p>Since the developer does not operate any server and does not collect any personal information, data retention is entirely within your control:</p>
-<ul>
-  <li><strong>Local data</strong> — documents, OCR text, audit logs, and preferences remain on your device until you delete them within the App or uninstall the App. Uninstalling the App removes all data stored in app-internal storage.</li>
-  <li><strong>Export files</strong> — PDF, DOCX, and TXT files you create via the Export feature are saved to your device's external storage (Documents/DocuScan/exports/) and persist after the App is uninstalled. You must delete these files manually or via a file manager.</li>
-  <li><strong>Cloud copies</strong> — if you enabled cloud sync, copies of your document images exist in your chosen cloud provider's storage until you delete them from that provider. The App cannot delete them on your behalf.</li>
-</ul>
-<p>The developer does not store any backup, archive, or cache of your data. When the App is uninstalled, the developer has no record that you ever used it.</p>
-
-<h2 id="your-rights">13. Your Privacy Rights (GDPR, CCPA, DPDP, Others)</h2>
-<p>Depending on where you live, you may have legal rights over your personal data. Because DocuScan OCR operates without a backend server and does not collect, store, or process personal data on the developer's systems, most of these rights are exercised by actions you take within the App itself or on your device.</p>
-
-<h3>13.1 Data Subject Rights (GDPR — EU/EEA/UK)</h3>
-<p>If you are in the European Union, European Economic Area, or the United Kingdom, the General Data Protection Regulation (GDPR) grants you the following rights. Here is how each applies to DocuScan OCR:</p>
-<ul>
-  <li><strong>Right of access</strong> — you can access all your data by navigating through the App's Dashboard and Document screens. The local SQLite database is not directly accessible but all its content is displayed in the UI.</li>
-  <li><strong>Right to rectification</strong> — you can edit document names and reorder pages within the App.</li>
-  <li><strong>Right to erasure ("right to be forgotten")</strong> — you can delete individual documents, folders, or the entire database by clearing app data or uninstalling the App.</li>
-  <li><strong>Right to restriction of processing</strong> — you can disable cloud sync at any time from the Cloud Sync screen.</li>
-  <li><strong>Right to data portability</strong> — you can export any document as PDF, DOCX, or TXT and transfer those files to any other system.</li>
-  <li><strong>Right to object</strong> — since the App does not perform profiling, automated decision-making, or direct marketing, there is no processing to object to beyond not using the cloud sync feature.</li>
-  <li><strong>Rights related to automated decision-making</strong> — the App does not use automated decision-making that produces legal effects concerning you.</li>
-</ul>
-<p>If you believe your data has been processed in violation of the GDPR and you cannot resolve it through the actions above, you have the right to lodge a complaint with your local data protection authority.</p>
-
-<h3>13.2 California Privacy Rights (CCPA/CPRA)</h3>
-<p>If you are a resident of California, the California Consumer Privacy Act (CCPA), as amended by the California Privacy Rights Act (CPRA), grants you similar rights. Because the App does not:</p>
-<ul>
-  <li>Collect personal information (as defined by the CCPA) on a server,</li>
-  <li>Sell or share personal information for cross-context behavioral advertising,</li>
-  <li>Use sensitive personal information for purposes beyond those necessary to provide the service,</li>
-</ul>
-<p>the primary CCPA rights (right to know, right to delete, right to opt out of sale/sharing) are exercised through the same on-device actions described above. The App does not have a "Do Not Sell or Share My Personal Information" link because no such activity occurs.</p>
-
-<h3>13.3 India — Digital Personal Data Protection Act, 2023 (DPDP Act)</h3>
-<p>If you are in India, the DPDP Act grants data principals (you) rights of access, correction, erasure, and grievance redressal. As noted throughout this policy, the App operates without a server and does not collect personal data on the developer's systems. You can exercise your rights directly within the App. If you have any grievance, please contact us using the details in §17.</p>
-
-<h3>13.4 Other Jurisdictions</h3>
-<p>If your country has enacted a privacy law that grants you additional rights not described above (such as Brazil's LGPD, Canada's PIPEDA, Australia's Privacy Act, or similar), the same principle applies: your data is under your control on your device, and the App's local-first architecture means you can exercise your rights by managing data directly within the App. Please contact us if you have specific questions about how your local law applies.</p>
-
-<h2 id="international">14. International Data Transfers</h2>
-<p>DocuScan OCR does not transfer your personal data to any country. The App has no backend server. Your data stays on your device and optionally in your chosen cloud provider's storage.</p>
-<p>If you choose to use cloud sync, your document images are transferred to the cloud provider's servers. The location of those servers depends on the provider's infrastructure and your account configuration:</p>
-<ul>
-  <li><strong>Cloudflare R2</strong> — you select the region when creating your bucket. See <a href="https://www.cloudflare.com/trust-hub/privacy-and-data-protection/" target="_blank">Cloudflare's data protection documentation</a>.</li>
-  <li><strong>Google Drive</strong> — data is stored in Google's global infrastructure. See <a href="https://policies.google.com/privacy" target="_blank">Google's Privacy Policy</a>.</li>
-  <li><strong>Dropbox</strong> — data is stored in Dropbox's infrastructure. See <a href="https://www.dropbox.com/privacy" target="_blank">Dropbox's Privacy Policy</a>.</li>
-</ul>
-<p>The developer does not control where these providers store data. You should review each provider's policies before enabling sync.</p>
-
-<h2 id="security">15. Security Measures</h2>
-<p>The App implements the following security measures to protect your data:</p>
-<ul>
-  <li><strong>Full-disk encryption</strong> — on devices with Android 10+ (API 29+), the entire /data partition is encrypted by the operating system. This provides a baseline level of protection for all app data at rest.</li>
-  <li><strong>Android Keystore</strong> — an AES-256-GCM master key is stored in hardware-backed Keystore on supported devices (API 28+). The key material cannot be extracted from the secure processor.</li>
-  <li><strong>AES-256-GCM file encryption</strong> — images in private folders are encrypted with AES-256 in Galois/Counter Mode, which provides both confidentiality and integrity. Tampering with encrypted files is detectable on decryption.</li>
-  <li><strong>PBKDF2-HMAC-SHA256 key derivation</strong> — folder PINs are stretched through 100,000 iterations to derive encryption keys. This rate-limits brute-force attacks against the PIN.</li>
-  <li><strong>In-memory PIN</strong> — the folder PIN is held only in memory (Kotlin StateFlow) and is cleared when the App goes to the background.</li>
-  <li><strong>PKCE OAuth</strong> — all OAuth flows use Proof Key for Code Exchange, preventing authorization code interception attacks.</li>
-  <li><strong>HTTPS/TLS</strong> — all network requests to cloud providers use HTTPS with TLS encryption.</li>
-  <li><strong>Minimal attack surface</strong> — the App uses only 7 runtime dependencies and does not include any analytics, crash reporting, or advertising SDKs.</li>
-</ul>
-<p>For a detailed threat model analysis covering specific attack vectors and their mitigations, see the <a href="security-policy.html">Security &amp; Responsible Disclosure Policy</a>.</p>
-
-<h2 id="changes">16. Changes to This Policy</h2>
-<p>We may update this Privacy Policy from time to time. When we do, we will revise the "Last updated" date at the top of this page. If the changes are material (for example, if the App's data handling practices change significantly), we will notify you by updating this document on our official channels and, where feasible, through an in-app notice.</p>
-<p>We encourage you to review this Privacy Policy periodically. Your continued use of the App after changes take effect constitutes your acceptance of the updated policy. If you do not agree with the changes, you should stop using the App and delete all local data.</p>
-
-<h2 id="contact">17. Contact Us</h2>
-<p>If you have any questions, concerns, or requests regarding this Privacy Policy or the App's data handling practices, please contact us:</p>
-<ul>
-  <li><strong>Email:</strong> <a href="mailto:support@prontly.in">support@prontly.in</a></li>
-  <li><strong>our support channels:</strong> the official DocuScan OCR channels</li>
-  
-</ul>
-<p>Because the App does not have a backend server, we cannot access your data to respond to data subject access requests on your behalf. All your data is on your device, and you should manage it directly within the App. We are happy to answer questions about how the App works and how your data is handled.</p>
-        <p style="margin-top:18px;"><a href="legal/privacy-policy.html">Open Privacy Policy as a standalone page →</a></p>
-      </section>
-      <section class="reveal" id="terms-of-service">
-        <h2><a href="legal/terms-of-service.html" style="color:inherit;text-decoration:none;">Terms of Service</a><span class="badge badge-r">DocuScan OCR</span></h2>
-        <p class="last-updated"><strong>Last updated:</strong> July 18, 2026</p>
-
-<div class="toc">
-  <strong>Table of Contents</strong>
-  <ul>
-    <li><a href="#acceptance">1. Acceptance of Terms</a></li>
-    <li><a href="#license">2. License Grant</a></li>
-    <li><a href="#app-store">3. App Store &amp; Platform Terms</a></li>
-    <li><a href="#eligibility">4. Eligibility &amp; Age Requirement</a></li>
-    <li><a href="#description">5. Description of the App</a></li>
-    <li><a href="#acceptable-use">6. Acceptable Use</a></li>
-    <li><a href="#intellectual-property">7. Intellectual Property</a></li>
-    <li><a href="#user-content">8. User Content &amp; Your Data</a></li>
-    <li><a href="#third-party">9. Third-Party Services &amp; Links</a></li>
-    <li><a href="#privacy">10. Privacy</a></li>
-    <li><a href="#disclaimer">11. Disclaimer of Warranties</a></li>
-    <li><a href="#limitation">12. Limitation of Liability</a></li>
-    <li><a href="#indemnification">13. Indemnification</a></li>
-    <li><a href="#termination">14. Termination</a></li>
-    <li><a href="#governing-law">15. Governing Law &amp; Dispute Resolution</a></li>
-    <li><a href="#changes">16. Changes to These Terms</a></li>
-    <li><a href="#contact">17. Contact</a></li>
-  </ul>
-</div>
-
-<h2 id="acceptance">1. Acceptance of Terms</h2>
-<p>By downloading, installing, or using DocuScan OCR (the "App"), you agree to be bound by these Terms of Service and End User License Agreement (the "Terms"). If you do not agree to these Terms, do not download, install, or use the App.</p>
-<p>These Terms govern your use of the App regardless of how you access it — whether you installed it via an official or third-party distribution method.</p>
-
-<h2 id="license">2. License Grant</h2>
-<p>DocuScan OCR (the "App") is a proprietary software application owned and developed by Rishav Raj ("Developer"). The App is made available for use subject to these Terms. All rights not expressly granted herein are reserved by the Developer.</p>
-
-<p>Subject to your compliance with these Terms, the Developer grants you a <strong>limited, non-exclusive, non-transferable, non-sublicensable, revocable license</strong> to download, install, and use the App on devices you own or control for your personal or internal business purposes.</p>
-
-<h3>2.1 License Restrictions</h3>
-<p>You may not, and may not permit any third party to:</p>
-<ul>
-  <li>Copy, modify, adapt, translate, or create derivative works of the App, except as expressly permitted in writing by the Developer.</li>
-  <li>Reverse-engineer, decompile, disassemble, or otherwise attempt to derive the source code of the App, except to the extent this restriction is prohibited by applicable law.</li>
-  <li>Rent, lease, lend, sell, sublicense, assign, distribute, or otherwise transfer the App to any third party.</li>
-  <li>Remove, alter, or obscure any copyright, trademark, or other proprietary notices on or in the App.</li>
-  <li>Use the App in any manner that violates applicable laws or these Terms.</li>
-  <li>Use the App's name, logo, or branding in a way that suggests endorsement or affiliation without prior written permission.</li>
-</ul>
-
-<h2 id="app-store">3. App Store &amp; Platform Terms</h2>
-<p>If you access the App through the Google Play Store, your use is also subject to Google's Terms of Service and the Google Play Business and Program Policies. In the event of a conflict between these Terms and Google's terms, Google's terms govern to the extent of the conflict but only with respect to matters within Google's purview (such as app distribution, payment processing for purchases, and app store policies).</p>
-<p>The App does not currently use Apple's Standard EULA because it is not distributed through the Apple App Store. If a version for iOS is released in the future, these Terms will apply along with Apple's Licensed Application End User License Agreement.</p>
-
-<h2 id="eligibility">4. Eligibility &amp; Age Requirement</h2>
-<p>By using the App, you represent and warrant that:</p>
-<ul>
-  <li>You are at least <strong>13 years of age</strong> (or the minimum age of digital consent in your country, whichever is higher — this may be 14, 16, or 18 depending on your jurisdiction).</li>
-  <li>If you are between 13 and the age of majority in your country, you have reviewed these Terms with a parent or legal guardian and they agree to them on your behalf.</li>
-  <li>You have the legal capacity to enter into a binding agreement.</li>
-  <li>You are not located in a country that is subject to a U.S. government embargo or that has been designated as a "terrorist-supporting" country.</li>
-  <li>You are not listed on any U.S. government list of prohibited or restricted parties.</li>
-</ul>
-<p>The App is not directed at children under 13. If you are a parent or guardian and you believe your child has downloaded the App, please contact us at <a href="mailto:support@prontly.in">support@prontly.in</a> for guidance on removing the App and its data.</p>
-
-<h2 id="description">5. Description of the App</h2>
-<p>DocuScan OCR is a document scanning application for Android that provides the following core functionality:</p>
-<ul>
-  <li><strong>Camera-based document capture</strong> — using the device's camera to photograph documents.</li>
-  <li><strong>On-device optical character recognition (OCR)</strong> — using Google ML Kit to extract text from captured images. No network request is made for OCR processing.</li>
-  <li><strong>Perspective correction and image filtering</strong> — tools to adjust and enhance scanned document images.</li>
-  <li><strong>Organizational features</strong> — folders, document names, page management.</li>
-  <li><strong>Private folders with encryption</strong> — PIN-protected folders with AES-256-GCM at-rest encryption.</li>
-  <li><strong>Export to PDF, DOCX, and TXT</strong> — industry-standard formats for document sharing.</li>
-  <li><strong>Optional cloud sync</strong> — manual or automatic backup to Cloudflare R2, Google Drive, or Dropbox. You configure and control this feature.</li>
-</ul>
-<p>The App is provided free of charge and does not include any paid features, subscriptions, in-app purchases, or advertisements.</p>
-
-<h2 id="acceptable-use">6. Acceptable Use</h2>
-<p>You agree not to use the App for any purpose that is unlawful, prohibited by these Terms, or harmful to others. Specifically, you agree not to:</p>
-
-<h3>6.1 Prohibited Content</h3>
-<p>You must not use the App to scan, store, or distribute:</p>
-<ul>
-  <li>Child sexual abuse material (CSAM) or any content depicting the exploitation of minors.</li>
-  <li>Content that incites violence, terrorism, or hatred against individuals or groups based on race, ethnicity, religion, gender, sexual orientation, disability, or any other protected characteristic.</li>
-  <li>Content that violates any applicable law regarding intellectual property, including copyrighted material you do not have the right to reproduce or distribute.</li>
-  <li>Content that depicts or facilitates non-consensual intimate imagery ("revenge porn") or any other invasion of privacy.</li>
-  <li>Fraudulent documents, forged identification, counterfeit currency, or any material created with the intent to deceive or defraud.</li>
-  <li>Malicious code, malware, or any content designed to harm computer systems.</li>
-</ul>
-
-<h3>6.2 Prohibited Conduct</h3>
-<ul>
-  <li>Reverse-engineering, decompiling, or disassembling the App beyond what is permitted by applicable law.</li>
-  <li>Using the App to distribute malware or to engage in denial-of-service attacks.</li>
-  <li>Attempting to bypass the App's encryption or security features (except for legitimate security research, which is governed by the <a href="security-policy.html">Responsible Disclosure Policy</a>).</li>
-  <li>Using the App in a way that violates the terms of service of any integrated third-party service (Google Drive, Dropbox, Cloudflare R2).</li>
-</ul>
-
-<h3>6.3 Compliance with Laws</h3>
-<p>You are solely responsible for ensuring that your use of the App complies with all applicable laws and regulations in your jurisdiction, including but not limited to:</p>
-<ul>
-  <li>Privacy and data protection laws (such as GDPR, CCPA, DPDP Act) regarding the documents you scan and whose data they contain.</li>
-  <li>Laws governing the scanning and storage of identification documents, passports, and licenses.</li>
-  <li>Laws governing professional record-keeping for medical, legal, or financial documents (HIPAA, legal professional privilege, record-keeping regulations).</li>
-  <li>Export control laws and economic sanctions.</li>
-</ul>
-<p>The App provides encryption and audit-logging features that may assist with compliance, but you should not rely on the App as your sole compliance mechanism. Consult a qualified professional for compliance advice specific to your use case.</p>
-
-<h2 id="intellectual-property">7. Intellectual Property</h2>
-<p>The App, including its source code, design, graphics, branding, and all related intellectual property rights, is owned by the Developer and is protected by applicable copyright, trademark, and other intellectual property laws. Nothing in these Terms grants you any right, title, or interest in the App's intellectual property except the limited license described in §2.</p>
-<p>Specifically, the following are owned by the Developer:</p>
-<ul>
-  <li>The <strong>source code</strong> of the App (except third-party libraries, which are governed by their own licenses).</li>
-  <li>The <strong>app icon</strong> and all graphical assets.</li>
-  <li>The <strong>name "DocuScan OCR"</strong> and the project's branding.</li>
-  <li><strong>Third-party libraries</strong> used by the App are governed by their own licenses (Apache 2.0, MIT, and others).</li>
-</ul>
-<p>The output you create with the App — your scanned documents, OCR text, and exported files — belongs to you. The developer claims no ownership over the documents you scan, the text you extract, or any data you produce using the App.</p>
-
-<h2 id="user-content">8. User Content &amp; Your Data</h2>
-<p>DocuScan OCR is a local application. Your content — document images, OCR text, folder structures — is stored on your device. The developer does not:</p>
-<ul>
-  <li>Receive, view, access, or process your content.</li>
-  <li>Store your content on any server.</li>
-  <li>Back up your content.</li>
-  <li>Share your content with any third party.</li>
-</ul>
-<p>You are solely responsible for maintaining backups of your important documents. The App does not have a built-in backup feature (though you can enable cloud sync to maintain off-device copies). Hardware failure, accidental deletion, or data corruption on your device may result in permanent data loss. The developer is not responsible for data loss resulting from any cause, including software bugs, device failure, or user error.</p>
-
-<h2 id="third-party">9. Third-Party Services &amp; Links</h2>
-<p>The App integrates with third-party services solely at your direction:</p>
-<table>
-  <tr><th>Service</th><th>Purpose</th><th>Terms</th></tr>
-  <tr>
-    <td>Google Play Services (ML Kit)</td>
-    <td>On-device OCR text recognition</td>
-    <td><a href="https://policies.google.com/terms" target="_blank">Google Terms of Service</a></td>
-  </tr>
-  <tr>
-    <td>Google Drive API</td>
-    <td>Optional cloud backup</td>
-    <td><a href="https://policies.google.com/terms" target="_blank">Google Terms of Service</a></td>
-  </tr>
-  <tr>
-    <td>Dropbox API</td>
-    <td>Optional cloud backup</td>
-    <td><a href="https://www.dropbox.com/terms" target="_blank">Dropbox Terms of Service</a></td>
-  </tr>
-  <tr>
-    <td>Cloudflare R2</td>
-    <td>Optional cloud backup</td>
-    <td><a href="https://www.cloudflare.com/terms/" target="_blank">Cloudflare Terms of Service</a></td>
-  </tr>
-  <tr>
-    <td>Transparency</td>
-    <td>Source code distribution</td>
-    <td>Platform Terms of Service</td>
-  </tr>
-</table>
-<p>The developer is not responsible for the availability, reliability, security, or data practices of these third-party services. You use them at your own risk and should review their terms and privacy policies before using them in connection with the App.</p>
-<p>The App may also contain links to our official channels, documentation websites, or other resources. These links are provided for your convenience and do not constitute endorsement of the linked content.</p>
-
-<h2 id="privacy">10. Privacy</h2>
-<p>Your use of the App is subject to the <a href="privacy-policy.html">Privacy Policy</a>, which is incorporated into these Terms by reference. The Privacy Policy explains what data the App accesses, how it is processed, and your rights over it.</p>
-<p>In summary: the App operates locally. It does not collect, transmit, or sell your personal data. No analytics, no tracking, no server-side storage. Please read the full Privacy Policy for the detailed explanation.</p>
-
-<h2 id="disclaimer">11. Disclaimer of Warranties</h2>
-<p><strong>THE APP IS PROVIDED "AS IS" AND "AS AVAILABLE" WITHOUT ANY WARRANTY OF ANY KIND, WHETHER EXPRESS, IMPLIED, OR STATUTORY.</strong></p>
-<p>To the fullest extent permitted by applicable law, the developer expressly disclaims all warranties, including but not limited to:</p>
-<ul>
-  <li><strong>Implied warranties of merchantability, fitness for a particular purpose, and non-infringement.</strong></li>
-  <li><strong>Warranties regarding the accuracy, completeness, reliability, or timeliness of OCR output.</strong> The on-device ML Kit OCR engine is a statistical model and may produce incorrect or incomplete text. You should verify OCR output before relying on it for any purpose, especially legal, medical, or financial documentation.</li>
-  <li><strong>Warranties that the App will operate without interruption, be error-free, or meet your specific requirements.</strong></li>
-  <li><strong>Warranties that the encryption features will render your data invulnerable to all attacks.</strong> Encryption substantially reduces risk but does not eliminate it. As documented in the Security Model, the App uses AES-256-GCM with PBKDF2 key derivation, but no security measure is absolute.</li>
-  <li><strong>Warranties of compliance with specific regulatory frameworks.</strong> The App is not certified for HIPAA, GDPR, or any other regulatory compliance regime. The audit logging and encryption features are building blocks, not certifications.</li>
-</ul>
-<p>No advice or information, whether oral or written, obtained by you from the developer or through the App shall create any warranty not expressly stated in these Terms.</p>
-
-<h2 id="limitation">12. Limitation of Liability</h2>
-<p><strong>TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL THE DEVELOPER BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, EXEMPLARY, OR PUNITIVE DAMAGES ARISING OUT OF OR RELATING TO YOUR USE OF THE APP.</strong></p>
-<p>This includes, without limitation:</p>
-<ul>
-  <li>Loss of data or documents stored in the App, including encrypted data that becomes inaccessible due to a forgotten PIN or software bug.</li>
-  <li>Loss of profits, business, or goodwill.</li>
-  <li>Cost of procurement of substitute goods or services.</li>
-  <li>Damages resulting from reliance on OCR output.</li>
-  <li>Damages resulting from unauthorized access to your data, including through vulnerabilities in the App, the Android platform, or cloud service providers.</li>
-  <li>Damages resulting from your failure to comply with applicable laws in your use of the App.</li>
-</ul>
-<p><strong>IN ANY EVENT, THE DEVELOPER'S TOTAL LIABILITY TO YOU FOR ALL CLAIMS ARISING FROM OR RELATING TO THESE TERMS OR YOUR USE OF THE APP SHALL NOT EXCEED THE GREATER OF (A) THE AMOUNT YOU PAID TO USE THE APP (WHICH IS ZERO, AS THE APP IS FREE) OR (B) ONE HUNDRED UNITED STATES DOLLARS ($100.00 USD).</strong></p>
-<p>Some jurisdictions do not allow the exclusion or limitation of certain warranties or liabilities. In those jurisdictions, the developer's liability is limited to the greatest extent permitted by law. This limitation of liability applies whether the claim is based in contract, tort (including negligence), strict liability, or any other legal theory, even if the developer has been advised of the possibility of such damages.</p>
-
-<h2 id="indemnification">13. Indemnification</h2>
-<p>You agree to defend, indemnify, and hold harmless the developer from and against any and all claims, liabilities, damages, losses, costs, and expenses (including reasonable legal fees) arising out of or related to:</p>
-<ul>
-  <li>Your use of the App in violation of these Terms.</li>
-  <li>Your violation of any applicable law or regulation in your use of the App.</li>
-  <li>Your violation of any third-party right, including intellectual property rights or privacy rights.</li>
-  <li>Any content you scan, store, or distribute using the App.</li>
-  <li>Your use of the App in connection with any regulated activity (medical, legal, financial) without proper compliance safeguards.</li>
-</ul>
-<p>The developer reserves the right, at your expense, to assume the exclusive defense and control of any matter for which you are required to indemnify us. You agree to cooperate with our defense of such claims.</p>
-
-<h2 id="termination">14. Termination</h2>
-<h3>14.1 Termination by You</h3>
-<p>You may terminate these Terms at any time by uninstalling the App and deleting all copies in your possession. Termination is effective immediately. Upon termination, you must cease all use of the App and destroy all copies in your possession. Your obligations under these Terms that by their nature survive termination (including §§11, 12, 13, and 15) shall survive.</p>
-
-<h3>14.2 Termination by the Developer</h3>
-<p>The developer may terminate these Terms immediately without prior notice if you materially breach these Terms (including the Acceptable Use provisions in §6) and fail to cure the breach within 7 days of being notified.</p>
-<p>The developer may also discontinue the App at any time, in whole or in part, by ceasing distribution and updates. In the event of discontinuation, these Terms will terminate immediately, and you should uninstall the App and export any data you wish to retain beforehand.</p>
-
-<h3>14.3 Effect of Termination</h3>
-<p>Upon any termination: (a) your license to use the App automatically terminates; (b) you must uninstall the App and delete all copies; (c) any provisions of these Terms that by their nature should survive termination shall survive, including disclaimers of warranty, limitations of liability, indemnification, and governing law.</p>
-<p>Termination does not affect the developer's rights to seek remedies for your breach of these Terms.</p>
-
-<h2 id="governing-law">15. Governing Law &amp; Dispute Resolution</h2>
-<h3>15.1 Governing Law</h3>
-<p>These Terms and any disputes arising out of or relating to them shall be governed by and construed in accordance with the laws of <strong>India</strong>, without regard to its conflict of laws principles. The developer is based in India, and the App's primary place of development is India.</p>
-<p>If you are a consumer in the European Union or elsewhere with mandatory local consumer protection laws, those laws apply to you where they provide a higher standard of protection. Nothing in these Terms limits any statutory rights you have as a consumer.</p>
-
-<h3>15.2 Informal Resolution</h3>
-<p>Before initiating any legal proceeding, you agree to first attempt to resolve the dispute informally by contacting the developer at <a href="mailto:support@prontly.in">support@prontly.in</a>. The parties shall negotiate in good faith for a period of 30 days from the date of the initial contact. If the dispute cannot be resolved within that period, either party may pursue formal resolution.</p>
-
-<h3>15.3 Arbitration</h3>
-<p>Any dispute arising out of or relating to these Terms that cannot be resolved informally shall be finally settled by <strong>binding arbitration</strong> administered by the Singapore International Arbitration Centre (SIAC) in accordance with the SIAC Arbitration Rules in effect at the time of the dispute. The seat of arbitration shall be Singapore. The language of the arbitration shall be English. The tribunal shall consist of a single arbitrator.</p>
-<p>Notwithstanding the foregoing, the developer may seek injunctive or other equitable relief in any court of competent jurisdiction to protect its intellectual property rights or to prevent unauthorized use of the App. You may also bring claims in small claims court in your jurisdiction if the claims qualify.</p>
-
-<h3>15.4 Class Action Waiver</h3>
-<p>You agree that any dispute resolution proceedings shall be conducted on an <strong>individual basis</strong> and not as a class, consolidated, or representative action. If for any reason a claim proceeds in court rather than arbitration, you and the developer each waive any right to a jury trial.</p>
-
-<h3>15.5 Time Limitation</h3>
-<p>Any claim or cause of action arising out of or relating to these Terms or your use of the App must be filed within <strong>one (1) year</strong> after such claim or cause of action arose, or it shall be forever barred.</p>
-
-<h2 id="changes">16. Changes to These Terms</h2>
-<p>The developer reserves the right to modify these Terms at any time. Changes will be effective immediately upon posting the updated Terms to our official channels. If the changes are material, the developer will make reasonable efforts to notify you, such as by updating the "Last updated" date and by noting the changes in the App's release notes or via an in-app message for future versions.</p>
-<p>Your continued use of the App after the effective date of the changes constitutes your acceptance of the modified Terms. If you do not agree to the modified Terms, you must stop using the App and uninstall it.</p>
-<p>The developer will never retroactively change these Terms to expand its own liability or to restrict your rights without your explicit consent.</p>
-
-<h2 id="contact">17. Contact</h2>
-<p>If you have any questions about these Terms, please contact us:</p>
-<ul>
-  <li><strong>Email:</strong> <a href="mailto:support@prontly.in">support@prontly.in</a></li>
-  <li><strong>our support channels:</strong> the official DocuScan OCR channels</li>
-  
-</ul>
-        <p style="margin-top:18px;"><a href="legal/terms-of-service.html">Open Terms of Service as a standalone page →</a></p>
-      </section>
-      <section class="reveal" id="security-policy">
-        <h2><a href="legal/security-policy.html" style="color:inherit;text-decoration:none;">Security Policy & Responsible Disclosure</a><span class="badge badge-rec">DocuScan OCR</span></h2>
-        <p class="last-updated"><strong>Last updated:</strong> July 18, 2026</p>
-
-<div class="toc">
-  <strong>Table of Contents</strong>
-  <ul>
-    <li><a href="#overview">1. Overview</a></li>
-    <li><a href="#encryption-architecture">2. Encryption Architecture</a></li>
-    <li><a href="#threat-model">3. Threat Model</a></li>
-    <li><a href="#known-limitations">4. Known Security Limitations</a></li>
-    <li><a href="#responsible-disclosure">5. Responsible Disclosure Guidelines</a></li>
-    <li><a href="#scope">6. Scope &amp; Out of Scope</a></li>
-    <li><a href="#contact">7. Contact</a></li>
-  </ul>
-</div>
-
-<h2 id="overview">1. Overview</h2>
-<p>This document describes the security architecture of DocuScan OCR for the benefit of users, security researchers, and anyone evaluating the App's security posture. It also provides guidelines for the responsible disclosure of security vulnerabilities.</p>
-<p>The developer encourages independent security review of the App. The source code is available for inspection at the official DocuScan OCR channels.</p>
-
-<h2 id="encryption-architecture">2. Encryption Architecture</h2>
-<p>The App uses a layered encryption model combining the Android Keystore, PBKDF2 key derivation, and AES-256-GCM symmetric encryption.</p>
-
-<h3>2.1 Key Hierarchy</h3>
-<pre style="background: #f7fafc; padding: 1rem; border-radius: 6px; overflow-x: auto; font-size: 0.85rem; line-height: 1.5;">
-Android Keystore (hardware-backed or TEE-software, never exported)
-    │
-    └── Master AES-256-GCM key (generated by KeyGenerator in Keystore)
-            │
-            ├── Purpose: encrypt/decrypt folder PIN verification
-            │            marker ("VERIFIED" string).
-            │
-            └── (Indirectly via PBKDF2) File encryption keys
-                     │
-                     └── PBKDF2(user PIN + random 16-byte salt, 100,000 iters)
-                              │
-                              └── AES-256-GCM key per file
-                                       │
-                                       └── Encrypts: page image bytes
-                                            Format: [12-byte IV][ciphertext][16-byte GCM tag]
-</pre>
-
-<h3>2.2 Key Derivation Parameters</h3>
-<table>
-  <tr><th>Parameter</th><th>Value</th><th>Rationale</th></tr>
-  <tr><td>Algorithm</td><td>PBKDF2WithHmacSHA256</td><td>NIST-approved, hardware-accelerated on ARMv8 via Cryptography Extensions</td></tr>
-  <tr><td>Iterations</td><td>100,000</td><td>Balance between security (rate-limiting PIN brute force to ~100ms per attempt) and unlock latency on older devices (minSdk 24 devices from 2016)</td></tr>
-  <tr><td>Salt</td><td>16 bytes random (SecureRandom)</td><td>Ensures identical PINs produce different keys in different folders</td></tr>
-  <tr><td>Key size</td><td>256 bits</td><td>Required for AES-256; full output of SHA-256-based PBKDF2</td></tr>
-  <tr><td>Storage</td><td>Salt stored alongside encrypted blob in Room database</td><td>Needed for re-derivation; not secret but increases attack complexity per folder</td></tr>
-</table>
-
-<h3>2.3 GCM Encryption Details</h3>
-<table>
-  <tr><th>Parameter</th><th>Value</th></tr>
-  <tr><td>Algorithm</td><td>AES/GCM/NoPadding</td></tr>
-  <tr><td>Key size</td><td>256 bits</td></tr>
-  <tr><td>IV nonce length</td><td>12 bytes (96 bits, recommended by NIST for GCM)</td></tr>
-  <tr><td>Authentication tag length</td><td>128 bits (16 bytes)</td></tr>
-  <tr><td>IV generation</td><td>Random, generated by Cipher.init(ENCRYPT_MODE)</td></tr>
-  <tr><td>Per-encryption IV uniqueness</td><td>Guaranteed by random generation (collision probability negligible for the data volumes involved)</td></tr>
-</table>
-
-<h3>2.4 PIN Verification Protocol</h3>
-<ol>
-  <li>User creates a 4-digit PIN for a private folder.</li>
-  <li>App generates a random 16-byte salt via <code>SecureRandom</code>.</li>
-  <li>App derives a 256-bit AES key via PBKDF2(PIN, salt, 100,000 iterations).</li>
-  <li>App encrypts the UTF-8 bytes of the string "VERIFIED" using AES-256-GCM with the derived key.</li>
-  <li>The encrypted blob (IV + ciphertext + tag) and the salt are stored as <code>pinHash</code> and <code>salt</code> on the folder row in Room.</li>
-  <li>On verification: re-derive the key from the entered PIN and stored salt, attempt GCM decryption of the stored blob. If the GCM authentication tag is valid and the plaintext equals "VERIFIED", the PIN is correct.</li>
-  <li>If GCM decryption throws an <code>AEADBadTagException</code>, the PIN is incorrect.</li>
-</ol>
-<p>This protocol ensures that the PIN itself is never stored and cannot be recovered from the database. An attacker with full database access must brute-force the PIN through 100,000 PBKDF2 iterations per attempt, rate-limited by the CPU.</p>
-
-<h2 id="threat-model">3. Threat Model</h2>
-<h3>3.1 Assets Protected</h3>
-<ul>
-  <li><strong>Document images</strong> — photographs of documents stored in private folders.</li>
-  <li><strong>OCR text</strong> — extracted text from documents in private folders.</li>
-  <li><strong>Folder PIN</strong> — the 4-digit PIN granting access to private folders.</li>
-</ul>
-
-<h3>3.2 Trust Assumptions</h3>
-<ul>
-  <li>The Android operating system's sandbox is trusted to isolate the App's data from other applications on the device.</li>
-  <li>The Android Keystore implementation on the device is trusted to protect the master key from extraction.</li>
-  <li>The device's lock screen (PIN, pattern, password, or biometric) is trusted to protect the device against unauthorized physical access.</li>
-  <li>The user is trusted to choose a PIN that is not trivially guessable (e.g., "1234", "0000") and to keep it confidential.</li>
-</ul>
-
-<h3>3.3 Threat Scenarios &amp; Mitigations</h3>
-<table>
-  <tr><th>Threat</th><th>Scenario</th><th>Mitigation</th><th>Residual Risk Level</th></tr>
-  <tr>
-    <td>APK decompilation</td>
-    <td>Attacker decompiles the APK with jadx/apktool to extract source code, keys, or algorithms.</td>
-    <td>Encryption keys never enter source code — they are derived at runtime from PIN + Keystore. The algorithm is public (Kerckhoffs's principle).</td>
-    <td>Low — attacker gains no keys; knowledge of the algorithm does not help without the PIN and Keystore.</td>
-  </tr>
-  <tr>
-    <td>SQLite database extraction</td>
-    <td>Attacker with root or ADB access copies the Room database file.</td>
-    <td>Folder PIN stored only as encrypted "VERIFIED" marker. Files encrypted at rest. Plaintext document names and folder structure are visible.</td>
-    <td>Medium — folder structure and document metadata are exposed, but document content (images and OCR text) is encrypted.</td>
-  </tr>
-  <tr>
-    <td>Keystore key extraction</td>
-    <td>Attacker attempts to read the AES master key from the Android Keystore.</td>
-    <td>On API 28+ devices with hardware-backed Keystore, key material never leaves the secure processor. On API 24-27 (software-only Keystore), extraction may be possible with physical access.</td>
-    <td>Low (API 28+); Medium (API 24-27).</td>
-  </tr>
-  <tr>
-    <td>PIN brute force against database</td>
-    <td>Attacker extracts the encrypted "VERIFIED" blob and salt, then tries all 10,000 PINs offline.</td>
-    <td>PBKDF2 at 100k iterations per attempt — ~16 minutes for full 4-digit space at ~100ms/attempt on modern hardware. Keystore rate-limiting on API 30+ adds additional practical delay.</td>
-    <td>Low — 16 minutes is a practical obstacle for a phone thief; a dedicated attacker with server-grade hardware could reduce this to seconds.</td>
-  </tr>
-  <tr>
-    <td>Memory dump</td>
-    <td>Attacker with root access dumps the app process heap to read activeFolderPin.</td>
-    <td>PIN is cleared on app background (onPause). During use, PIN lives in Kotlin StateFlow memory — vulnerable to root-level memory inspection.</td>
-    <td>Medium — requires both root and physical access to an unlocked device while the app is actively accessing a private folder.</td>
-  </tr>
-  <tr>
-    <td>OAuth token theft from SharedPreferences</td>
-    <td>Attacker reads sync_prefs.xml containing Google Drive or Dropbox tokens.</td>
-    <td>Tokens are plaintext in SharedPreferences (an accepted architectural decision — see Privacy Policy §8). Tokens are scoped and revocable.</td>
-    <td>Medium-high — mitigate by revoking tokens from provider dashboard if device is compromised.</td>
-  </tr>
-  <tr>
-    <td>Cloud provider breach</td>
-    <td>Cloudflare R2, Google Drive, or Dropbox suffers a data breach exposing uploaded documents.</td>
-    <td>Out of developer's control. Users should evaluate provider security before enabling cloud sync. Encryption of documents before upload is not currently supported (uploaded images are plain JPEGs — plan to add client-side encryption for cloud copies is noted).</td>
-    <td>Variable — depends on provider. Uploaded images are unencrypted at rest in the cloud provider's storage. Users should consider this when deciding what to sync.</td>
-  </tr>
-  <tr>
-    <td>Man-in-the-middle on cloud upload</td>
-    <td>Attacker intercepts HTTPS traffic during cloud sync.</td>
-    <td>All uploads use HTTPS/TLS 1.2+. R2 uploads additionally use AWS SigV4 request signing for integrity verification.</td>
-    <td>Low — standard TLS protections apply; the threat model assumes TLS is not broken at a protocol level.</td>
-  </tr>
-  <tr>
-    <td>Supply chain (malicious dependency)</td>
-    <td>A third-party library used by the App contains a vulnerability or backdoor.</td>
-    <td>Minimal dependencies (7 runtime libraries), all from reputable sources (Google/Maven, JetBrains, Square). Source-available. Standard transitive dependency scanning in Gradle.</td>
-    <td>Low — mitigated by minimal attack surface; not immune to zero-day vulnerabilities in dependencies.</td>
-  </tr>
-</table>
-
-<h2 id="known-limitations">4. Known Security Limitations</h2>
-<p>The following security limitations are known and documented:</p>
-<ol>
-  <li><strong>OAuth tokens stored in plaintext.</strong> Access tokens and refresh tokens for Google Drive and Dropbox are stored in SharedPreferences without encryption. The risk is partially mitigated because tokens are scoped to minimal permissions and are revocable by the user from the provider's security dashboard. A future update should encrypt tokens using the same Keystore-backed mechanism used for folders.</li>
-  <li><strong>PBKDF2 iteration count below OWASP recommendation.</strong> OWASP 2023 recommends 600,000 iterations for PBKDF2-HMAC-SHA256. This App uses 100,000 iterations to maintain acceptable unlock latency on minSdk 24 devices. This should be increased when minSdk is raised to 31+.</li>
-  <li><strong>Exported files are unencrypted.</strong> PDF, DOCX, and TXT exports are saved to external storage as plain, unencrypted files. The export directory is accessible to other apps with storage permissions. Users should handle exported files with appropriate care.</li>
-  <li><strong>No remote wipe capability.</strong> If a device is lost or stolen, there is no mechanism to remotely delete the App's data. The Android Device Manager's factory reset is the only remote option, and it wipes the entire device, not just the App's data.</li>
-  <li><strong>No passphrase strength enforcement.</strong> The App accepts any 4-digit PIN without checking for common patterns ("1234", "0000", "2580", etc.). Users are responsible for choosing a PIN that is not trivially guessable.</li>
-  <li><strong>Cloud copies are not client-side encrypted.</strong> Document images uploaded to R2, Google Drive, or Dropbox are in their original image format (JPEG) without client-side encryption. They are protected by the cloud provider's own encryption-at-rest but are accessible to the provider and could be subject to legal requests.</li>
-</ol>
-
-<h2 id="responsible-disclosure">5. Responsible Disclosure Guidelines</h2>
-<p>The developer welcomes security research and vulnerability disclosures. If you believe you have found a security vulnerability in DocuScan OCR, please follow these guidelines to report it responsibly.</p>
-
-<h3>5.1 Reporting Process</h3>
-<ol>
-  <li><strong>Do not disclose the vulnerability publicly</strong> (including on our support channels, social media, or mailing lists) until the developer has had reasonable time to investigate and address it.</li>
-  <li><strong>Email your findings</strong> to <a href="mailto:support@prontly.in">support@prontly.in</a> with the subject line "Security Vulnerability: [brief description]".</li>
-  <li><strong>Include in your report:</strong>
-    <ul>
-      <li>A clear description of the vulnerability and its potential impact.</li>
-      <li>Steps to reproduce the vulnerability, including any specific device/OS version where it was observed.</li>
-      <li>Your suggested remediation or mitigation, if any.</li>
-      <li>Your preferred name or pseudonym for acknowledgment (if desired).</li>
-    </ul>
-  </li>
-  <li>The developer will acknowledge receipt within <strong>72 hours</strong> and will provide an initial assessment within <strong>7 days</strong>.</li>
-  <li>The developer will work with you to understand and address the issue. The developer will keep you informed of progress and will coordinate disclosure timing.</li>
-</ol>
-
-<h3>5.2 What We Commit To</h3>
-<ul>
-  <li>Acknowledgment of receipt within 72 hours.</li>
-  <li>A fair and timely investigation of the reported issue.</li>
-  <li>Credit in the release notes and/or a SECURITY.md acknowledgment file (unless you prefer to remain anonymous).</li>
-  <li>Reasonable efforts to fix confirmed vulnerabilities in a timely manner, considering the App's nature as a project maintained by an individual developer.</li>
-</ul>
-
-<h2 id="scope">6. Scope &amp; Out of Scope</h2>
-<h3>6.1 In Scope</h3>
-<ul>
-  <li>The App's encryption implementation (Keystore, PBKDF2, AES-GCM).</li>
-  <li>The App's OAuth implementation (PKCE flow, token handling).</li>
-  <li>The App's local data storage (Room database, SharedPreferences, file system).</li>
-  <li>The App's network communication (cloud sync HTTPS requests, OAuth exchanges).</li>
-  <li>The App's authentication mechanism (PIN verification, biometric integration).</li>
-  <li>The App's audit log integrity.</li>
-</ul>
-
-<h3>6.2 Out of Scope</h3>
-<ul>
-  <li><strong>Vulnerabilities in third-party libraries</strong> that are already documented by their maintainers (report those to the library maintainers directly).</li>
-  <li><strong>Vulnerabilities in the Android operating system</strong> or Google Play Services (report those to Google's Android Security team).</li>
-  <li><strong>Vulnerabilities in Google Drive, Dropbox, or Cloudflare R2</strong> (report those to the respective providers).</li>
-  <li><strong>Social engineering attacks</strong> against the developer or users of the App.</li>
-  <li><strong>Physical attacks</strong> requiring prolonged unattended access to an unlocked device.</li>
-  <li><strong>Denial of service</strong> attacks against the App or any associated infrastructure.</li>
-  <li><strong>Theoretical attacks</strong> that require impractical resources (e.g., breaking AES-256 with quantum computers).</li>
-  <li><strong>Self-XSS</strong> or vulnerabilities that require the attacker to already have full control of the target device.</li>
-</ul>
-
-<h3>6.3 Safe Harbor</h3>
-<p>The developer will not pursue legal action against individuals who:</p>
-<ul>
-  <li>Engage in security research conducted in good faith, following the disclosure process described above.</li>
-  <li>Limit their testing to their own device(s) and do not access or attempt to access other users' data without their consent.</li>
-  <li>Do not destroy, corrupt, or exfiltrate data beyond what is necessary to demonstrate the vulnerability.</li>
-  <li>Do not publicly disclose the vulnerability before the developer has had a reasonable opportunity to address it.</li>
-</ul>
-<p>Security research conducted in accordance with this policy is considered authorized access and is protected under safe harbor provisions of applicable computer fraud and abuse laws.</p>
-
-<h2 id="contact">7. Contact</h2>
-<p><strong>Security disclosures:</strong> <a href="mailto:support@prontly.in">support@prontly.in</a></p>
-<p><strong>our support channels (non-security bugs and features):</strong> the official DocuScan OCR channels</p>
-<p><strong>PGP key:</strong> Not currently available. If you need to send encrypted security communications, please contact us via email to arrange a key exchange.</p>
-        <p style="margin-top:18px;"><a href="legal/security-policy.html">Open Security Policy & Responsible Disclosure as a standalone page →</a></p>
-      </section>
-      <section class="reveal" id="acceptable-use-policy">
-        <h2><a href="legal/acceptable-use-policy.html" style="color:inherit;text-decoration:none;">Acceptable Use Policy</a><span class="badge badge-rec">DocuScan OCR</span></h2>
-        <p class="last-updated"><strong>Last updated:</strong> July 18, 2026</p>
-
-<div class="toc">
-  <strong>Table of Contents</strong>
-  <ul>
-    <li><a href="#purpose">1. Purpose</a></li>
-    <li><a href="#prohibited-content">2. Prohibited Content</a></li>
-    <li><a href="#prohibited-conduct">3. Prohibited Conduct</a></li>
-    <li><a href="#enforcement">4. Enforcement &amp; Reporting</a></li>
-    <li><a href="#reporting">5. How to Report Violations</a></li>
-    <li><a href="#contact">6. Contact</a></li>
-  </ul>
-</div>
-
-<h2 id="purpose">1. Purpose</h2>
-<p>This Acceptable Use Policy (AUP) defines the rules and restrictions governing your use of DocuScan OCR. Because the App is a local, offline-first tool, the developer does not have the ability to monitor, review, or remove content stored on your device. This policy therefore states the developer's expectations and terms of use, with the understanding that enforcement against local violations is necessarily limited.</p>
-
-<h2 id="prohibited-content">2. Prohibited Content</h2>
-<p>You must not use the App to scan, capture, store, or distribute any content that falls into the following categories:</p>
-
-<h3>2.1 Child Exploitation</h3>
-<p><strong>Zero tolerance.</strong> You must not use the App to create, store, or distribute any sexually suggestive or exploitative content involving minors (any individual under 18 years of age). This includes child sexual abuse material (CSAM), child erotica, or any content that sexually exploits or endangers children. Violations will be reported to the appropriate authorities, including but not limited to the National Center for Missing &amp; Exploited Children (NCMEC) and local law enforcement.</p>
-
-<h3>2.2 Illegal Content</h3>
-<p>You must not use the App to store or distribute:</p>
-<ul>
-  <li>Content that violates any applicable criminal law, including laws against terrorism, hate speech, and incitement to violence.</li>
-  <li>Fraudulent documents, including forged identification, counterfeit currency, fake academic credentials, or any material created with the intent to deceive or defraud.</li>
-  <li>Stolen or unlawfully obtained personal information, including credit card numbers, social security numbers, passports, and driver's licenses belonging to third parties without their consent.</li>
-  <li>Content that depicts non-consensual intimate imagery ("revenge porn") or any other violation of privacy.</li>
-  <li>Malware, viruses, or any code designed to damage, disrupt, or gain unauthorized access to computer systems.</li>
-</ul>
-
-<h3>2.3 Copyright-Infringing Content</h3>
-<p>You must not use the App to reproduce, store, or distribute copyrighted material without the permission of the copyright owner, except as permitted by fair use, fair dealing, or similar exceptions under applicable copyright law. This includes:</p>
-<ul>
-  <li>Scanned copies of entire books, textbooks, or other copyrighted publications for which you do not hold the rights.</li>
-  <li>Reproducing and distributing copyrighted images, photographs, or artwork without the creator's permission.</li>
-  <li>Systematically copying and redistributing copyrighted software documentation or code.</li>
-</ul>
-<p>It is your responsibility to understand the copyright laws applicable in your jurisdiction and to ensure that your scanning and storage of documents does not infringe others' rights.</p>
-
-<h3>2.4 Harmful or Dangerous Content</h3>
-<p>You must not use the App to store or distribute content that promotes or provides instruction for:</p>
-<ul>
-  <li>Violence, terrorism, or organized crime.</li>
-  <li>Self-harm or suicide.</li>
-  <li>Manufacturing weapons, explosives, or illegal drugs.</li>
-  <li>Human trafficking or modern slavery.</li>
-<li>Genocide or crimes against humanity.</li>
-</ul>
-
-<h2 id="prohibited-conduct">3. Prohibited Conduct</h2>
-<p>In addition to the content restrictions above, you must not engage in the following activities in connection with the App:</p>
-
-<h3>3.1 Security Violations</h3>
-<ul>
-  <li>Attempting to bypass, disable, or defeat the App's encryption or security features, except for legitimate security research conducted under the terms of the <a href="security-policy.html">Responsible Disclosure Policy</a>.</li>
-  <li>Distributing modified versions of the App that remove, disable, or weaken the encryption features without clearly documenting such changes.</li>
-  <li>Reverse-engineering the App to extract API keys, OAuth client secrets embedded in the code, or other credentials (if you discover any embedded credentials through legitimate means, disclose them via the Responsible Disclosure Policy).</li>
-</ul>
-
-<h3>3.2 Abuse of Third-Party Services</h3>
-<ul>
-  <li>Using the App to violate the terms of service of any integrated third-party service, including Google Drive, Dropbox, and Cloudflare R2.</li>
-  <li>Using the App's cloud sync feature to upload content that the provider's terms prohibit (e.g., uploading copyright-infringing material to Google Drive or Dropbox).</li>
-</ul>
-
-<h3>3.3 Misrepresentation</h3>
-<ul>
-  <li>Misrepresenting the capabilities of the App (e.g., claiming it is HIPAA-compliant, FDA-cleared, or certified for any regulatory purpose, unless you have obtained such certification independently).</li>
-  <li>Distributing modified versions of the App under the name "DocuScan OCR" in a way that implies official endorsement from the developer.</li>
-</ul>
-
-<h2 id="enforcement">4. Enforcement &amp; Reporting</h2>
-<p>Because the App operates locally and the developer does not host a server, the developer's ability to enforce this AUP against content stored on your device is limited. The developer cannot:</p>
-<ul>
-  <li>Monitor or review content stored in the App.</li>
-  <li>Remotely access or delete content from your device.</li>
-  <li>Prevent you from using the App in violation of this AUP.</li>
-</ul>
-<p>The developer relies on your compliance with this AUP as a condition of using the App. If the developer becomes aware of a violation (through a report from law enforcement, a third party, or other reliable means), the developer may:</p>
-<ul>
-  <li>Issue a warning requesting that you cease the violating activity.</li>
-  <li>Publicly identify the violating use case (without identifying you personally) to warn other users, if deemed appropriate.</li>
-  <li>Cease distribution of the App to you specifically (e.g., by blocking your access where technically feasible..</li>
-  <li>Report the violation to appropriate law enforcement authorities if the content involves child exploitation, terrorism, or other serious criminal activity.</li>
-</ul>
-<p>Serious or repeated violations may result in permanent revocation of your license to use the App.</p>
-
-<h2 id="reporting">5. How to Report Violations</h2>
-<p>If you become aware of content created or distributed using DocuScan OCR that violates this AUP, please report it to:</p>
-<ul>
-  <li><strong>Email:</strong> <a href="mailto:support@prontly.in">support@prontly.in</a></li>
-</ul>
-<p>Please include in your report:</p>
-<ul>
-  <li>A description of the violating content and why it violates this AUP.</li>
-  <li>Any evidence you have (do not include the violating content itself unless necessary).</li>
-  <li>The date and time you encountered the content.</li>
-  <li>Your contact information (optional, but helpful for follow-up).</li>
-</ul>
-<p>The developer will review all reports and take appropriate action. Reports of child exploitation material will be forwarded to law enforcement. Reports may also be forwarded to the relevant cloud provider if the content is stored or shared through the App's cloud sync feature.</p>
-
-<h2 id="contact">6. Contact</h2>
-<p>If you have questions about this Acceptable Use Policy, please contact us at <a href="mailto:support@prontly.in">support@prontly.in</a>.</p>
-        <p style="margin-top:18px;"><a href="legal/acceptable-use-policy.html">Open Acceptable Use Policy as a standalone page →</a></p>
-      </section>
-      <section class="reveal" id="grievance-redressal">
-        <h2><a href="legal/grievance-redressal.html" style="color:inherit;text-decoration:none;">Grievance Redressal Policy</a><span class="badge badge-r">DocuScan OCR</span></h2>
-        <p class="last-updated"><strong>Last updated:</strong> July 18, 2026</p>
-
-<div class="info-box">
-  <strong>Notice for Indian Users:</strong> This Grievance Redressal Policy is published in compliance with the Information Technology Act, 2000 and the Information Technology (Intermediary Guidelines and Digital Media Ethics Code) Rules, 2021. Users in India may use this mechanism to report grievances related to the App.
-</div>
-
-<h2>1. Our Commitment</h2>
-<p>DocuScan OCR is committed to addressing any concerns, complaints, or grievances from its users in a timely, fair, and transparent manner. This Grievance Redressal Policy outlines the process for submitting and resolving grievances related to the App, its operation, or any content processed through it.</p>
-
-<h2>2. Scope of This Policy</h2>
-<p>This Grievance Redressal Policy covers complaints and concerns regarding:</p>
-<ul>
-  <li>Violation of your privacy rights by the App or its developer.</li>
-  <li>Unauthorized access to or disclosure of your data through the App.</li>
-  <li>Technical issues that result in data loss, corruption, or inaccessibility.</li>
-  <li>Violation of any applicable laws by the App, including the Information Technology Act, 2000 (India) and rules thereunder.</li>
-  <li>Objectionable, inappropriate, or infringing content that may be processed or stored through the App.</li>
-  <li>Any other concern related to the App's operation or your use of it.</li>
-</ul>
-
-<h2>3. How to File a Grievance</h2>
-<p>If you have a grievance, please submit it in writing to the Grievance Officer with the following information:</p>
-<ul>
-  <li>Your name and contact information (email address, phone number).</li>
-  <li>Your relationship to the App (e.g., end user, potential user, affected third party).</li>
-  <li>A detailed description of the grievance, including the date and time of the incident (if applicable).</li>
-  <li>Any supporting documents or evidence that substantiate your grievance.</li>
-  <li>The specific relief or resolution you are seeking.</li>
-</ul>
-
-<h2>4. Grievance Officer Details</h2>
-<p>In compliance with Rule 3(1)(b) of the Information Technology (Intermediary Guidelines and Digital Media Ethics Code) Rules, 2021, the following is the contact information of the Grievance Officer appointed for the App:</p>
-<p>
-  <strong>Name:</strong> Rishav Raj<br>
-  <strong>Email:</strong> <a href="mailto:support@prontly.in">support@prontly.in</a><br>
-  <strong>Address:</strong> Prontly, India<br>
-  <strong>Response Time:</strong> The Grievance Officer will acknowledge receipt of the grievance within 24 hours and will endeavor to resolve it within 15 days from the date of receipt.
-</p>
-
-<h2>5. Grievance Resolution Process</h2>
-<ol>
-  <li><strong>Acknowledgement:</strong> Upon receiving a grievance, the Grievance Officer will send an acknowledgement within 24 hours, confirming receipt and providing a reference number for tracking.</li>
-  <li><strong>Initial Review:</strong> The Grievance Officer will conduct an initial review of the grievance to determine its nature and validity. This review will be completed within 3 business days.</li>
-  <li><strong>Investigation:</strong> Based on the initial review, if a detailed investigation is warranted, the Grievance Officer will investigate the matter. This may include reviewing App logs (if available), checking code, or contacting the user for additional information.</li>
-  <li><strong>Resolution:</strong> The Grievance Officer will communicate the resolution or proposed action within 15 days of receipt. The resolution may include, depending on the nature of the grievance:
-    <ul>
-      <li>A technical fix for bugs or data issues.</li>
-      <li>Removal of or action on reported content (if applicable).</li>
-      <li>An explanation of why the reported issue does not constitute a violation or error.</li>
-      <li>Escalation to applicable law enforcement or regulatory authorities (if required by law).</li>
-    </ul>
-  </li>
-  <li><strong>Escalation:</strong> If you are not satisfied with the resolution, you may escalate the matter to the appropriate judicial or regulatory authority, including the relevant adjudicating officer under the Information Technology Act, 2000.</li>
-</ol>
-
-<h2>6. Types of Grievances and Timelines</h2>
-<table>
-  <tr><th>Type of Grievance</th><th>Acknowledgement</th><th>Target Resolution</th></tr>
-  <tr><td>Privacy violation or data breach</td><td>24 hours</td><td>72 hours (initial containment); 15 days (full resolution)</td></tr>
-  <tr><td>Technical bug causing data loss</td><td>24 hours</td><td>15 days</td></tr>
-  <tr><td>Unauthorized access to user data</td><td>24 hours</td><td>72 hours (initial response); 15 days (full resolution)</td></tr>
-  <tr><td>Objectionable content processed through the App</td><td>24 hours</td><td>15 days</td></tr>
-  <tr><td>Account or sync issues</td><td>24 hours</td><td>7 days</td></tr>
-  <tr><td>General feedback or inquiry</td><td>48 hours</td><td>7 days</td></tr>
-</table>
-
-<h2>7. Reporting Illegal or Objectionable Content</h2>
-<p>As an offline-first document scanner, DocuScan OCR does not host, store, or transmit user content on its own servers. User documents are stored locally on the device and are uploaded to third-party cloud services (Google Drive, Dropbox, Cloudflare R2) only at the user's explicit direction.</p>
-<p>If you believe that a user's documents, processed through the App and uploaded to cloud storage, contain illegal or objectionable content (e.g., child sexual abuse material, terrorist content, or content violating applicable laws), please:</p>
-<ol>
-  <li>Report the content directly to the relevant cloud service provider (Google, Dropbox, or Cloudflare) through their own reporting mechanisms. Those providers have their own grievance and content moderation processes.</li>
-  <li>Copy the Grievance Officer on your report for awareness and coordination, but note that the developer does not have access to user cloud storage and cannot directly remove content from those services.</li>
-</ol>
-
-<h2>8. False or Frivolous Complaints</h2>
-<p>Users who file false or frivolous grievances may be reported to the appropriate authorities. The Grievance Officer reserves the right to reject grievances that are found to be malicious, abusive, or without reasonable basis after an initial review.</p>
-
-<h2>9. Changes to This Policy</h2>
-<p>We may update this Grievance Redressal Policy from time to time. Changes will be posted on this page with an updated "Last updated" date. We encourage you to review this page periodically.</p>
-
-<h2>10. Contact</h2>
-<p><strong>Grievance Officer:</strong> Rishav Raj<br>
-<strong>Email:</strong> <a href="mailto:support@prontly.in">support@prontly.in</a><br>
-<strong>Response Time:</strong> 24 hours for acknowledgement; 15 days for resolution.</p>
-        <p style="margin-top:18px;"><a href="legal/grievance-redressal.html">Open Grievance Redressal Policy as a standalone page →</a></p>
-      </section>
-      <section class="reveal" id="cookie-policy">
-        <h2><a href="legal/cookie-policy.html" style="color:inherit;text-decoration:none;">Cookie Policy</a><span class="badge badge-i">DocuScan OCR</span></h2>
-        <p class="last-updated"><strong>Last updated:</strong> July 18, 2026</p>
-
-<div class="toc">
-  <strong>Table of Contents</strong>
-  <ul>
-    <li><a href="#cookies">1. What Are Cookies?</a></li>
-    <li><a href="#no-cookies">2. The App Does Not Use Cookies</a></li>
-    <li><a href="#local-storage">3. Local Storage Technologies Used</a></li>
-    <li><a href="#web-views">4. Web Views</a></li>
-    <li><a href="#third-party">5. Third-Party Cookies</a></li>
-    <li><a href="#controls">6. Your Controls</a></li>
-    <li><a href="#contact">7. Contact</a></li>
-  </ul>
-</div>
-
-<h2 id="cookies">1. What Are Cookies?</h2>
-<p>Cookies are small text files placed on your device by websites or applications to store information about your browsing activity, preferences, or login state. Cookies are typically associated with web browsers, though native applications can also use cookies through embedded web views.</p>
-<p>Common types of cookies include:</p>
-<ul>
-  <li><strong>Strictly necessary cookies</strong> — required for the service to function (e.g., session management, load balancing).</li>
-  <li><strong>Preference cookies</strong> — remember your settings and preferences.</li>
-  <li><strong>Analytics cookies</strong> — track how you use the service to help the provider improve it.</li>
-  <li><strong>Marketing/advertising cookies</strong> — track your browsing to build a profile for targeted advertising.</li>
-</ul>
-
-<h2 id="no-cookies">2. The App Does Not Use Cookies</h2>
-<p>DocuScan OCR is a <strong>native Android application</strong> (not a web app or hybrid app). It does not use HTTP cookies, HTML5 local storage, or any web-based storage mechanisms. The App does not:</p>
-<ul>
-  <li>Set, read, or transmit cookies.</li>
-  <li>Use web tracking technologies such as web beacons, pixel tags, or fingerprinting scripts.</li>
-  <li>Load advertisements that might place third-party cookies.</li>
-  <li>Include analytics SDKs that use cookie-like identifiers.</li>
-</ul>
-<p>Because the App has no concept of a "session" in the web sense, there is no session cookie to manage.</p>
-
-<h2 id="local-storage">3. Local Storage Technologies Used</h2>
-<p>Instead of cookies, the App uses the following Android-native storage mechanisms, which are <strong>local-only</strong> and are not used for tracking:</p>
-<table>
-  <tr><th>Technology</th><th>Data Stored</th><th>Persistence</th></tr>
-  <tr><td>SharedPreferences</td><td>User preferences (theme, Wi-Fi-only toggle, auto-backup setting, cloud sync credentials)</td><td>Persists across app restarts; cleared when app data is cleared</td></tr>
-  <tr><td>Room SQLite database</td><td>Documents metadata, OCR text, folder structure, audit logs</td><td>Persists across restarts; cleared when app data is cleared or app is uninstalled</td></tr>
-  <tr><td>File system (internal storage)</td><td>Document images (encrypted or plain)</td><td>Persists across restarts; cleared when app data is cleared or app is uninstalled</td></tr>
-</table>
-<p>None of these storage mechanisms are accessible to the developer, to third-party analytics providers, or to advertising networks. They are private to the App.</p>
-
-<h2 id="web-views">4. Web Views</h2>
-<p>The App opens a browser (not an in-app web view) for OAuth consent screens when you connect to Google Drive or Dropbox. This is the standard Android mechanism for OAuth 2.0 — the browser is a separate application with its own cookie storage. The App does not have any visibility into or control over the browser's cookies.</p>
-<p>When the OAuth flow completes, the browser redirects back to the App via a custom URI scheme (<code>docuscan://oauth</code>). The App receives only the authorization code from the redirect URI — it does not receive or process any cookies from the OAuth provider.</p>
-
-<h2 id="third-party">5. Third-Party Cookies</h2>
-<p>Because the App does not use embedded web views, advertisements, or analytics SDKs from third parties, no third-party cookies are placed on your device by the App.</p>
-<p>If you use the OAuth flow to connect to Google Drive or Dropbox, the browser you use to complete the consent screen may place its own cookies from those providers. Those cookies are governed by the respective provider's cookie policies, not by this Cookie Policy. We recommend reviewing Google's and Dropbox's cookie and privacy policies if you are concerned about browser-level tracking during OAuth consent.</p>
-
-<h2 id="controls">6. Your Controls</h2>
-<p>Since the App does not use cookies, there are no cookie consent settings to manage within the App. However, you can control how your browser handles cookies through your browser's settings.</p>
-<p>For the local storage technologies used by the App:</p>
-<ul>
-  <li><strong>Clear app data</strong> — Settings &gt; Apps &gt; DocuScan OCR &gt; Storage &gt; Clear data removes all locally stored information.</li>
-  <li><strong>Uninstall</strong> — removing the App from your device deletes all local data associated with it.</li>
-</ul>
-
-<h2 id="contact">7. Contact</h2>
-<p>If you have questions about this Cookie Policy, please contact us at <a href="mailto:support@prontly.in">support@prontly.in</a>.</p>
-        <p style="margin-top:18px;"><a href="legal/cookie-policy.html">Open Cookie Policy as a standalone page →</a></p>
-      </section>
-      <section class="reveal" id="disclaimer">
-        <h2><a href="legal/disclaimer.html" style="color:inherit;text-decoration:none;">Disclaimer</a><span class="badge badge-rec">DocuScan OCR</span></h2>
-        <p class="last-updated"><strong>Last updated:</strong> July 18, 2026</p>
-
-<div class="toc">
-  <strong>Table of Contents</strong>
-  <ul>
-    <li><a href="#general">1. General Disclaimer</a></li>
-    <li><a href="#ocr">2. OCR Accuracy Disclaimer</a></li>
-    <li><a href="#encryption">3. Encryption &amp; Security Disclaimer</a></li>
-    <li><a href="#compliance">4. Regulatory Compliance Disclaimer</a></li>
-    <li><a href="#medical">5. No Medical Advice</a></li>
-    <li><a href="#legal">6. No Legal Advice</a></li>
-    <li><a href="#financial">7. No Financial Advice</a></li>
-    <li><a href="#third-party">8. Third-Party Links &amp; Services</a></li>
-    <li><a href="#proprietary">9. Proprietary Software &amp; Third-Party Code</a></li>
-    <li><a href="#contact">10. Contact</a></li>
-  </ul>
-</div>
-
-<h2 id="general">1. General Disclaimer</h2>
-<p>DocuScan OCR is provided "as is" and "as available" without any warranty of any kind, express or implied. The developer makes no representations or warranties regarding the accuracy, reliability, completeness, or timeliness of the App or its output.</p>
-<p>The App is a tool designed to assist with document scanning and text recognition. It is not a substitute for professional judgment, human review, or specialized software for critical applications.</p>
-
-<h2 id="ocr">2. OCR Accuracy Disclaimer</h2>
-<p>The optical character recognition (OCR) functionality in DocuScan OCR is powered by Google ML Kit's on-device text recognition model. While ML Kit is a sophisticated machine learning system, OCR is inherently imperfect. The accuracy of text recognition depends on numerous factors, including:</p>
-<ul>
-  <li>Image quality, resolution, and lighting conditions during capture.</li>
-  <li>Document type, font, handwriting quality, and language.</li>
-  <li>Presence of noise, shadows, glare, or obstructions in the image.</li>
-  <li>Perspective distortion and warping before correction.</li>
-  <li>The specific version of the ML Kit model downloaded on your device.</li>
-</ul>
-<p>You should <strong>always verify OCR output manually</strong> before relying on it for any purpose, including but not limited to:</p>
-<ul>
-  <li>Legal documents, contracts, or agreements.</li>
-  <li>Medical records, prescriptions, or clinical notes.</li>
-  <li>Financial records, invoices, or tax documents.</li>
-  <li>Identification documents, passports, or licenses.</li>
-  <li>Any document where transcription errors could result in legal, financial, or personal harm.</li>
-</ul>
-<p>The developer is not liable for any errors, omissions, or misinterpretations resulting from the OCR functionality.</p>
-
-<h2 id="encryption">3. Encryption &amp; Security Disclaimer</h2>
-<p>The App implements encryption features using Android Keystore, AES-256-GCM, and PBKDF2 key derivation. These are industry-standard cryptographic primitives. However:</p>
-<ul>
-  <li><strong>No encryption is absolute.</strong> Advances in cryptography, vulnerabilities in the Android platform, or physical attacks on your device may compromise encrypted data.</li>
-  <li><strong>Encryption does not protect against all threats.</strong> Keylogging, screen recording, shoulder surfing, or malware on your device can bypass encryption at the point of data capture.</li>
-  <li><strong>The developer is not responsible for data loss due to forgotten PINs.</strong> If you forget the PIN for a private folder, the encrypted data cannot be recovered. There is no backdoor, password reset, or recovery mechanism.</li>
-  <li><strong>The developer is not responsible for data breaches</strong> that result from vulnerabilities in the App, the Android operating system, or your cloud storage providers.</li>
-</ul>
-<p>For a detailed analysis of the security measures and their limitations, see the <a href="security-policy.html">Security &amp; Responsible Disclosure Policy</a> and the Privacy Policy §15 (Security Measures).</p>
-
-<h2 id="compliance">4. Regulatory Compliance Disclaimer</h2>
-<p><strong>DocuScan OCR is not a certified compliance solution.</strong> The App provides technical features — encryption, audit logging, PIN protection — that are components of a compliance program. These features do not, by themselves, make your use of the App compliant with any specific regulatory framework.</p>
-<p>Specifically, the App has not undergone:</p>
-<ul>
-  <li>A <strong>HIPAA</strong> Security Rule assessment or risk analysis. The App does not sign Business Associate Agreements (BAAs) and is not listed as a HIPAA-compliant solution.</li>
-  <li>A <strong>GDPR</strong> data protection audit. While the App's local-first architecture inherently limits data processing, the developer has not appointed a Data Protection Officer (DPO) or established a formal data protection program.</li>
-  <li>A <strong>SOC 2</strong> Type I or Type II audit. The App's internal controls have not been independently audited.</li>
-  <li><strong>PCI-DSS</strong> certification. The App does not process, store, or transmit payment card data, so PCI-DSS is not applicable.</li>
-  <li><strong>ISO 27001</strong> certification of the development process.</li>
-</ul>
-<p>If you are subject to regulatory requirements (HIPAA, GDPR, CCPA, DPDP Act, or others), you should conduct your own risk assessment and consult with a qualified compliance professional before using the App in a regulated context. The audit logging feature is <strong>not</strong> a substitute for a comprehensive compliance program.</p>
-
-<h2 id="medical">5. No Medical Advice</h2>
-<p>DocuScan OCR is not a medical device and has not been cleared or approved by the FDA, EMA, CDSCO, or any other regulatory authority for medical use. The App is not intended to:</p>
-<ul>
-  <li>Diagnose, treat, cure, or prevent any disease or medical condition.</li>
-  <li>Store or transmit Protected Health Information (PHI) in a HIPAA-compliant manner.</li>
-  <li>Provide clinical decision support.</li>
-  <li>Replace professional medical record-keeping systems.</li>
-</ul>
-<p>If you are a healthcare provider using the App to scan or store patient records, you are solely responsible for ensuring compliance with applicable healthcare regulations. The developer recommends using a certified electronic health record (EHR) system for any PHI, not a general-purpose scanning application.</p>
-
-<h2 id="legal">6. No Legal Advice</h2>
-<p>The legal documentation provided with this App (including these disclaimers and the Privacy Policy, Terms of Service, and other legal pages) are for informational purposes only. They do not constitute legal advice. The developer is not a law firm and is not acting as your attorney. You should consult with a licensed attorney in your jurisdiction for advice specific to your situation.</p>
-<p>The legal pages are drafted to describe the App accurately and to set reasonable expectations regarding liability, privacy, and use. They may not be tailored to your specific use case or jurisdiction. Using the App does not create an attorney-client relationship with the developer.</p>
-
-<h2 id="financial">7. No Financial Advice</h2>
-<p>The App is not intended for financial record-keeping, accounting, tax preparation, or audit purposes. OCR output used for financial documents should be verified against original source documents. The developer is not a certified public accountant, tax advisor, or financial professional.</p>
-
-<h2 id="third-party">8. Third-Party Links &amp; Services</h2>
-<p>The App integrates with third-party services (Google ML Kit, Google Drive, Dropbox, Cloudflare R2) as described in the Privacy Policy. These services are operated by their respective providers and are subject to their own terms, policies, and security practices. The developer does not control and is not responsible for:</p>
-<ul>
-  <li>The availability, reliability, or performance of these third-party services.</li>
-  <li>The security or privacy practices of these third-party services.</li>
-  <li>Any data loss or breach that occurs as a result of using these services.</li>
-</ul>
-<p>References to third-party services, products, or websites are provided for convenience only and do not constitute endorsement.</p>
-
-<h2 id="proprietary">9. Proprietary Software &amp; Third-Party Code</h2>
-<p>DocuScan OCR is proprietary software owned by the Developer and is licensed, not sold, under the Terms of Service.</p>
-<p>The App incorporates third-party libraries that are governed by their own licenses (including Apache 2.0, MIT, and others). The Developer makes no warranty regarding the quality or security of these third-party components. Attribution for these libraries is provided in the App's documentation.</p>
-<p>The developer is not liable for issues arising from unauthorized modifications, unofficial distributions, or builds from unverified sources claiming to be DocuScan OCR.</p>
-
-<h2 id="contact">10. Contact</h2>
-<p>If you have questions about this Disclaimer, please contact us at <a href="mailto:support@prontly.in">support@prontly.in</a>.</p>
-        <p style="margin-top:18px;"><a href="legal/disclaimer.html">Open Disclaimer as a standalone page →</a></p>
-      </section>
-      <section class="reveal" id="refund-policy">
-        <h2><a href="legal/refund-policy.html" style="color:inherit;text-decoration:none;">Refund Policy</a><span class="badge badge-i">DocuScan OCR</span></h2>
-        <p class="last-updated"><strong>Last updated:</strong> July 18, 2026</p>
-
-<div class="toc">
-  <strong>Table of Contents</strong>
-  <ul>
-    <li><a href="#overview">1. Overview</a></li>
-    <li><a href="#free-app">2. The App Is Free</a></li>
-    <li><a href="#no-purchases">3. No Paid Features or Subscriptions</a></li>
-    <li><a href="#distribution">4. Distribution &amp; Support</a></li>
-    <li><a href="#donations">5. Donations &amp; Sponsorship</a></li>
-    <li><a href="#contact">6. Contact</a></li>
-  </ul>
-</div>
-
-<h2 id="overview">1. Overview</h2>
-<p>This Refund Policy explains the circumstances under which you may be entitled to a refund when using DocuScan OCR. Because the App is provided entirely free of charge, the situations that typically trigger refund policies (defective product, service not delivered, dissatisfaction within a refund window) do not apply in the conventional sense.</p>
-
-<h2 id="free-app">2. The App Is Free</h2>
-<p>DocuScan OCR is <strong>free software</strong>. There is no charge for:</p>
-<ul>
-  <li>Downloading, installing, or using the App.</li>
-  <li>Accessing any feature of the App, including OCR, document capture, image filtering, encryption, export, and cloud sync.</li>
-  <li>Receiving updates or bug fixes (though no guarantee of future updates is made — see the Terms of Service).</li>
-</ul>
-<p>You can download the APK from our official Releases page or build it from source — either way, the software costs nothing.</p>
-
-<h2 id="no-purchases">3. No Paid Features or Subscriptions</h2>
-<p>The App does not contain:</p>
-<ul>
-  <li><strong>In-app purchases</strong> — there are no features, upgrades, or consumables you can buy within the App.</li>
-  <li><strong>Subscriptions</strong> — there is no recurring payment for continued access to any feature.</li>
-  <li><strong>Premium tiers</strong> — there are no paid or "Pro" versions with additional functionality that the free version lacks.</li>
-  <li><strong>Advertising</strong> — the App contains no advertisements. There is no "remove ads" purchase because there are no ads to remove.</li>
-</ul>
-<p>Because you never pay us anything, there are no refunds to process. If you acquired the App through a third-party distributor that charged you for it, that charge was not authorized by the developer, and you should seek a refund from that distributor directly.</p>
-
-<h2 id="distribution">4. Distribution &amp; Support</h2>
-<p>If you are unsatisfied with any aspect of the App, your remedies are:</p>
-<ol>
-  <li>Submit a bug report or feature request via our support channels.</li>
-  <li>Contact support at <a href="mailto:support@prontly.in">support@prontly.in</a> for assistance.</li>
-  <li>Uninstall the App and discontinue use.</li>
-</ol>
-<p>None of these remedies involve a refund because no money was exchanged.</p>
-
-<h2 id="donations">5. Donations &amp; Sponsorship</h2>
-<p>The developer may accept voluntary donations or sponsorship through platforms such as a donation platform or other services. If you choose to make a donation, you do so voluntarily and with the understanding that donations are <strong>non-refundable</strong>. Donations are not payments for goods or services — they are expressions of support for the project's continued development. Refunds for donations are handled on a case-by-case basis and are not guaranteed.</p>
-
-<h2 id="contact">6. Contact</h2>
-<p>If you have questions about this Refund Policy, please contact us at <a href="mailto:support@prontly.in">support@prontly.in</a>.</p>
-        <p style="margin-top:18px;"><a href="legal/refund-policy.html">Open Refund Policy as a standalone page →</a></p>
-      </section>
-      <section class="reveal" id="cancellation-policy">
-        <h2><a href="legal/cancellation-policy.html" style="color:inherit;text-decoration:none;">Cancellation Policy</a><span class="badge badge-i">DocuScan OCR</span></h2>
-        <p class="last-updated"><strong>Last updated:</strong> July 18, 2026</p>
-
-<h2>No Subscriptions, No Cancellations Needed</h2>
-<p>DocuScan OCR is a free application. It does <strong>not</strong> offer any subscription-based services, recurring payments, auto-renewing memberships, or paid accounts of any kind.</p>
-<p>Because there is nothing to subscribe to, there is nothing to cancel. You are not required to provide payment information, and no charges will be incurred during or after your use of the App.</p>
-
-<h2>How to Discontinue Use</h2>
-<p>If you wish to stop using the App, you may simply:</p>
-<ol>
-  <li><strong>Uninstall the App</strong> — remove it from your device using the standard Android uninstall process (long-press the app icon &gt; Uninstall, or go to Settings &gt; Apps &gt; DocuScan OCR &gt; Uninstall).</li>
-  <li><strong>Clear app data</strong> — if you want to remove all local data before uninstalling, go to Settings &gt; Apps &gt; DocuScan OCR &gt; Storage &gt; Clear data. This will permanently delete all documents, OCR text, audit logs, and preferences stored on your device.</li>
-  <li><strong>Delete export files</strong> — if you exported documents to PDF, DOCX, or TXT, those files remain on your device in the <code>Documents/DocuScan/exports/</code> directory. Delete them manually if you want them removed.</li>
-  <li><strong>Revoke OAuth tokens</strong> — if you connected Google Drive or Dropbox, you can revoke the App's access by visiting the provider's security settings (Google Account &gt; Third-party apps with account access, or Dropbox &gt; Settings &gt; Connected apps).</li>
-  <li><strong>Delete cloud copies</strong> — if you used cloud sync, any documents uploaded to your cloud provider must be deleted from that provider's interface. The App cannot delete them on your behalf.</li>
-</ol>
-
-<h2>Auto-Renewal Disclosure</h2>
-<p>Not applicable. The App has no auto-renewing subscriptions to disclose.</p>
-
-<h2>Cancellation Fees</h2>
-<p>There are no cancellation fees because there are no paid services to cancel.</p>
-
-<h2>Contact</h2>
-<p>If you have questions about this policy, please contact us at <a href="mailto:support@prontly.in">support@prontly.in</a>.</p>
-        <p style="margin-top:18px;"><a href="legal/cancellation-policy.html">Open Cancellation Policy as a standalone page →</a></p>
-      </section>
-      <section class="reveal" id="accessibility-statement">
-        <h2><a href="legal/accessibility-statement.html" style="color:inherit;text-decoration:none;">Accessibility Statement</a><span class="badge badge-rec">DocuScan OCR</span></h2>
-        <p class="last-updated"><strong>Last updated:</strong> July 18, 2026</p>
-
-<div class="toc">
-  <strong>Table of Contents</strong>
-  <ul>
-    <li><a href="#commitment">1. Our Commitment to Accessibility</a></li>
-    <li><a href="#conformance">2. Conformance Status</a></li>
-    <li><a href="#features">3. Accessibility Features</a></li>
-    <li><a href="#limitations">4. Known Limitations</a></li>
-    <li><a href="#testing">5. Testing Approach</a></li>
-    <li><a href="#feedback">6. Feedback &amp; Contact</a></li>
-  </ul>
-</div>
-
-<h2 id="commitment">1. Our Commitment to Accessibility</h2>
-<p>DocuScan OCR is committed to making its application accessible to all users, including those with disabilities. We recognize that document scanning and OCR are essential tools that should be usable by everyone, regardless of ability.</p>
-<p>Because DocuScan OCR is maintained by an individual developer, accessibility efforts are ongoing and iterative. We welcome feedback from the community to help us improve.</p>
-
-<h2 id="conformance">2. Conformance Status</h2>
-<p>The <strong>Web Content Accessibility Guidelines (WCAG) 2.2</strong> define requirements for designers and developers to improve accessibility for people with disabilities. However, WCAG is primarily designed for web content, not native Android applications. For Android apps, Google's <strong>Accessibility Scanner</strong> recommendations and the <strong>Android Accessibility Suite</strong> guidelines provide the relevant framework.</p>
-<p>DocuScan OCR targets <strong>partial conformance</strong> with recognized Android accessibility best practices. We have not conducted a formal WCAG audit as the application is a native Android app rather than a web application. Instead, we follow Android's built-in accessibility APIs and conventions.</p>
-
-<h2 id="features">3. Accessibility Features</h2>
-<table>
-  <tr><th>Feature</th><th>Status</th><th>Notes</th></tr>
-  <tr><td>Content descriptions on interactive elements</td><td><span class="status status-good">Present</span></td><td>Buttons and key UI elements include contentDescription attributes for TalkBack.</td></tr>
-  <tr><td>Sufficient color contrast</td><td><span class="status status-good">Present</span></td><td>Material Design 3 default color palette meets WCAG AA contrast ratios (4.5:1 for normal text, 3:1 for large text). Dark theme available.</td></tr>
-  <tr><td>Touch target size (48dp minimum)</td><td><span class="status status-partial">Partial</span></td><td>Most controls meet 48dp; some icon-only buttons in the toolbar may be below this threshold. We are working to address these.</td></tr>
-  <tr><td>Text scaling support</td><td><span class="status status-good">Present</span></td><td>Uses sp units for text, respects system font size settings.</td></tr>
-  <tr><td>Navigation without color vision</td><td><span class="status status-good">Present</span></td><td>Icons and labels convey meaning alongside color indicators; not color-reliant.</td></tr>
-  <tr><td>Keyboard navigation</td><td><span class="status status-na">N/A</span></td><td>Android app — keyboard input is only available for text fields. Full keyboard navigation is not a platform requirement for mobile apps.</td></tr>
-  <tr><td>Screen reader (TalkBack) compatibility</td><td><span class="status status-partial">Partial</span></td><td>Core navigation and actions are announced by TalkBack. Complex custom composables (custom Canvas views, camera PreviewView) may have reduced accessibility.</td></tr>
-  <tr><td>Closed captions on media</td><td><span class="status status-na">N/A</span></td><td>The app does not contain video or audio media content.</td></tr>
-  <tr><td>Motion sensitivity</td><td><span class="status status-partial">Partial</span></td><td>Camera preview and document capture use default CameraX behavior. Users with motion sensitivity should use gallery import as an alternative to live capture.</td></tr>
-  <tr><td>Alternative text for document images</td><td><span class="status status-partial">Partial</span></td><td>Document pages are displayed as images; OCR text is available separately. We are exploring accessibility improvements for scanned document presentation.</td></tr>
-</table>
-
-<h2 id="limitations">4. Known Limitations</h2>
-<p>We acknowledge the following accessibility limitations in the current version (2.0.0):</p>
-<ol>
-  <li><strong>Camera viewfinder.</strong> The camera PreviewView is a live camera feed without accessibility labels. Users who rely on TalkBack may need assistance aiming the camera at documents. We recommend using the Gallery import feature as an alternative to camera capture.</li>
-  <li><strong>Custom swipe gestures.</strong> Swipe-to-delete in the document list may not be accessible via TalkBack. We provide a long-press context menu as an alternative action for delete operations, but this may not be discoverable.</li>
-  <li><strong>PDF/DOCX/TXT export.</strong> The exported files inherit the accessibility properties of the source document images, which are raster images without embedded text layers in PDF export (text is overlaid as an invisible layer, but the underlying image may not be accessible).</li>
-  <li><strong>OCR text selection.</strong> The OCR results are displayed as plain text, which is accessible. However, the text selection and copy interaction may not be as refined as with a native text view in all custom composable layouts.</li>
-  <li><strong>No voice control integration.</strong> The app does not implement custom Android Voice Access actions or shortcuts, so users relying entirely on voice control may find some interactions difficult.</li>
-  <li><strong>No reduced motion option.</strong> The app's animations (transitions, FAB, dialogs) follow Material Design 3 defaults and do not provide a dedicated reduced-motion toggle. The app respects the system-level "Remove animations" setting.</li>
-</ol>
-<p>These limitations are documented here transparently. As the app is developed by an individual maintainer, we prioritize accessibility improvements based on user feedback and available resources. Feedback on accessibility barriers is warmly welcomed.</p>
-
-<h2 id="testing">5. Testing Approach</h2>
-<p>Accessibility testing is performed using:</p>
-<ul>
-  <li><strong>Android Accessibility Scanner</strong> — a static analysis tool that checks for common accessibility issues at runtime.</li>
-  <li><strong>TalkBack</strong> — manual end-to-end navigation testing with TalkBack enabled on reference devices (Pixel 6a, API 33; Moto G Power, API 30).</li>
-  <li><strong>Contrast analysis</strong> — manual verification against WCAG AA ratios using the Material Design 3 color palette as a baseline.</li>
-</ul>
-<p>We do not currently have the resources to conduct usability testing with users with disabilities, but we welcome feedback from users who rely on accessibility technologies.</p>
-
-<h2 id="feedback">6. Feedback &amp; Contact</h2>
-<p>We are committed to improving the accessibility of DocuScan OCR. If you encounter accessibility barriers or have suggestions for improvement, please contact us:</p>
-<p>
-  <strong>Email:</strong> <a href="mailto:support@prontly.in">support@prontly.in</a><br>
-  <strong>Email:</strong> support@prontly.in
-</p>
-<p>We aim to respond to accessibility-related feedback within <strong>7 business days</strong>. Specific resolution timelines cannot be guaranteed, but we will acknowledge and track all actionable feedback.</p>
-<p>This statement was last reviewed on July 18, 2026. It will be reviewed and updated as the app evolves.</p>
-        <p style="margin-top:18px;"><a href="legal/accessibility-statement.html">Open Accessibility Statement as a standalone page →</a></p>
-      </section>
-      <section class="reveal" id="about-us">
-        <h2><a href="legal/about-us.html" style="color:inherit;text-decoration:none;">About Us</a><span class="badge badge-i">DocuScan OCR</span></h2>
-        <h2>Our Mission</h2>
-<p>Most document scanner apps either upload your documents to the cloud for processing (a privacy risk), lock essential features behind subscriptions, or store your data in proprietary formats that are hard to escape. DocuScan OCR was created to offer a different path.</p>
-<p>DocuScan OCR is an <strong>offline-first, privacy-respecting document scanning application</strong> for Android. We believe that:</p>
-<ul>
-  <li><strong>Your documents belong to you.</strong> They should not be uploaded to a third-party server for processing unless you explicitly choose to sync them to a cloud you control.</li>
-  <li><strong>OCR should be free.</strong> Text recognition is a basic utility, not a premium feature. ML Kit makes on-device OCR accessible to any Android app, and we built on that foundation.</li>
-  <li><strong>Encryption should be the default, not the upsell.</strong> Private folders with AES-256-GCM encryption are built-in, not a paid upgrade.</li>
-  <li><strong>Your data should be portable.</strong> Every document can be exported to PDF, DOCX, or TXT — widely supported open formats that you can open with any tool, not just this app.</li>
-  <li><strong>Cloud sync should go to your accounts.</strong> We don't operate a backend server and we don't want your subscription money. If you want backups, configure your own Google Drive, Dropbox, or Cloudflare R2.</li>
-</ul>
-
-<h2>What Makes DocuScan OCR Different</h2>
-<ul>
-  <li><strong>7 runtime dependencies.</strong> No Firebase, no Retrofit, no Moshi, no Coil, no Hilt — just the minimum needed to do the job. A smaller dependency footprint means a smaller attack surface and faster builds.</li>
-  <li><strong>Real on-device OCR.</strong> The same ML Kit model that powers Google's own apps runs on your device. No network requests, no API costs, no data leaving your phone.</li>
-  <li><strong>Real encryption.</strong> Android Keystore master key + PBKDF2 + AES-256-GCM. Verified by source code inspection, not by marketing claims.</li>
-  <li><strong>Real cloud sync.</strong> Connect your own Google Drive, Dropbox, or R2 bucket. The app doesn't proxy through any server — uploads go directly from your device to the provider.</li>
-  <li><strong>Zero data collection.</strong> No analytics, no crash reporting, no telemetry, no advertising ID. There is no backend server to receive your data.</li>
-  <li><strong>Free to use.</strong> No paid tiers, no in-app purchases, no ads. The full feature set — OCR, encryption, export, cloud sync — is available to all users at no cost.</li>
-</ul>
-
-<h2>Technical Overview</h2>
-<p>DocuScan OCR is written in <strong>100% Kotlin</strong> using <strong>Jetpack Compose</strong> with <strong>Material Design 3</strong>. It follows the MVVM architecture pattern with a single ViewModel serving all screens. The app uses <strong>Room</strong> (SQLite) for persistent storage, <strong>CameraX</strong> for live camera capture, <strong>ML Kit</strong> for on-device OCR, <strong>OkHttp</strong> for cloud API calls, and the <strong>Android Keystore</strong> for encryption key management.</p>
-<p>The app targets Android 7.0 (API 24) as its minimum supported version and Android 16 (API 36) as its target. The codebase is built with Gradle 9.1.0 and Android Gradle Plugin 9.1.1.</p>
-
-<h2>Version History</h2>
-<ul>
-  <li><strong>2.0.0 (July 2026)</strong> — Major rewrite: replaced simulated document generation with real CameraX capture, added real OAuth PKCE flows for Google Drive and Dropbox, implemented AES-256-GCM file encryption with PBKDF2 key derivation, removed all Firebase/Gemini/Retrofit/Moshi dependencies, added enterprise CI/CD pipeline (5 workflows), generated full multi-platform icon set, added comprehensive legal documentation.</li>
-  <li><strong>1.0.0 (Pre-release)</strong> — Initial sandbox release with simulated documents, gallery import, ML Kit OCR (partial integration), Room database, and placeholder cloud sync.</li>
-</ul>
-
-<h2>Who Built It</h2>
-<p>DocuScan OCR is developed by <strong>Rishav Raj</strong>, an individual developer. The project is maintained in a personal capacity and is not backed by any company or organization.</p>
-<p>The developer can be reached at <a href="mailto:support@prontly.in">support@prontly.in</a> for bug reports and feature requests.</p>
-
-<h2>Get In Touch</h2>
-<ul>
-  
-  <li><strong>Issues &amp; Feature Requests:</strong> our support channels</li>
-  <li><strong>Support:</strong> <a href="mailto:support@prontly.in">support@prontly.in</a></li>
-</ul>
-        <p style="margin-top:18px;"><a href="legal/about-us.html">Open About Us as a standalone page →</a></p>
-      </section>
-        <a class="legal-back" href="index.html">← Back to home</a>
-      </div>
+    <div class="legal-cards">
+      <a class="legal-card" href="legal/privacy-policy.html">
+        <span class="legal-card-ico">P</span>
+        <h3>Privacy Policy</h3>
+        <p>How DocuScan OCR keeps your data on-device — what we access, store, and never transmit.</p>
+        <span class="lc-meta">Updated July 18, 2026 · 11 sections</span>
+        <span class="lc-arrow">Read policy →</span>
+      </a>
+      <a class="legal-card" href="legal/terms-of-service.html">
+        <span class="legal-card-ico">T</span>
+        <h3>Terms of Service</h3>
+        <p>The license grant, acceptable use, limitations of liability, and dispute resolution.</p>
+        <span class="lc-meta">Updated July 18, 2026 · 15 sections</span>
+        <span class="lc-arrow">Read policy →</span>
+      </a>
+      <a class="legal-card" href="legal/security-policy.html">
+        <span class="legal-card-ico">S</span>
+        <h3>Security &amp; Responsible Disclosure</h3>
+        <p>Encryption architecture, threat model, known limitations, and how to report a vulnerability.</p>
+        <span class="lc-meta">Updated July 18, 2026 · 6 sections</span>
+        <span class="lc-arrow">Read policy →</span>
+      </a>
+      <a class="legal-card" href="legal/acceptable-use-policy.html">
+        <span class="legal-card-ico">A</span>
+        <h3>Acceptable Use Policy</h3>
+        <p>Prohibited content and conduct when scanning, storing, and sharing documents.</p>
+        <span class="lc-meta">Updated July 18, 2026</span>
+        <span class="lc-arrow">Read policy →</span>
+      </a>
+      <a class="legal-card" href="legal/grievance-redressal.html">
+        <span class="legal-card-ico">G</span>
+        <h3>Grievance Redressal Policy</h3>
+        <p>How to raise a concern and the process for resolving grievances under the DPDP Act.</p>
+        <span class="lc-meta">Updated July 18, 2026</span>
+        <span class="lc-arrow">Read policy →</span>
+      </a>
+      <a class="legal-card" href="legal/cookie-policy.html">
+        <span class="legal-card-ico">C</span>
+        <h3>Cookie Policy</h3>
+        <p>How the website uses cookies and local storage, and your controls.</p>
+        <span class="lc-meta">Updated July 18, 2026</span>
+        <span class="lc-arrow">Read policy →</span>
+      </a>
+      <a class="legal-card" href="legal/disclaimer.html">
+        <span class="legal-card-ico">D</span>
+        <h3>Disclaimer</h3>
+        <p>Warranty disclaimers and the limits of accuracy for OCR and encryption features.</p>
+        <span class="lc-meta">Updated July 18, 2026</span>
+        <span class="lc-arrow">Read policy →</span>
+      </a>
+      <a class="legal-card" href="legal/refund-policy.html">
+        <span class="legal-card-ico">R</span>
+        <h3>Refund Policy</h3>
+        <p>Our policy on payments and refunds for the free, ad-free application.</p>
+        <span class="lc-meta">Updated July 18, 2026</span>
+        <span class="lc-arrow">Read policy →</span>
+      </a>
+      <a class="legal-card" href="legal/cancellation-policy.html">
+        <span class="legal-card-ico">X</span>
+        <h3>Cancellation Policy</h3>
+        <p>How to stop using the app and remove your data from your device and cloud sync.</p>
+        <span class="lc-meta">Updated July 18, 2026</span>
+        <span class="lc-arrow">Read policy →</span>
+      </a>
+      <a class="legal-card" href="legal/accessibility-statement.html">
+        <span class="legal-card-ico">♿</span>
+        <h3>Accessibility Statement</h3>
+        <p>Our commitment to accessibility and conformance with WCAG 2.1 AA.</p>
+        <span class="lc-meta">Updated July 18, 2026</span>
+        <span class="lc-arrow">Read policy →</span>
+      </a>
+      <a class="legal-card" href="legal/about-us.html">
+        <span class="legal-card-ico">i</span>
+        <h3>About Us</h3>
+        <p>Who builds DocuScan OCR, our principles, and how to contact support.</p>
+        <span class="lc-meta">Updated July 18, 2026</span>
+        <span class="lc-arrow">Read policy →</span>
+      </a>
     </div>
+    <a class="legal-back" href="index.html">← Back to home</a>
   </div>
 </main>
 
 <footer class="footer">
-  <div class="container footer-bottom" style="margin-top:0;border-top:0;">
+  <div class="container footer-grid">
+    <div>
+      <a href="index.html" class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2"/><path d="M3 12h18"/><path d="M12 3v18"/></svg>
+        </span>
+        DocuScan<span class="brand-accent"> OCR</span>
+      </a>
+      <p class="footer-tag">An offline-first, privacy-respecting document scanner for Android.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Product</h4>
+      <a href="index.html#features">Features</a>
+      <a href="index.html#how">How it works</a>
+      <a href="index.html#download">Get the app</a>
+    </div>
+    <div class="footer-col">
+      <h4>Legal</h4>
+      <a href="legal/privacy-policy.html">Privacy Policy</a>
+      <a href="legal/terms-of-service.html">Terms of Service</a>
+      <a href="legal/security-policy.html">Security Policy</a>
+      <a href="legal.html">All legal pages</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <a href="mailto:support@prontly.in">support@prontly.in</a>
+      <a href="legal/grievance-redressal.html">Grievance redressal</a>
+    </div>
+  </div>
+  <div class="container footer-bottom">
     <span>© 2024–2026 Rishav Raj. DocuScan OCR is proprietary software. All rights reserved.</span>
     <a href="index.html">Home ↑</a>
   </div>
