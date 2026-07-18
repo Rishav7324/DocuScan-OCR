@@ -46,6 +46,11 @@ fun CloudSyncScreen(
     var connectingProvider by remember { mutableStateOf<String?>(null) }
     var authError by remember { mutableStateOf<String?>(null) }
 
+    var driveAccount by remember { mutableStateOf(syncConfig.googleDriveAccount) }
+    var dropboxAccount by remember { mutableStateOf(syncConfig.dropboxAccount) }
+    var driveToken by remember { mutableStateOf(syncConfig.googleDriveToken) }
+    var dropboxToken by remember { mutableStateOf(syncConfig.dropboxToken) }
+
     fun connect(provider: OAuthManager.Provider) {
         authError = null
         val req = OAuthManager.startAuth(provider) { result ->
@@ -53,6 +58,8 @@ fun CloudSyncScreen(
             result.onSuccess { res ->
                 when (res.provider) {
                     OAuthManager.Provider.GOOGLE.key -> {
+                        driveToken = res.accessToken
+                        driveAccount = res.account ?: "Connected"
                         viewModel.updateSyncConfig(syncConfig.copy(
                             googleDriveEnabled = true,
                             googleDriveAccount = res.account ?: "Connected",
@@ -61,6 +68,8 @@ fun CloudSyncScreen(
                         ))
                     }
                     OAuthManager.Provider.DROPBOX.key -> {
+                        dropboxToken = res.accessToken
+                        dropboxAccount = res.account ?: "Connected"
                         viewModel.updateSyncConfig(syncConfig.copy(
                             dropboxEnabled = true,
                             dropboxAccount = res.account ?: "Connected",
@@ -82,11 +91,6 @@ fun CloudSyncScreen(
     var r2Endpoint by remember { mutableStateOf(syncConfig.r2Endpoint) }
     var r2AccessKey by remember { mutableStateOf(syncConfig.r2AccessKey) }
     var r2SecretKey by remember { mutableStateOf(syncConfig.r2SecretKey) }
-
-    var driveAccount by remember { mutableStateOf(syncConfig.googleDriveAccount) }
-    var dropboxAccount by remember { mutableStateOf(syncConfig.dropboxAccount) }
-    var driveToken by remember { mutableStateOf(syncConfig.googleDriveToken) }
-    var dropboxToken by remember { mutableStateOf(syncConfig.dropboxToken) }
 
     val unsyncedCount = remember(allDocs) { allDocs.count { !it.isSynced } }
 
