@@ -23,3 +23,7 @@ debug.keystore
 # Local keystore base64 dumps (secret)
 keystore_b64.txt
 *.b64
+
+# Committed upload keystore + its passwords (used by CI without GitHub secrets)
+!app/upload-keystore.p12
+app/keystore.properties

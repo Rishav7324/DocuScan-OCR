@@ -22,30 +22,38 @@ android {
 
   signingConfigs {
     create("release") {
-      val keystorePath = System.getenv("KEYSTORE_PATH") ?: "${rootDir}/keystore.p12"
-      val keystoreFile = file(keystorePath)
-      val isP12 = keystorePath.endsWith(".p12", ignoreCase = true)
-      if (keystoreFile.exists()) {
+      // 1) GitHub Actions env vars (optional)
+      val envKeystorePath = System.getenv("KEYSTORE_PATH")
+      val envStorePass = System.getenv("STORE_PASSWORD")
+      val envKeyAlias = System.getenv("KEY_ALIAS")
+      val envKeyPass = System.getenv("KEY_PASSWORD")
+
+      // 2) Committed keystore + app/keystore.properties (no GitHub secrets needed)
+      val propsFile = file("${projectDir}/keystore.properties")
+      val props = if (propsFile.exists()) {
+        java.util.Properties().apply { load(propsFile.inputStream()) }
+      } else null
+      val bundledKeystore = file("${projectDir}/upload-keystore.p12")
+
+      val keystoreFile: File? = when {
+        envKeystorePath != null -> file(envKeystorePath)
+        bundledKeystore.exists() -> bundledKeystore
+        else -> null
+      }
+
+      if (keystoreFile != null && keystoreFile.exists()) {
         storeFile = keystoreFile
-        if (isP12) storeType = "PKCS12"
-        storePassword = System.getenv("STORE_PASSWORD")
-        keyAlias = System.getenv("KEY_ALIAS") ?: "upload"
-        keyPassword = System.getenv("KEY_PASSWORD")
+        storeType = "PKCS12"
+        storePassword = envStorePass ?: props?.getProperty("storePassword") ?: "DocuScanRelease123"
+        keyAlias = envKeyAlias ?: props?.getProperty("keyAlias") ?: "upload"
+        keyPassword = envKeyPass ?: props?.getProperty("keyPassword") ?: "DocuScanRelease123"
       } else {
-        val localDebugKeystore = file("${rootDir}/debug.keystore")
-        if (localDebugKeystore.exists()) {
-          storeFile = localDebugKeystore
-          storePassword = "android"
-          keyAlias = "androiddebugkey"
-          keyPassword = "android"
-        } else {
-          // Fallback to built-in system debug signing config to avoid build failure on clean environments (like CI)
-          val debugConfig = signingConfigs.getByName("debug")
-          storeFile = debugConfig.storeFile
-          storePassword = debugConfig.storePassword
-          keyAlias = debugConfig.keyAlias
-          keyPassword = debugConfig.keyPassword
-        }
+        // Fallback: debug signing so a local build still works without a keystore
+        val debugConfig = signingConfigs.getByName("debug")
+        storeFile = debugConfig.storeFile
+        storePassword = debugConfig.storePassword
+        keyAlias = debugConfig.keyAlias
+        keyPassword = debugConfig.keyPassword
       }
     }
     create("debugConfig") {

@@ -37,43 +37,22 @@ jobs:
             gradle wrapper --gradle-version 9.5.0 --distribution-type bin
           fi
 
-      - name: Decode keystore
-        env:
-          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+      - name: Ensure keystore exists
         run: |
-          if [ -z "$KEYSTORE_BASE64" ]; then
-            echo "::error::KEYSTORE_BASE64 secret not set"
-            exit 1
+          KS=app/upload-keystore.p12
+          if [ ! -f "$KS" ]; then
+            echo "No committed keystore found — generating one from app/keystore.properties"
+            source <(grep -v '^#' app/keystore.properties | sed 's/=/="/; s/$/"/')
+            keytool -genkeypair -v -storetype PKCS12 \
+              -keystore "$KS" -alias "$keyAlias" \
+              -keyalg RSA -keysize 2048 -validity 10000 \
+              -storepass "$storePassword" -keypass "$keyPassword" \
+              -dname "CN=DocuScan OCR, O=DocuScan OCR, C=IN"
+          else
+            echo "Using committed keystore: $KS"
           fi
-          # Strip any whitespace/newlines so a multi-line paste still decodes
-          echo "$KEYSTORE_BASE64" | tr -d '[:space:]' | base64 -d > "$RUNNER_TEMP/release-keystore.p12"
-          echo "KEYSTORE_PATH=$RUNNER_TEMP/release-keystore.p12" >> "$GITHUB_ENV"
-
-      - name: Verify keystore credentials
-        env:
-          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-        run: |
-          KS="$RUNNER_TEMP/release-keystore.p12"
-          ALIAS="${KEY_ALIAS:-upload}"
-          echo "Using alias: $ALIAS"
-          if ! keytool -list -keystore "$KS" -storepass "$STORE_PASSWORD" -noprompt >/dev/null 2>&1; then
-            echo "::error::STORE_PASSWORD mismatch — the keystore does not open with the STORE_PASSWORD secret."
-            exit 1
-          fi
-          echo "STORE_PASSWORD: ok"
-          if ! keytool -list -keystore "$KS" -storepass "$STORE_PASSWORD" -alias "$ALIAS" -keypass "$KEY_PASSWORD" -noprompt >/dev/null 2>&1; then
-            echo "::error::KEY_ALIAS ($ALIAS) or KEY_PASSWORD mismatch — key not found / wrong key password."
-            exit 1
-          fi
-          echo "KEY_ALIAS ($ALIAS) + KEY_PASSWORD: ok"
 
       - name: Build signed APK
-        env:
-          STORE_PASSWORD: ${{ secrets.STORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
         run: ./gradlew :app:assembleRelease --stacktrace
 
       - name: Collect APK
