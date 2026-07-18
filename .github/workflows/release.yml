@@ -42,7 +42,9 @@ jobs:
           KS=app/upload-keystore.p12
           if [ ! -f "$KS" ]; then
             echo "No committed keystore found — generating one from app/keystore.properties"
-            source <(grep -v '^#' app/keystore.properties | sed 's/=/="/; s/$/"/')
+            storePassword=$(grep -E '^storePassword=' app/keystore.properties | head -1 | cut -d= -f2-)
+            keyAlias=$(grep -E '^keyAlias=' app/keystore.properties | head -1 | cut -d= -f2-)
+            keyPassword=$(grep -E '^keyPassword=' app/keystore.properties | head -1 | cut -d= -f2-)
             keytool -genkeypair -v -storetype PKCS12 \
               -keystore "$KS" -alias "$keyAlias" \
               -keyalg RSA -keysize 2048 -validity 10000 \
