@@ -206,7 +206,7 @@ Copy the entire contents of `keystore.b64` — that string is the `KEYSTORE_BASE
 `gradle-wrapper.jar` is a binary. The workflow regenerates it if missing, but committing it is reproducible and faster:
 
 ```bash
-gradle wrapper --gradle-version 9.1.0 --distribution-type bin
+gradle wrapper --gradle-version 9.5.0 --distribution-type bin
 git add gradlew gradlew.bat gradle/wrapper/
 git commit -m "build: add Gradle wrapper"
 git push
