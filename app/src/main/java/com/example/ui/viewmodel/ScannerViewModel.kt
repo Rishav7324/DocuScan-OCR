@@ -10,6 +10,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.data.api.OfflineOcrService
+import com.example.data.api.SyncEngine
 import com.example.data.database.*
 import com.example.data.encryption.EncryptionUtils
 import com.example.data.SecuritySettingsStore
