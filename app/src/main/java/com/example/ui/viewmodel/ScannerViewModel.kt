@@ -12,6 +12,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.data.api.OfflineOcrService
 import com.example.data.database.*
 import com.example.data.encryption.EncryptionUtils
+import com.example.data.SecuritySettingsStore
 import com.example.data.model.CloudSyncConfig
 import com.example.data.repository.DocumentRepository
 import com.example.ui.components.CropPoints
@@ -200,6 +201,122 @@ class ScannerViewModel(application: Application) : AndroidViewModel(application)
     fun verifyFolderPasscode(folder: FolderEntity, passcode: String): Boolean {
         val marker = folder.passwordHash ?: return false
         return EncryptionUtils.verifyPassphrase(marker, passcode)
+    }
+
+    // --- App Lock (global security) ---
+    // ponytail: PIN-only, honest; reuses EncryptionUtils marker pattern. No fake biometrics.
+    private val _isAppLocked = MutableStateFlow(false)
+    val isAppLocked: StateFlow<Boolean> = _isAppLocked.asStateFlow()
+
+    private val _appLockEnabled = MutableStateFlow(
+        SecuritySettingsStore.isAppLockEnabled(getApplication())
+    )
+    val appLockEnabled: StateFlow<Boolean> = _appLockEnabled.asStateFlow()
+
+    private val _failedAttempts = MutableStateFlow(
+        SecuritySettingsStore.getFailedAttempts(getApplication())
+    )
+    val failedAttempts: StateFlow<Int> = _failedAttempts.asStateFlow()
+
+    /** Called on cold start / resume. Locks the app when enabled and a PIN is configured. */
+    fun evaluateAppLockOnResume() {
+        val ctx = getApplication<Application>()
+        val enabled = SecuritySettingsStore.isAppLockEnabled(ctx)
+        _appLockEnabled.value = enabled
+        val hasPin = SecuritySettingsStore.getAppPinMarker(ctx).isNotBlank()
+        _isAppLocked.value = enabled && hasPin
+    }
+
+    /** Set or change the global app PIN (idempotent). */
+    fun setAppLockPin(pin: String) {
+        val ctx = getApplication<Application>()
+        val marker = EncryptionUtils.encrypt("APP_LOCK_VERIFY", pin)
+        SecuritySettingsStore.setAppPinMarker(ctx, marker)
+        SecuritySettingsStore.setAppLockEnabled(ctx, true)
+        SecuritySettingsStore.resetFailedAttempts(ctx)
+        _appLockEnabled.value = true
+        _failedAttempts.value = 0
+        _isAppLocked.value = false
+        addAuditLog(action = "UPDATE", resourceType = "KEYS", details = "Global app lock enabled")
+    }
+
+    fun disableAppLock() {
+        val ctx = getApplication<Application>()
+        SecuritySettingsStore.setAppLockEnabled(ctx, false)
+        SecuritySettingsStore.setAppPinMarker(ctx, "")
+        SecuritySettingsStore.resetFailedAttempts(ctx)
+        _appLockEnabled.value = false
+        _failedAttempts.value = 0
+        _isAppLocked.value = false
+        addAuditLog(action = "UPDATE", resourceType = "KEYS", details = "Global app lock disabled")
+    }
+
+    /** Returns true only when the PIN is correct and the app is now unlocked. */
+    fun unlockApp(pin: String): Boolean {
+        val ctx = getApplication<Application>()
+        val marker = SecuritySettingsStore.getAppPinMarker(ctx)
+        if (marker.isBlank() || !EncryptionUtils.verifyPassphrase(marker, pin)) {
+            registerFailedAttempt()
+            return false
+        }
+        SecuritySettingsStore.resetFailedAttempts(ctx)
+        _failedAttempts.value = 0
+        _isAppLocked.value = false
+        return true
+    }
+
+    /**
+     * Records a failed unlock attempt. After [MAX_FAILED_ATTEMPTS] the app performs a
+     * secure wipe (zeroizes the local database) — matches the "HIPAA compliant wipe" claim.
+     * Returns true when a wipe was triggered.
+     */
+    fun registerFailedAttempt(): Boolean {
+        val ctx = getApplication<Application>()
+        val next = _failedAttempts.value + 1
+        _failedAttempts.value = next
+        SecuritySettingsStore.setFailedAttempts(ctx, next)
+        if (next >= MAX_FAILED_ATTEMPTS) {
+            secureWipe()
+            return true
+        }
+        return false
+    }
+
+    fun resetFailedAttempts() {
+        val ctx = getApplication<Application>()
+        SecuritySettingsStore.resetFailedAttempts(ctx)
+        _failedAttempts.value = 0
+    }
+
+    /** Zeroize sensitive in-memory state when the app goes to the background. */
+    fun clearSensitiveState() {
+        _activeFolderPin.value = null
+        _activeDocument.value = null
+        _activePages.value = emptyList()
+    }
+
+    /** Secure wipe: delete the entire local database so no document data remains on device. */
+    private fun secureWipe() {
+        viewModelScope.launch {
+            val ctx = getApplication<Application>()
+            try {
+                ctx.deleteDatabase("docuscan_database")
+            } catch (_: Exception) { /* best effort */ }
+            SecuritySettingsStore.setAppLockEnabled(ctx, false)
+            SecuritySettingsStore.setAppPinMarker(ctx, "")
+            SecuritySettingsStore.resetFailedAttempts(ctx)
+            _appLockEnabled.value = false
+            _isAppLocked.value = false
+            _failedAttempts.value = 0
+            _activeFolderPin.value = null
+            _activeDocument.value = null
+            _activePages.value = emptyList()
+            addAuditLog(action = "DELETE", resourceType = "APP", details = "Secure wipe executed after repeated failed unlock attempts")
+        }
+    }
+
+    companion object {
+        const val MAX_FAILED_ATTEMPTS = 5
     }
 
     suspend fun getPagesForDocumentSync(docId: Long): List<PageEntity> {

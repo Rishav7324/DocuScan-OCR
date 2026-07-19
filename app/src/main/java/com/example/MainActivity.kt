@@ -1,14 +1,21 @@
 package com.example
 
 import android.os.Bundle
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.lifecycle.ViewModelProvider
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -16,13 +23,18 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.example.ui.screens.*
+import com.example.ui.components.AppLockScreen
 import com.example.ui.theme.MyApplicationTheme
 import com.example.ui.viewmodel.ScannerViewModel
 import com.example.data.api.OAuthManager
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
+    private val vm: ScannerViewModel by lazy {
+        ViewModelProvider(this)[ScannerViewModel::class.java]
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         OAuthManager.init(this)
@@ -31,9 +43,24 @@ class MainActivity : ComponentActivity() {
             val viewModel: ScannerViewModel = viewModel()
 
             MyApplicationTheme {
-                val navController = rememberNavController()
+                val isAppLocked by viewModel.isAppLocked.collectAsState()
 
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                // Evaluate + keep app-lock state in sync with the lifecycle.
+                LaunchedEffect(Unit) {
+                    viewModel.evaluateAppLockOnResume()
+                    lifecycleScope.launch {
+                        repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                            viewModel.evaluateAppLockOnResume()
+                        }
+                    }
+                }
+
+                if (isAppLocked) {
+                    AppLockScreen(viewModel = viewModel)
+                } else {
+                    val navController = rememberNavController()
+
+                    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     NavHost(
                         navController = navController,
                         startDestination = "dashboard",
@@ -175,5 +202,22 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // ponytail: lock screen uses FLAG_SECURE so the PIN entry can't be screenshotted
+        if (vm.isAppLocked.value) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        } else {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        // Zeroize sensitive in-memory state when the app leaves the foreground.
+        vm.clearSensitiveState()
     }
 }

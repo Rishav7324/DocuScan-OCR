@@ -27,6 +27,8 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
 import com.example.ui.components.GlassBackground
 import com.example.ui.components.GlassCard
+import com.example.ui.components.BiometricLockDialog
+import com.example.ui.components.SetPasscodeDialog
 import com.example.ui.viewmodel.ScannerViewModel
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
@@ -58,6 +60,11 @@ fun ComplianceScreen(
 
     var showSnack by remember { mutableStateOf(false) }
     var showClearDialog by remember { mutableStateOf(false) }
+
+    // App Lock (global security)
+    val appLockEnabled by viewModel.appLockEnabled.collectAsState()
+    var showEnablePin by remember { mutableStateOf(false) }
+    var showDisableConfirm by remember { mutableStateOf(false) }
 
     GlassBackground {
         Scaffold(
@@ -180,6 +187,40 @@ fun ComplianceScreen(
                                     lineHeight = 15.sp
                                 )
                             }
+                        }
+                    }
+
+                    // App Lock (global security gate)
+                    GlassCard(
+                        modifier = Modifier.fillMaxWidth(),
+                        cornerRadius = 20.dp
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(Icons.Default.Lock, contentDescription = "App Lock", tint = MaterialTheme.colorScheme.primary)
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Column {
+                                    Text("Global App Lock", fontWeight = FontWeight.Black, color = Color.Black, fontSize = 14.sp)
+                                    Spacer(modifier = Modifier.height(2.dp))
+                                    Text(
+                                        if (appLockEnabled) "App locked with a 4-digit PIN on launch."
+                                        else "Require a PIN to open the app.",
+                                        fontSize = 11.sp, color = Color.Black, fontWeight = FontWeight.Medium
+                                    )
+                                }
+                            }
+                            Switch(
+                                checked = appLockEnabled,
+                                onCheckedChange = { checked ->
+                                    if (checked) showEnablePin = true
+                                    else showDisableConfirm = true
+                                },
+                                colors = SwitchDefaults.colors(checkedTrackColor = MaterialTheme.colorScheme.primary)
+                            )
                         }
                     }
 
@@ -352,6 +393,28 @@ fun ComplianceScreen(
                         },
                         title = { Text("Erase audit trail?", fontWeight = FontWeight.Bold) },
                         text = { Text("This permanently deletes all compliance audit logs on this device. This action cannot be undone.") }
+                    )
+                }
+
+                if (showEnablePin) {
+                    SetPasscodeDialog(
+                        onConfirm = { pin ->
+                            viewModel.setAppLockPin(pin)
+                            showEnablePin = false
+                        },
+                        onDismiss = { showEnablePin = false }
+                    )
+                }
+
+                if (showDisableConfirm) {
+                    BiometricLockDialog(
+                        verify = { viewModel.unlockApp(it) },
+                        onSuccess = {
+                            viewModel.disableAppLock()
+                            showDisableConfirm = false
+                        },
+                        onDismiss = { showDisableConfirm = false },
+                        title = "Confirm to Disable App Lock"
                     )
                 }
             }
