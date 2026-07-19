@@ -43,7 +43,7 @@ fun LiveDocumentOverlay(
             val h = size.height
 
             val toPx: (Offset) -> Offset = if (frameWidth > 0 && frameHeight > 0) {
-                val scale: Float = maxOf(w / frameWidth.toFloat(), h / frameHeight.toFloat())
+                val scale: Float = max(w / frameWidth.toFloat(), h / frameHeight.toFloat())
                 { norm: Offset ->
                     Offset(
                         w / 2f + (norm.x - 0.5f) * frameWidth.toFloat() * scale,
@@ -74,15 +74,13 @@ fun LiveDocumentOverlay(
             }
 
             // Dim everything outside the detected document to guide the user.
-            drawPath(
-                path = Path().apply {
-                    moveTo(0f, 0f); lineTo(w, 0f); lineTo(w, h); lineTo(0f, h); close()
-                }.also { outerPath ->
-                    // avoid ambiguity by using a distinct variable name and the imported PathOperation
-                    outerPath.op(documentPath, PathOperation.Difference)
-                },
-                color = Color.Black.copy(alpha = 0.35f)
-            )
+            // Path.op(path1, path2, operation) stores the result in `this`, so:
+            // outer = outer REMAINDER (outer - documentPath).
+            val outer = Path().apply {
+                moveTo(0f, 0f); lineTo(w, 0f); lineTo(w, h); lineTo(0f, h); close()
+            }
+            outer.op(outer, documentPath, PathOperation.Difference)
+            drawPath(path = outer, color = Color.Black.copy(alpha = 0.35f))
 
             drawPath(path = documentPath, color = accent.copy(alpha = 0.25f))
             drawPath(path = documentPath, color = accent, style = Stroke(width = 4.dp.toPx()))
