@@ -66,14 +66,3 @@ jobs:
           cp "$APK" "dist/DocuScan-${VERSION}.apk"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           ( cd dist && sha256sum * > SHA256SUMS.txt )
-
-      - name: Create Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: ${{ steps.artifacts.outputs.version }}
-          name: "DocuScan OCR ${{ steps.artifacts.outputs.version }}"
-          draft: false
-          prerelease: ${{ contains(steps.artifacts.outputs.version, '-rc') || contains(steps.artifacts.outputs.version, '-beta') }}
-          files: |
-            dist/*.apk
-            dist/SHA256SUMS.txt
