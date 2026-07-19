@@ -43,15 +43,15 @@ fun LiveDocumentOverlay(
             val h = size.height
 
             val toPx: (Offset) -> Offset = if (frameWidth > 0 && frameHeight > 0) {
-                val scale = maxOf(w / frameWidth, h / frameHeight)
-                { norm ->
+                val scale: Float = maxOf(w / frameWidth.toFloat(), h / frameHeight.toFloat())
+                { norm: Offset ->
                     Offset(
-                        w / 2f + (norm.x - 0.5f) * frameWidth * scale,
-                        h / 2f + (norm.y - 0.5f) * frameHeight * scale
+                        w / 2f + (norm.x - 0.5f) * frameWidth.toFloat() * scale,
+                        h / 2f + (norm.y - 0.5f) * frameHeight.toFloat() * scale
                     )
                 }
             } else {
-                { norm -> Offset(norm.x * w, norm.y * h) }
+                { norm: Offset -> Offset(norm.x * w, norm.y * h) }
             }
 
             val accent = when {
@@ -65,7 +65,7 @@ fun LiveDocumentOverlay(
             val br = toPx(points.bottomRight)
             val bl = toPx(points.bottomLeft)
 
-            val path = Path().apply {
+            val documentPath = Path().apply {
                 moveTo(tl.x, tl.y)
                 lineTo(tr.x, tr.y)
                 lineTo(br.x, br.y)
@@ -77,12 +77,15 @@ fun LiveDocumentOverlay(
             drawPath(
                 path = Path().apply {
                     moveTo(0f, 0f); lineTo(w, 0f); lineTo(w, h); lineTo(0f, h); close()
-                }.also { it.op(path, PathOperation.Difference) },
+                }.also { outerPath ->
+                    // avoid ambiguity by using a distinct variable name and the imported PathOperation
+                    outerPath.op(documentPath, PathOperation.Difference)
+                },
                 color = Color.Black.copy(alpha = 0.35f)
             )
 
-            drawPath(path = path, color = accent.copy(alpha = 0.25f))
-            drawPath(path = path, color = accent, style = Stroke(width = 4.dp.toPx()))
+            drawPath(path = documentPath, color = accent.copy(alpha = 0.25f))
+            drawPath(path = documentPath, color = accent, style = Stroke(width = 4.dp.toPx()))
 
             listOf(tl, tr, br, bl).forEach {
                 drawCircle(accent, radius = 8.dp.toPx(), center = it)
