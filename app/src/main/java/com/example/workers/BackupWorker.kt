@@ -8,7 +8,7 @@ import androidx.work.WorkerParameters
 import com.example.data.SyncConfigStore
 import com.example.data.api.SyncEngine
 import com.example.data.database.AppDatabase
-import com.example.data.database.DocumentRepository
+import com.example.data.repository.DocumentRepository
 
 /**
  * Scheduled by [com.example.workers.SyncScheduler] when auto-backup is enabled.

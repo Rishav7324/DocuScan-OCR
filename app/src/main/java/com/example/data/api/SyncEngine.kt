@@ -1,6 +1,6 @@
 package com.example.data.api
 
-import com.example.data.database.DocumentRepository
+import com.example.data.repository.DocumentRepository
 import com.example.data.model.CloudSyncConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
