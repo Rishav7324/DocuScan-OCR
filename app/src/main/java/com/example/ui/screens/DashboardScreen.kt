@@ -728,6 +728,8 @@ fun DashboardScreen(
     }
 }
 
+}
+
 @Composable
 private fun StatChip(
     label: String,
@@ -752,7 +754,5 @@ private fun StatChip(
             Text(label, fontSize = 10.sp, color = Color.Gray, fontWeight = FontWeight.SemiBold)
         }
     }
-}
-
 }
 
