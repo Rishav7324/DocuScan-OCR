@@ -42,7 +42,7 @@ fun LiveDocumentOverlay(
             val w = size.width
             val h = size.height
 
-            val (toPx): (Offset) -> Offset = if (frameWidth > 0 && frameHeight > 0) {
+            val toPx: (Offset) -> Offset = if (frameWidth > 0 && frameHeight > 0) {
                 val scale = maxOf(w / frameWidth, h / frameHeight)
                 { norm ->
                     Offset(
