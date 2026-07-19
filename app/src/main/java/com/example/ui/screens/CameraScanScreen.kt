@@ -3,16 +3,18 @@ package com.example.ui.screens
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Matrix
+import android.os.Build
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.util.Log
+import android.util.Size
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -30,18 +32,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
-import com.example.ui.components.AutoCornerDetector
+import com.example.ui.components.CaptureStabilityTracker
 import com.example.ui.components.CropPoints
+import com.example.ui.components.DocumentDetector
 import com.example.ui.components.LiveDocumentOverlay
 import com.example.ui.components.performPerspectiveCorrection
 import com.example.ui.viewmodel.ScannerViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.io.ByteArrayOutputStream
 import java.util.concurrent.Executors
-import kotlin.math.abs
 
 private const val TAG = "CameraScanScreen"
+private const val ANALYSIS_INTERVAL_MS = 180L   // ~5-6 fps throttle
+private const val MAX_ANALYSIS_EDGE = 640        // downscale long edge before detection
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -61,53 +64,68 @@ fun CameraScanScreen(
                 PackageManager.PERMISSION_GRANTED
         )
     }
-
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted -> hasPermission = granted }
-
     LaunchedEffect(Unit) {
         if (!hasPermission) permissionLauncher.launch(android.Manifest.permission.CAMERA)
     }
 
-    // Live detection state
+    // Live detection state surfaced to the UI.
     var liveCorners by remember { mutableStateOf<CropPoints?>(null) }
+    var liveFrameW by remember { mutableIntStateOf(0) }
+    var liveFrameH by remember { mutableIntStateOf(0) }
     var docDetected by remember { mutableStateOf(false) }
     var autoCaptureEnabled by remember { mutableStateOf(true) }
     var capturing by remember { mutableStateOf(false) }
     var flash by remember { mutableStateOf(false) }
     var pageCount by remember { mutableStateOf(0) }
-    // Stable-detection counter drives auto capture
-    var stableFrames by remember { mutableStateOf(0) }
+    var readyToCapture by remember { mutableStateOf(false) }
 
-    // Shared ImageProxy -> Bitmap converter used by analysis + capture
     val analysisExecutor = remember { Executors.newSingleThreadExecutor() }
     var imageCapture: ImageCapture? by remember { mutableStateOf(null) }
-    // Latest preview frame kept for capture fallback so detection + capture share one pipeline
-    val latestBitmap = remember { java.util.concurrent.atomic.AtomicReference<Bitmap?>(null) }
+    // Latest analyzed frame (already rotated, downscaled) used for both auto and
+    // manual capture so detection and capture share one pipeline.
+    val latestFrame = remember { java.util.concurrent.atomic.AtomicReference<FrameHolder?>(null) }
 
+    val tracker = remember { CaptureStabilityTracker() }
+    val lastAnalysisTime = remember { java.util.concurrent.atomic.AtomicLong(0L) }
+    val vibrator = remember {
+        context.getSystemService(Vibrator::class.java)
+    }
+
+    fun haptic() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            vibrator?.vibrate(VibrationEffect.createOneShot(40, VibrationEffect.DEFAULT_AMPLITUDE))
+        } else {
+            @Suppress("DEPRECATION")
+            vibrator?.vibrate(40)
+        }
+    }
+
+    // Single capture path for BOTH auto and manual capture.
     fun capturePage(corners: CropPoints?) {
         if (capturing) return
+        val holder = latestFrame.get() ?: return
         capturing = true
         flash = true
+        haptic()
         scope.launch {
             try {
-                val src = latestBitmap.get()
-                if (src != null) {
-                    val bmp = if (corners != null) {
-                        performPerspectiveCorrection(src, corners)
-                    } else src
-                    // ponytail: persist immediately, batch finalized in crop screen
-                    viewModel.addImageToBatch(bmp)
-                    pageCount++
-                }
+                val src = holder.bitmap
+                val bmp = if (corners != null) performPerspectiveCorrection(src, corners) else src
+                viewModel.addImageToBatch(bmp) // persisted immediately; finalized in crop screen
+                pageCount++
             } catch (e: Exception) {
                 Log.e(TAG, "capture failed", e)
             } finally {
                 delay(220)
                 flash = false
                 capturing = false
-                stableFrames = 0
+                tracker.onCaptured()
+                readyToCapture = false
+                liveCorners = null
+                docDetected = false
             }
         }
     }
@@ -115,32 +133,51 @@ fun CameraScanScreen(
     val analysisUseCase = remember {
         ImageAnalysis.Builder()
             .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-            .setTargetResolution(android.util.Size(480, 640))
+            .setTargetResolution(Size(480, 640))
             .build()
             .also { analysis ->
                 analysis.setAnalyzer(analysisExecutor) { proxy ->
-                    val bitmap = proxy.toBitmap().let { bmp ->
+                    try {
+                        val raw = proxy.toBitmap() ?: return@setAnalyzer
                         val rotation = proxy.imageInfo.rotationDegrees
-                        if (rotation == 0) bmp else rotateBitmap(bmp, rotation)
-                    } ?: run { proxy.close(); return@setAnalyzer }
-                    latestBitmap.set(bitmap)
-                    val corners = AutoCornerDetector.detectDocumentCorners(bitmap)
-                    val detected = corners.topLeft != corners.topRight &&
-                        corners.topRight != corners.bottomRight &&
-                        corners.bottomRight != corners.bottomLeft &&
-                        corners.areReasonable()
-                    // post to main for overlay
-                    scope.launch {
-                        liveCorners = corners
-                        docDetected = detected
-                        if (detected && autoCaptureEnabled && !capturing) {
-                            stableFrames++
-                            if (stableFrames >= 5) capturePage(corners)
-                        } else if (!detected) {
-                            stableFrames = 0
+                        // Rotate to upright so detection/capture work in display orientation.
+                        val upright = if (rotation == 0) raw else rotateBitmap(raw, rotation)
+                        // Downscale to keep detection cheap; full-res is unnecessary.
+                        val scaled = downscale(upright, MAX_ANALYSIS_EDGE)
+                        if (scaled !== upright) raw.recycle()
+
+                        latestFrame.set(FrameHolder(scaled, scaled.width, scaled.height))
+
+                        val quad = DocumentDetector.detect(scaled)
+                        val valid = quad?.let { DocumentDetector.isQuadValid(it) } == true
+
+                        // Throttle: only update the stability state machine every
+                        // ANALYSIS_INTERVAL_MS. Skipped frames keep the last overlay
+                        // state and do NOT touch the tracker (so a skip never resets
+                        // the consecutive-frame counter).
+                        val now = System.currentTimeMillis()
+                        val shouldEval = now - lastAnalysisTime.get() >= ANALYSIS_INTERVAL_MS
+                        if (!shouldEval) return@setAnalyzer
+                        lastAnalysisTime.set(now)
+
+                        val doCapture = tracker.update(if (valid) quad else null)
+                        val ready = tracker.state == CaptureStabilityTracker.State.ReadyToCapture
+
+                        scope.launch {
+                            liveCorners = quad
+                            liveFrameW = scaled.width
+                            liveFrameH = scaled.height
+                            docDetected = valid
+                            readyToCapture = ready
+                            if (doCapture && autoCaptureEnabled && !capturing) {
+                                capturePage(quad)
+                            }
                         }
+                    } catch (e: Exception) {
+                        Log.e(TAG, "analysis error", e)
+                    } finally {
+                        proxy.close()
                     }
-                    proxy.close()
                 }
             }
     }
@@ -182,10 +219,10 @@ fun CameraScanScreen(
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    IconButton(onClick = {
-                        // Manual capture using last detected corners (or whole frame)
-                        capturePage(liveCorners)
-                    }, enabled = !capturing) {
+                    IconButton(
+                        onClick = { capturePage(liveCorners) }, // manual override: always works
+                        enabled = !capturing
+                    ) {
                         Icon(
                             Icons.Filled.RadioButtonChecked,
                             contentDescription = "Capture",
@@ -246,14 +283,26 @@ fun CameraScanScreen(
                     modifier = Modifier.fillMaxSize()
                 )
 
-                // Live document overlay
                 LiveDocumentOverlay(
                     points = liveCorners,
                     detected = docDetected,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
+                    frameWidth = liveFrameW,
+                    frameHeight = liveFrameH,
+                    stable = readyToCapture
                 )
 
-                if (!docDetected) {
+                if (readyToCapture) {
+                    Text(
+                        "Hold still — capturing…",
+                        color = Color(0xFF00E676),
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .align(Alignment.TopCenter)
+                            .background(Color.Black.copy(alpha = 0.6f), RoundedCornerShape(8.dp))
+                            .padding(8.dp)
+                    )
+                } else if (!docDetected) {
                     Text(
                         "Point camera at a document",
                         color = Color.White,
@@ -288,16 +337,19 @@ fun CameraScanScreen(
     }
 }
 
+private data class FrameHolder(val bitmap: Bitmap, val width: Int, val height: Int)
+
 private fun rotateBitmap(bitmap: Bitmap, degrees: Int): Bitmap {
     val matrix = Matrix().apply { postRotate(degrees.toFloat()) }
     return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
 }
 
-private fun CropPoints.areReasonable(): Boolean {
-    // Reject degenerate quads: corners must occupy a meaningful area and be ordered.
-    val xs = listOf(topLeft.x, topRight.x, bottomRight.x, bottomLeft.x)
-    val ys = listOf(topLeft.y, topRight.y, bottomRight.y, bottomLeft.y)
-    val width = (xs.maxOrNull()!! - xs.minOrNull()!!)
-    val height = (ys.maxOrNull()!! - ys.minOrNull()!!)
-    return width > 0.25f && height > 0.25f
+/** Downscales [bitmap] so its longest edge is <= [maxEdge], preserving aspect. */
+private fun downscale(bitmap: Bitmap, maxEdge: Int): Bitmap {
+    val long = maxOf(bitmap.width, bitmap.height)
+    if (long <= maxEdge) return bitmap
+    val scale = maxEdge.toFloat() / long
+    val w = (bitmap.width * scale).toInt().coerceAtLeast(1)
+    val h = (bitmap.height * scale).toInt().coerceAtLeast(1)
+    return Bitmap.createScaledBitmap(bitmap, w, h, true)
 }
