@@ -133,7 +133,7 @@ class MainActivity : ComponentActivity() {
                                 onNavigateBack = { navController.popBackStack() },
                                 onNavigateToOcr = {
                                     // Finalize: auto-create a folder when scanning into root, then save everything.
-                                    viewModel.finalizeBatch(0L)
+                                    viewModel.finalizeBatch("", 0L)
                                     navController.navigate("dashboard") {
                                         popUpTo("dashboard") { inclusive = true }
                                     }

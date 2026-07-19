@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawPath
 import androidx.compose.ui.graphics.drawscope.drawRect
 import androidx.compose.ui.graphics.drawscope.drawCircle
+import androidx.compose.ui.unit.dp
 
 /**
  * Draws the detected document quadrilateral over the camera preview.
