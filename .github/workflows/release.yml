@@ -57,7 +57,7 @@ jobs:
           fi
 
       - name: Build signed APK
-        run: ./gradlew :app:assembleRelease --stacktrace
+        run: ./gradlew :app:assembleRelease --stacktrace --no-configuration-cache
 
       - name: Collect APK
         id: artifacts
