@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.LaunchedEffect
@@ -69,8 +71,8 @@ class MainActivity : ComponentActivity() {
                     var currentRoute by remember { mutableStateOf(navController.currentDestination?.route ?: "dashboard") }
 
                     // Bottom-nav tabs. Routes not in this set are shown full-screen (no bar).
-                    val tabRoutes = listOf("dashboard", "ocr_export/none", "cloud_sync", "help_legal")
-                    val showBottomBar = tabRoutes.any { currentRoute.startsWith(it.takeWhile { c -> c != '/' })) }
+                    val tabRoutes = listOf("dashboard", "ocr_export", "cloud_sync", "help_legal")
+                    val showBottomBar = tabRoutes.any { currentRoute.substringBefore("/") == it }
 
                     Scaffold(
                         modifier = Modifier.fillMaxSize(),
