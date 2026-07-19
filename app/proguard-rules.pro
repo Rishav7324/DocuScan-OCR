@@ -19,3 +19,23 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# --- DocuScan: keep rules required once minify + shrinkResources are on ---
+
+# Room uses reflection on DAOs and entities at runtime.
+-keep class * extends androidx.room.RoomDatabase
+-keep @androidx.room.Entity class *
+-keep class com.example.data.database.** { *; }
+-keep class com.example.data.model.** { *; }
+
+# OpenCV native loader + JNI classes must not be stripped/renamed.
+-keep class org.opencv.** { *; }
+-dontwarn org.opencv.**
+
+# Compose / ViewModel retained-state classes (reflection in saveable).
+-keep class com.example.ui.viewmodel.** { *; }
+
+# Parcelable / model data passed across navigation / saved state.
+-keepattributes Signature
+-keepattributes *Annotation*
+-keep class kotlin.Metadata { *; }

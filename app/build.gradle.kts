@@ -20,6 +20,10 @@ android {
     versionName = "2.0.0"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+    // ponytail: ship ARM-only .so (phones/tablets). Drops x86/x86_64 (~emulator-only)
+    // which is ~90% of the OpenCV native bloat. Keeps full OpenCV API, zero detector changes.
+    ndk { abiFilters += listOf("armeabi-v7a", "arm64-v8a") }
   }
 
   signingConfigs {
@@ -77,8 +81,9 @@ android {
 
   buildTypes {
     release {
-      isCrunchPngs = false
-      isMinifyEnabled = false
+      isCrunchPngs = true
+      isMinifyEnabled = true
+      isShrinkResources = true
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
       signingConfig = signingConfigs.getByName("release")
     }

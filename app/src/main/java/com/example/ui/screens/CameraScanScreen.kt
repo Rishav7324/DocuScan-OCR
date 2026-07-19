@@ -220,7 +220,12 @@ fun CameraScanScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     IconButton(
-                        onClick = { capturePage(liveCorners) }, // manual override: always works
+                        onClick = {
+                            // Manual capture always works: if no real quad was detected,
+                            // fall back to the full frame so the user is never blocked.
+                            val corners = liveCorners ?: DocumentDetector.fallbackInset(liveFrameW, liveFrameH)
+                            capturePage(corners)
+                        },
                         enabled = !capturing
                     ) {
                         Icon(

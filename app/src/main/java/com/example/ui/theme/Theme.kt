@@ -1,5 +1,6 @@
 package com.example.ui.theme
 
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
@@ -10,22 +11,25 @@ private val DarkColorScheme =
   darkColorScheme(
     primary = SageGreen,
     secondary = SlateGray,
-    tertiary = SageGreen,
-    background = Color.White,
-    surface = Color.White,
-    surfaceVariant = LightSlate,
-    onBackground = DeepCharcoal,
-    onSurface = DeepCharcoal
+    tertiary = GlassIndigo,
+    background = GlassBackgroundDark,
+    surface = GlassSurfaceDark,
+    surfaceVariant = GlassSurfaceVariantDark,
+    onPrimary = DeepCharcoal,
+    onSecondary = Color.White,
+    onTertiary = Color.White,
+    onBackground = Color(0xFFE6EDF3),
+    onSurface = Color(0xFFE6EDF3)
   )
 
 private val LightColorScheme =
   lightColorScheme(
     primary = SageGreen,
     secondary = SlateGray,
-    tertiary = SageGreen,
-    background = Color.White,
-    surface = Color.White,
-    surfaceVariant = LightSlate,
+    tertiary = GlassIndigo,
+    background = GlassBackgroundLight,
+    surface = GlassSurfaceLight,
+    surfaceVariant = GlassSurfaceVariantLight,
     onPrimary = Color.White,
     onSecondary = Color.White,
     onTertiary = Color.White,
@@ -35,7 +39,7 @@ private val LightColorScheme =
 
 @Composable
 fun MyApplicationTheme(
-  darkTheme: Boolean = false, // Default to gorgeous light/airy frosted theme
+  darkTheme: Boolean = isSystemInDarkTheme(), // Follow the system by default
   dynamicColor: Boolean = false, // Keep theme colors consistent
   content: @Composable () -> Unit,
 ) {

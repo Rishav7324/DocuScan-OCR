@@ -3,6 +3,7 @@ package com.example.ui.components
 import android.graphics.Bitmap
 import androidx.compose.ui.geometry.Offset
 import org.opencv.android.OpenCVLoader
+import org.opencv.core.Core
 import org.opencv.core.Mat
 import org.opencv.core.MatOfPoint
 import org.opencv.core.MatOfPoint2f
@@ -51,9 +52,18 @@ object DocumentDetector {
             val gray = Mat()
             Imgproc.cvtColor(src, gray, Imgproc.COLOR_RGBA2GRAY)
 
+            // Contrast normalization: plain white-on-white pages have almost no Canny
+            // edges, so the detector misses them. LiveEdgeDetection's trick — stretch
+            // contrast, clip highlights, stretch again — makes faint page borders
+            // detectable on low-contrast frames.
+            val norm = Mat()
+            Core.normalize(gray, norm, 0.0, 255.0, Core.NORM_MINMAX)
+            Imgproc.threshold(norm, norm, 0.0, 255.0, Imgproc.THRESH_TRUNC)
+            Core.normalize(norm, norm, 0.0, 255.0, Core.NORM_MINMAX)
+
             val blurred = Mat()
             // Gaussian blur kills sensor noise / JPEG artifacts that would seed false edges.
-            Imgproc.GaussianBlur(gray, blurred, org.opencv.core.Size(5.0, 5.0), 0.0)
+            Imgproc.GaussianBlur(norm, blurred, org.opencv.core.Size(5.0, 5.0), 0.0)
 
             // Auto Canny: pick the two thresholds from the MEDIAN of the (blurred) image.
             // This adapts to bright white paper vs dark backgrounds automatically instead
@@ -76,19 +86,28 @@ object DocumentDetector {
             val frameArea = src.width() * src.height().toDouble()
             val minArea = frameArea * 0.15 // ignore tiny noise contours (<15% of frame)
 
+            // Score every candidate quad instead of taking the largest: largest-area
+            // picks the background when the page touches a frame edge, causing the
+            // overlay to flicker. Score rewards rectangularity + solidity + a sane
+            // aspect ratio, and penalizes quads that hug the image border.
             var best: Array<Point>? = null
-            var bestArea = 0.0
+            var bestScore = -1.0
             for (c in contours) {
                 val approx = approxQuad(c)
                 if (approx != null) {
                     val area = Imgproc.contourArea(MatOfPoint2f(*approx))
-                    if (area >= minArea && area > bestArea) {
-                        bestArea = area
-                        best = approx
+                    if (area >= minArea) {
+                        val score = scoreQuad(approx, src.width(), src.height(), frameArea)
+                        if (score > bestScore) {
+                            bestScore = score
+                            best = approx
+                        }
                     }
                 }
                 c.release()
             }
+
+            // Null when no real document quad found (callers decide fallback behavior).
             val result = best?.let { orderAndNormalize(it, src.width(), src.height()) }
 
             gray.release(); blurred.release(); edges.release(); kernel.release(); hierarchy.release()
@@ -130,9 +149,55 @@ object DocumentDetector {
         )
     }
 
+    /**
+     * Scores a candidate quad 0..1. Higher = more page-like.
+     * Combines rectangularity (how close angles are to 90°), solidity (filled
+     * vs perimeter-bounded area), an aspect-ratio sanity window, and a penalty
+     * for quads touching the frame border (those are usually background).
+     */
+    private fun scoreQuad(pts: Array<Point>, w: Int, h: Int, frameArea: Double): Double {
+        val poly = MatOfPoint2f(*pts)
+        val area = Imgproc.contourArea(poly)
+        val peri = Imgproc.arcLength(poly, true)
+        if (peri <= 0.0) return -1.0
+        val rect = Imgproc.boundingRect(MatOfPoint(*pts))
+        val rectArea = (rect.width * rect.height).toDouble()
+        val solidity = if (rectArea > 0) area / rectArea else 0.0
+
+        // Rectangularity: ratio of the quad's area to its minimum-area bounding box.
+        val box = Imgproc.minAreaRect(poly)
+        val boxSize = box.size
+        val boxArea = (boxSize.width * boxSize.height).toDouble()
+        val rectangularity = if (boxArea > 0) area / boxArea else 0.0
+
+        val aspect = max(boxSize.width, boxSize.height) / max(1.0, min(boxSize.width, boxSize.height))
+        val aspectOk = if (aspect in 0.3..4.0) 1.0 else 0.3
+
+        // Border-touch penalty: how close the quad gets to the frame edge.
+        val margin = 0.02 * min(w, h)
+        val touchesBorder = pts.any { p ->
+            p.x < margin || p.y < margin || p.x > w - margin || p.y > h - margin
+        }
+        val borderPenalty = if (touchesBorder) 0.5 else 1.0
+
+        poly.release()
+        return (0.4 * rectangularity + 0.3 * solidity + 0.3 * aspectOk) * borderPenalty
+    }
+
+    /** Default inset rectangle (normalized 8% margin) to use when detection finds nothing. */
+    fun fallbackInset(w: Int, h: Int): CropPoints {
+        val mx = (w * 0.08f)
+        val my = (h * 0.08f)
+        return CropPoints(
+            topLeft = Offset(mx / w, my / h),
+            topRight = Offset((w - mx) / w, my / h),
+            bottomRight = Offset((w - mx) / w, (h - my) / h),
+            bottomLeft = Offset(mx / w, (h - my) / h)
+        )
+    }
+
     /** Robust median over a single-channel 8-bit Mat. */
-    private fun medianValue(mat: Mat): Double {
-        val total = mat.rows() * mat.cols()
+    private fun medianValue(mat: Mat): Double {        val total = mat.rows() * mat.cols()
         if (total == 0) return 128.0
         val hist = IntArray(256)
         val px = ByteArray(1)

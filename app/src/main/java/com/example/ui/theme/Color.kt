@@ -19,7 +19,7 @@ val GlassBackgroundLight = Color(0xFFFFFFFF) // Pure white background
 val GlassSurfaceLight = Color(0xFFFFFFFF) // Pure white card surface
 val GlassSurfaceVariantLight = Color(0xFFF8FAFC) // Minimal clean slate-white
 
-val GlassBackgroundDark = Color(0xFFFFFFFF) // White background even in dark mode to comply with the user's request
-val GlassSurfaceDark = Color(0xFFFFFFFF)
-val GlassSurfaceVariantDark = Color(0xFFF8FAFC)
+val GlassBackgroundDark = Color(0xFF0F1419) // Deep charcoal background
+val GlassSurfaceDark = Color(0xFF1A212B) // Card surface in dark mode
+val GlassSurfaceVariantDark = Color(0xFF222B36)
 

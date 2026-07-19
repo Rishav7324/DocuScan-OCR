@@ -11,6 +11,9 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -33,6 +36,7 @@ import com.example.data.database.DocumentEntity
 import com.example.data.database.FolderEntity
 import com.example.ui.components.GlassBackground
 import com.example.ui.components.GlassCard
+import com.example.ui.theme.GlassIndigo
 import com.example.ui.viewmodel.ScannerViewModel
 import java.text.SimpleDateFormat
 import java.util.*
@@ -64,6 +68,13 @@ fun DashboardScreen(
     var selectedTag by remember { mutableStateOf<String?>(null) }
     val allTags = remember(allDocs) { viewModel.getAllTags() }
 
+    // Multi-select / bulk actions
+    val selectedDocs = remember { mutableStateListOf<Long>() }
+    var selectionActive by remember { mutableStateOf(false) }
+    val inSelectionMode by remember { derivedStateOf { selectionActive || selectedDocs.isNotEmpty() } }
+    val syncedCount = remember(allDocs) { allDocs.count { it.isSynced } }
+    val favoritesCount = remember(allDocs) { allDocs.count { it.isFavorite } }
+
     val filteredDocs = remember(allDocs, searchQuery, showFavoritesOnly, selectedTag) {
         allDocs.filter { doc ->
             val matchesQuery = searchQuery.isBlank() ||
@@ -84,20 +95,45 @@ fun DashboardScreen(
             containerColor = Color.Transparent,
             topBar = {
                 TopAppBar(
-                    title = { Text("DocuScan OCR Sandbox", fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface) },
+                    title = {
+                        if (inSelectionMode) {
+                            Text("${selectedDocs.size} selected", fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
+                        } else {
+                            Text("DocuScan OCR", fontWeight = FontWeight.ExtraBold, color = MaterialTheme.colorScheme.onSurface)
+                        }
+                    },
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.surface,
                         titleContentColor = MaterialTheme.colorScheme.onSurface
                     ),
                     actions = {
-                        IconButton(onClick = onNavigateToHelpAndLegal, modifier = Modifier.testTag("help_legal_nav_button")) {
-                            Icon(imageVector = Icons.Default.Info, contentDescription = "Help & Legal", tint = MaterialTheme.colorScheme.primary)
-                        }
-                        IconButton(onClick = onNavigateToCompliance, modifier = Modifier.testTag("compliance_nav_button")) {
-                            Icon(imageVector = Icons.Default.HealthAndSafety, contentDescription = "Compliance", tint = MaterialTheme.colorScheme.primary)
-                        }
-                        IconButton(onClick = onNavigateToSync, modifier = Modifier.testTag("sync_nav_button")) {
-                            Icon(imageVector = Icons.Default.CloudSync, contentDescription = "Cloud Syncer", tint = MaterialTheme.colorScheme.primary)
+                        if (inSelectionMode) {
+                            IconButton(onClick = {
+                                selectedDocs.forEach { id -> allDocs.find { it.id == id }?.let { viewModel.deleteDocument(it) } }
+                                selectedDocs.clear()
+                                selectionActive = false
+                            }, modifier = Modifier.testTag("bulk_delete_button")) {
+                                Icon(Icons.Default.Delete, contentDescription = "Delete selected", tint = Color(0xFFEF4444))
+                            }
+                            IconButton(onClick = {
+                                selectedDocs.clear()
+                                selectionActive = false
+                            }) {
+                                Icon(Icons.Default.Close, contentDescription = "Clear selection")
+                            }
+                        } else {
+                            IconButton(onClick = { selectionActive = true }, modifier = Modifier.testTag("enter_select_button")) {
+                                Icon(Icons.Default.CheckBox, contentDescription = "Select documents", tint = MaterialTheme.colorScheme.primary)
+                            }
+                            IconButton(onClick = onNavigateToHelpAndLegal, modifier = Modifier.testTag("help_legal_nav_button")) {
+                                Icon(imageVector = Icons.Default.Info, contentDescription = "Help & Legal", tint = MaterialTheme.colorScheme.primary)
+                            }
+                            IconButton(onClick = onNavigateToCompliance, modifier = Modifier.testTag("compliance_nav_button")) {
+                                Icon(imageVector = Icons.Default.HealthAndSafety, contentDescription = "Compliance", tint = MaterialTheme.colorScheme.primary)
+                            }
+                            IconButton(onClick = onNavigateToSync, modifier = Modifier.testTag("sync_nav_button")) {
+                                Icon(imageVector = Icons.Default.CloudSync, contentDescription = "Cloud Syncer", tint = MaterialTheme.colorScheme.primary)
+                            }
                         }
                     }
                 )
@@ -155,6 +191,19 @@ fun DashboardScreen(
                             }
                         }
                     }
+
+                // Stats overview row
+                item {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        StatChip("Documents", allDocs.size.toString(), Icons.Default.Description, MaterialTheme.colorScheme.primary)
+                        StatChip("Favorites", favoritesCount.toString(), Icons.Default.Star, Color(0xFFFFB020))
+                        StatChip("Vaults", folders.size.toString(), Icons.Default.Folder, GlassIndigo)
+                        StatChip("Synced", syncedCount.toString(), Icons.Default.CloudDone, Color(0xFF10B981))
+                    }
+                }
 
                 // Search Bar
                 item {
@@ -363,16 +412,31 @@ fun DashboardScreen(
                             enter = fadeIn() + expandVertically(),
                             exit = fadeOut() + shrinkVertically()
                         ) {
-                            GlassCard(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .testTag("doc_list_item_${doc.id}"),
-                                cornerRadius = 20.dp,
-                                onClick = {
-                                    viewModel.loadActiveDocument(doc)
-                                    onNavigateToOcr(folderOfDoc?.let { if (it.isPrivate) viewModel.activeFolderPin.value else null })
-                                }
-                            ) {
+                                GlassCard(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .testTag("doc_list_item_${doc.id}"),
+                                    cornerRadius = 20.dp,
+                                    onClick = {
+                                        if (inSelectionMode) {
+                                            if (selectedDocs.contains(doc.id)) selectedDocs.remove(doc.id) else selectedDocs.add(doc.id)
+                                        } else {
+                                            viewModel.loadActiveDocument(doc)
+                                            onNavigateToOcr(folderOfDoc?.let { if (it.isPrivate) viewModel.activeFolderPin.value else null })
+                                        }
+                                    }
+                                ) {
+                                    if (inSelectionMode) {
+                                        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                                            Checkbox(
+                                                checked = selectedDocs.contains(doc.id),
+                                                onCheckedChange = {
+                                                    if (selectedDocs.contains(doc.id)) selectedDocs.remove(doc.id) else selectedDocs.add(doc.id)
+                                                },
+                                                colors = CheckboxDefaults.colors(checkedColor = MaterialTheme.colorScheme.primary)
+                                            )
+                                        }
+                                    }
                                 Row(
                                     modifier = Modifier.fillMaxWidth(),
                                     verticalAlignment = Alignment.CenterVertically
@@ -663,5 +727,32 @@ fun DashboardScreen(
         }
     }
 }
+
+@Composable
+private fun StatChip(
+    label: String,
+    value: String,
+    icon: androidx.compose.ui.graphics.vector.ImageVector,
+    tint: Color
+) {
+    GlassCard(
+        modifier = Modifier
+            .weight(1f)
+            .height(78.dp),
+        cornerRadius = 18.dp
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(20.dp))
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(value, fontWeight = FontWeight.Black, fontSize = 18.sp, color = Color.Black)
+            Text(label, fontSize = 10.sp, color = Color.Gray, fontWeight = FontWeight.SemiBold)
+        }
+    }
+}
+
 }
 
